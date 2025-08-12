@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eudora - Accedi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .login-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification-content {
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .notification-icon {
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+        
+        .notification-message {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            color: #6b7280;
+            background: #f3f4f6;
+        }
+        
+        /* Progress bar for auto-dismiss */
+        .notification-progress {
+            height: 3px;
+            background: rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification-progress-bar {
+            height: 100%;
+            background: currentColor;
+            width: 100%;
+            transform: translateX(-100%);
+            transition: transform linear;
+        }
+        
+        .notification.success .notification-progress-bar {
+            background: #10b981;
+        }
+        
+        .notification.error .notification-progress-bar {
+            background: #ef4444;
+        }
+        
+        .notification.warning .notification-progress-bar {
+            background: #f59e0b;
+        }
+        
+        .notification.info .notification-progress-bar {
+            background: #3b82f6;
+        }
+    </style>
+</head>
+<body class="login-container min-h-screen flex items-center justify-center p-4">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+    
+    <!-- Login/Signup Container -->
+    <div class="w-full max-w-md">
+        <!-- Login Form -->
+        <div id="login-form" class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div class="text-center mb-8">
+                <div class="mx-auto w-32 h-32 mb-6">
+                    <img src="public/logo_eudora-noback.png" 
+                         alt="Eudora Logo" 
+                         class="w-full h-full object-contain">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Benvenuto su Eudora</h1>
+                <p class="text-gray-600">Accedi al tuo account per continuare</p>
+            </div>
+
+            <form class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input id="login-email" type="email" 
+                           required 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="inserisci la tua email">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input id="login-password" type="password" 
+                               required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                               placeholder="inserisci la tua password">
+                        <button type="button" onclick="togglePasswordVisibility('login-password')" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 transition">
+                            <i class="fas fa-eye" id="login-password-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" onclick="login()" 
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition font-medium">
+                    Accedi
+                </button>
+            </form>
+            
+            <div class="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                <h4 class="text-sm font-semibold text-blue-800 mb-3 flex items-center">
+                    <i class="fas fa-database mr-2"></i>
+                    Account di Test - Dati Precaricati
+                </h4>
+                <div class="text-sm text-blue-700 space-y-2">
+                    <div class="flex justify-between">
+                        <span class="font-medium">Cliente:</span>
+                        <span class="font-mono">mario.rossi@email.com</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium">Farmacia:</span>
+                        <span class="font-mono">farmacia.centrale@email.com</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium">Rider:</span>
+                        <span class="font-mono">rider1@eudora.com</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-medium">Admin:</span>
+                        <span class="font-mono">admin@eudora.com</span>
+                    </div>
+                    <div class="pt-3 border-t border-blue-200 space-y-1">
+                        <div class="text-xs text-blue-600">Password per tutti: <span class="font-mono font-semibold">password123/rider123</span></div>
+                        <div class="text-xs text-blue-600">Dati di esempio già caricati nel sistema</div>
+                    </div>
+                    <div class="pt-2 bg-green-50 border border-green-200 rounded px-3 py-2 mt-3">
+                        <div class="text-xs text-green-700">✅ Sistema completamente funzionale con ordini, prodotti e transazioni simulate</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Non hai un account? 
+                    <button onclick="showSignup()" class="text-blue-600 hover:text-blue-800 font-medium transition">Registrati qui</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-form" class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hidden">
+            <div class="text-center mb-8">
+                <div class="mx-auto w-24 h-24 mb-4">
+                    <img src="public/logo_eudora-noback.png" 
+                         alt="Eudora Logo" 
+                         class="w-full h-full object-contain">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Crea Account</h1>
+                <p class="text-gray-600">Unisciti a Eudora per iniziare</p>
+            </div>
+
+            <form class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+                        <input id="signup-firstname" type="text" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Mario">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cognome</label>
+                        <input id="signup-lastname" type="text" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Rossi">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input id="signup-email" type="email" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="mario.rossi@email.com">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Telefono</label>
+                    <input id="signup-phone" type="tel" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="+39 123 456 7890">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Indirizzo</label>
+                    <input id="signup-address" type="text" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="Via Roma 123, Milano">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Città</label>
+                        <input id="signup-city" type="text" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="Milano">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">CAP</label>
+                        <input id="signup-zip" type="text" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="20100">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo di Account</label>
+                    <select id="signup-usertype" required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Seleziona tipo di account</option>
+                        <option value="customer">Cliente</option>
+                        <option value="rider">Rider</option>
+                        <option value="pharmacy">Farmacia</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <input id="signup-password" type="password" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                               placeholder="Crea una password sicura">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password')" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 transition">
+                            <i class="fas fa-eye" id="signup-password-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Conferma Password</label>
+                    <div class="relative">
+                        <input id="signup-password-confirm" type="password" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                               placeholder="Ripeti la password">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password-confirm')" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700 transition">
+                            <i class="fas fa-eye" id="signup-password-confirm-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" onclick="signup()" 
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition font-medium">
+                    Crea Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Hai già un account? 
+                    <button onclick="showLogin()" class="text-blue-600 hover:text-blue-800 font-medium transition">Accedi qui</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/database.js"></script>
+    <script src="js/sample-data.js"></script>
+    <script src="js/test-data.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    
+    <script>
+        // Inizializza EudoraApp per la compatibilità con auth.js
+        window.EudoraApp = {
+            currentUser: null,
+            version: '2.0.0',
+            debug: true
+        };
+        
+        // Sistema di notifiche personalizzato semplificato per login
+        class LoginNotificationManager {
+            constructor() {
+                this.container = document.getElementById('notification-container');
+                this.notificationId = 0;
+            }
+            
+            show(type, title, message, duration = 5000) {
+                const notification = this.createNotification(type, title, message, duration);
+                this.container.appendChild(notification);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Auto dismiss
+                if (duration > 0) {
+                    const progressBar = notification.querySelector('.notification-progress-bar');
+                    if (progressBar) {
+                        progressBar.style.transitionDuration = duration + 'ms';
+                        setTimeout(() => {
+                            progressBar.style.transform = 'translateX(0)';
+                        }, 100);
+                    }
+                    
+                    setTimeout(() => {
+                        this.dismiss(notification);
+                    }, duration);
+                }
+                
+                return notification;
+            }
+            
+            createNotification(type, title, message, duration) {
+                const id = ++this.notificationId;
+                const icons = {
+                    success: 'fas fa-check-circle',
+                    error: 'fas fa-exclamation-circle',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle'
+                };
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.setAttribute('data-id', id);
+                
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="${icons[type]} text-lg"></i>
+                        </div>
+                        <div class="notification-text">
+                            <div class="notification-title">${title}</div>
+                            <div class="notification-message">${message}</div>
+                        </div>
+                        <button class="notification-close" onclick="loginNotificationManager.dismiss(this.closest('.notification'))">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    ${duration > 0 ? '<div class="notification-progress"><div class="notification-progress-bar"></div></div>' : ''}
+                `;
+                
+                return notification;
+            }
+            
+            dismiss(notification) {
+                if (!notification) return;
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+            
+            success(title, message, duration = 5000) {
+                return this.show('success', title, message, duration);
+            }
+            
+            error(title, message, duration = 7000) {
+                return this.show('error', title, message, duration);
+            }
+            
+            warning(title, message, duration = 6000) {
+                return this.show('warning', title, message, duration);
+            }
+            
+            info(title, message, duration = 5000) {
+                return this.show('info', title, message, duration);
+            }
+        }
+        
+        // Inizializza il manager delle notifiche per il login
+        const loginNotificationManager = new LoginNotificationManager();
+        
+        // Rendi disponibile globalmente per compatibilità con auth.js
+        window.notificationManager = loginNotificationManager;
+        
+        // Inizializza il database al caricamento della pagina
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clean up localStorage to prevent quota issues
+            try {
+                const currentSize = JSON.stringify(localStorage).length;
+                console.log('Current localStorage size:', currentSize, 'characters');
+                
+                // If localStorage is getting large, clean it up
+                if (currentSize > 2000000) { // 2MB
+                    console.log('localStorage is large, cleaning up...');
+                    Auth.clearLocalStorageQuota();
+                }
+            } catch (error) {
+                console.warn('Error checking localStorage size:', error);
+            }
+            
+            // Inizializza il database
+            Database.init();
+            
+            // Carica i dati di test se necessario
+            if (typeof TestData !== 'undefined') {
+                TestData.init();
+            }
+            
+            // Controlla se l'utente è già loggato
+            const currentUser = Auth.getCurrentUser();
+            if (currentUser) {
+                Auth.redirectToDashboard(currentUser.role || currentUser.userType);
+            }
+        });
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                loginNotificationManager.error(
+                    'Campi Obbligatori', 
+                    'Per favore inserisci email e password per accedere al sistema'
+                );
+                return;
+            }
+            
+            // Mostra notifica di caricamento
+            const loadingNotification = loginNotificationManager.info(
+                'Accesso in Corso...', 
+                'Verifica delle credenziali in corso',
+                0
+            );
+            
+            // Simula un piccolo delay per il caricamento
+            setTimeout(() => {
+                loginNotificationManager.dismiss(loadingNotification);
+                
+                try {
+                    Auth.login(email, password);
+                } catch (error) {
+                    console.error('Errore durante il login:', error);
+                    
+                    // Handle specific quota exceeded error
+                    if (error.name === 'QuotaExceededError') {
+                        loginNotificationManager.error(
+                            'Spazio di Archiviazione Esaurito', 
+                            'Per favore libera spazio nel browser o prova la modalità incognito'
+                        );
+                    } else {
+                        loginNotificationManager.error(
+                            'Errore di Sistema', 
+                            'Si è verificato un errore durante l\'accesso. Riprova.'
+                        );
+                    }
+                }
+            }, 800);
+        }
+
+        function signup() {
+            loginNotificationManager.info(
+                'Funzionalità in Sviluppo', 
+                'La registrazione sarà disponibile nella prossima versione'
+            );
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + '-eye');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function quickLogin(userType, email, password) {
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').value = password;
+            Auth.login(email, password);
+        }
+    </script>
+</body>
+</html>

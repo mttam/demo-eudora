@@ -1,0 +1,163 @@
+{
+  "heroSection": {
+    "title": "Consegna di farmaci a domicilio",
+    "subtitle": "Ordina tutti i prodotti della farmacia di cui hai bisogno, anche quelli con ricetta e ricevili direttamente dove vuoi",
+    "buttons": [
+      {
+        "text": "Ordina su WhatsApp",
+        "url": "whatsapp://send?phone=393500378569",
+        "iconClass": "fab fa-whatsapp",
+        "bgColor": "bg-green-500",
+        "hoverColor": "hover:bg-green-600"
+      },
+      {
+        "text": "Chiamaci ora",
+        "url": "tel:3500378569",
+        "iconClass": "fas fa-phone-alt",
+        "bgColor": "bg-blue-500",
+        "hoverColor": "hover:bg-blue-600"
+      }
+    ],
+    "image": {
+      "src": "public/base.png",
+      "alt": "Medicine delivery"
+    }
+  },
+  "howToOrderSection": {
+    "title": "Come ordinare",
+    "subtitle": "È semplicissimo!",
+    "cards": [
+      {
+        "iconClass": "fas fa-phone",
+        "iconColor": "text-green-500",
+        "title": "Telefona o messaggia",
+        "description": "Contattaci al tramite WhatsApp o telefono",
+        "linkText": "Contattaci",
+        "linkUrl": "whatsapp://send?phone=393500378569",
+        "linkColor": "text-green-500"
+      },
+      {
+        "iconClass": "fas fa-comments",
+        "iconColor": "text-orange-500",
+        "title": "Indica i prodotti",
+        "description": "Specifica cosa ti serve e se hai una ricetta",
+        "linkText": "Continua",
+        "linkUrl": "#",
+        "linkColor": "text-orange-500"
+      },
+      {
+        "iconClass": "fas fa-clock",
+        "iconColor": "text-blue-500",
+        "title": "Mettiti comodo",
+        "description": "ti contatteremo per confermare l'ordine e organizzare la consegna",
+        "linkText": "Chiama ora",
+        "linkUrl": "tel:3500378569",
+        "linkColor": "text-blue-500"
+      }
+    ]
+  },
+  "benefitsSection": {
+    "title": "Vantaggi",
+    "subtitle": "Tutti i prodotti della farmacia, anche quelli che necessitano di prescrizione medica",
+    "benefits": [
+      {
+        "iconClass": "fas fa-user-shield",
+        "iconColor": "text-blue-500",
+        "bgColor": "bg-blue-100",
+        "title": "Privacy 100%",
+        "description": "I nostri Eudora Men non sono a conoscenza del contenuto del tuo ordine"
+      },
+      {
+        "iconClass": "fas fa-clock",
+        "iconColor": "text-green-500",
+        "bgColor": "bg-green-100",
+        "title": "Risparmia tempo",
+        "description": "Ricevi i tuoi farmaci direttamente a casa tua senza doverti spostare"
+      },
+      {
+        "iconClass": "fas fa-file-medical",
+        "iconColor": "text-purple-500",
+        "bgColor": "bg-purple-100",
+        "title": "Ritiriamo la ricetta",
+        "description": "Ritiriamo la ricetta a casa o dal tuo medico. Oppure, scatta una foto della tua ricetta elettronica al momento dell'ordine"
+      },
+      {
+        "iconClass": "fas fa-truck",
+        "iconColor": "text-yellow-500",
+        "bgColor": "bg-yellow-100",
+        "title": "Ricevi ovunque lo desideri",
+        "description": "Scegli l'indirizzo di consegna più comodo per te, a casa, in ufficio o dove preferisci"
+      },
+      {
+        "iconClass": "fas fa-pills",
+        "iconColor": "text-red-500",
+        "bgColor": "bg-red-100",
+        "title": "Ampia selezione",
+        "description": "Disponiamo di tutti i prodotti farmaceutici di cui potresti aver bisogno"
+      },
+      {
+        "iconClass": "fas fa-headset",
+        "iconColor": "text-indigo-500",
+        "bgColor": "bg-indigo-100",
+        "title": "Supporto dedicato",
+        "description": "Il nostro team è sempre disponibile per rispondere alle tue domande e necessità"
+      }
+    ]
+  },
+  "workWithUsSection": {
+    "title": "Lavora con Noi",
+    "subtitle": "Unisciti al nostro team e contribuisci a migliorare la vita delle persone",
+    "cards": [
+      {
+        "iconClass": "fas fa-handshake",
+        "iconColor": "text-blue-500",
+        "bgIconColor": "bg-blue-100",
+        "bgGradient": "bg-gradient-to-r from-blue-50 to-indigo-50",
+        "borderColor": "border-blue-100",
+        "titleColor": "text-blue-800",
+        "title": "Diventa partner",
+        "description": "Cresci con Eudora! La nostra base di utenti può aiutarti a incrementare le vendite e cogliere nuove opportunità!",
+        "buttonText": "Scopri di più",
+        "buttonColor": "bg-blue-500",
+        "buttonHover": "hover:bg-blue-600",
+        "buttonUrl": "mailto:Eudorabenessere@gmail.com"
+      },
+      {
+        "iconClass": "fas fa-bicycle",
+        "iconColor": "text-green-500",
+        "bgIconColor": "bg-green-100",
+        "bgGradient": "bg-gradient-to-r from-green-50 to-teal-50",
+        "borderColor": "border-green-100",
+        "titleColor": "text-green-800",
+        "title": "Diventa un rider",
+        "description": "Goditi flessibilità, libertà e guadagni competitivi effettuando consegne tramite Eudora.",
+        "buttonText": "Candidati ora",
+        "buttonColor": "bg-green-500",
+        "buttonHover": "hover:bg-green-600",
+        "buttonUrl": "mailto:Eudorabenessere@gmail.com"
+      }
+    ]
+  },
+  "ctaSection": {
+    "title": "Pronto a ordinare i tuoi farmaci?",
+    "subtitle": "Ricevi i tuoi prodotti farmaceutici direttamente a casa tua in modo semplice e sicuro",
+    "buttons": [
+      {
+        "text": "Ordina su WhatsApp",
+        "url": "whatsapp://send?phone=393500378569",
+        "iconClass": "fab fa-whatsapp",
+        "bgColor": "bg-white",
+        "textColor": "text-blue-600",
+        "hoverColor": "hover:bg-gray-100"
+      },
+      {
+        "text": "Chiamaci ora",
+        "url": "tel:3500378569",
+        "iconClass": "fas fa-phone-alt",
+        "bgColor": "bg-blue-800",
+        "textColor": "",
+        "hoverColor": "hover:bg-blue-900"
+      }
+    ]
+  }
+}

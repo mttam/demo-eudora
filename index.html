@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Eudora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Moduli JavaScript in ordine di dipendenza -->
+    <script src="js/utils.js" defer></script>
+    <script src="js/database.js" defer></script>
+    <script src="js/sample-data.js" defer></script>
+    <script src="js/test-data.js" defer></script>
+    <script src="js/landing-page.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/notifications.js" defer></script>
+    <script src="js/customer.js" defer></script>
+    <script src="js/pharmacy.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body class="font-sans text-gray-800">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="public/logo_eudora-noback.png" 
+                     alt="Eudora Logo" 
+                     class="h-16 md:h-20 object-contain">
+            </div>
+            <nav id="desktop-nav" class="hidden md:flex space-x-8" style="display: flex !important;">
+                <a href="#hero" class="text-blue-600 font-medium">Home</a>
+                <a href="#benefits" class="hover:text-blue-600">Servizi</a>
+                <a href="#work-with-us" class="hover:text-blue-600">Lavora con noi</a>
+                <a href="#footer" class="hover:text-blue-600">Contatti</a>
+                <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Accedi</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-600">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <nav class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#hero" class="text-blue-600 font-medium">Home</a>
+                <a href="#benefits" class="hover:text-blue-600">Servizi</a>
+                <a href="#work-with-us" class="hover:text-blue-600">Lavora con noi</a>
+                <a href="#footer" class="hover:text-blue-600">Contatti</a>
+                <button onclick="demoLogin()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-center">Demo Cliente</button>
+                <a href="login.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-center">Accedi</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dynamic Content Sections -->
+    <section id="hero"></section>
+    <section id="how-to-order"></section>
+    <section id="benefits"></section>
+    <section id="work-with-us"></section>
+    <section id="cta"></section>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-gray-900 text-gray-300 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div>
+                    <img src="public/logo_eudora-noback.png" 
+                         alt="Eudora Logo" 
+                         class="h-16 object-contain mb-4">
+                    <p class="mb-4">
+                        Consegna di farmaci a domicilio semplice e sicura.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/people/Eudora-Pharma/61553006976233/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/eudora_pharma?igsh=d2w4NzhqaWJtb3g=" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                                
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Contatti</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-2 text-sm"></i>
+                            <a href="tel:3500378569" class="hover:text-white transition">350 0378569</a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fab fa-whatsapp mt-1 mr-2 text-sm"></i>
+                            <a href="whatsapp://send?phone=393500378569" onclick="this.href = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'whatsapp://send?phone=393500378569' : 'https://wa.me/393500378569'" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">WhatsApp</a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-2 text-sm"></i>
+                            <a href="mailto:Eudorabenessere@gmail.com" class="hover:text-white transition">Eudorabenessere@gmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
+                <p>&copy; 2025 Eudora. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="whatsapp://send?phone=393500378569" onclick="this.href = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'whatsapp://send?phone=393500378569' : 'https://wa.me/393500378569'" target="_blank" rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-50 transition transform hover:scale-110">
+        <i class="fab fa-whatsapp text-2xl"></i>
+    </a>
+
+    <script>
+        // Demo login function
+        function demoLogin() {
+            // Create demo user data
+            const demoUser = {
+                id: 1,
+                email: 'mario.rossi@email.com',
+                role: 'customer',
+                userType: 'customer',
+                firstName: 'Mario',
+                lastName: 'Rossi',
+                name: 'Mario Rossi',
+                phone: '+39 333 1234567',
+                isActive: true
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(demoUser));
+            
+            // Redirect to customer dashboard
+            window.location.href = 'dashboard-cliente.html';
+        }
+    </script>
+</body>
+</html>
