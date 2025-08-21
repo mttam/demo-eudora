@@ -5,9 +5,9 @@ html {
 }
 
 
-/* Desktop Navigation - sempre visibile su schermi grandi */
+/* Desktop Navigation - responsive behavior */
 #desktop-nav {
-    display: none !important;
+    display: none;
 }
 
 @media (min-width: 768px) {
@@ -27,6 +27,12 @@ html {
 }
 
 @media (max-width: 767px) {
+    #desktop-nav {
+        display: none !important;
+    }
+    #mobile-menu-button {
+        display: block !important;
+    }
     /* Hide desktop orders filter, show mobile filter */
     .orders-filter-desktop {
         display: none !important;
@@ -47,6 +53,9 @@ html {
 
 @media (min-width: 768px) {
     #mobile-menu {
+        display: none !important;
+    }
+    #mobile-menu-button {
         display: none !important;
     }
 }
