@@ -19,6 +19,17 @@
     <script src="js/pharmacy.js" defer></script>
     <script src="js/dashboard.js" defer></script>
     <script src="js/main.js" defer></script>
+    <style>
+        /* Scroll offset for sticky header navigation */
+        section[id] {
+            scroll-margin-top: 100px; /* Adjust based on header height */
+        }
+        
+        /* Alternative approach for better browser support */
+        #hero, #benefits, #faq, #testimonials, #work-with-us, #footer {
+            scroll-margin-top: 100px;
+        }
+    </style>
 </head>
 <body class="font-sans text-gray-800 bg-gray-100">
     <!-- Header -->
@@ -58,7 +69,7 @@
     </header>
 
     <!-- Pharmacy Finder Section -->
-    <section class="py-16 bg-green-600">
+    <section id="hero" class="py-16 bg-green-600">
         <div class="container mx-auto px-4">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 text-center leading-tight">I farmaci che ti servono, direttamente a casa tua</h1>
             <div class="bg-white rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
