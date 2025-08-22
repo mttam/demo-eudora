@@ -257,7 +257,28 @@ const LandingPage = {
     renderWorkWithUsSection(data) {
         const workWithUsContainer = document.getElementById('work-with-us');
         if (!workWithUsContainer) return;
-        
+        // allow injecting an extra card (Entra nel Team Eudora) while preserving incoming data
+        const cards = Array.isArray(data.cards) ? data.cards.slice() : [];
+
+        // If there's no explicit 'Entra nel Team Eudora' card, append one with matching styling
+        const hasEntra = cards.some(c => (c.title || '').toLowerCase().includes('entra'));
+        if (!hasEntra) {
+            cards.push({
+                iconClass: 'fas fa-users',
+                iconColor: 'text-indigo-500',
+                bgIconColor: 'bg-indigo-100',
+                bgGradient: 'bg-gradient-to-r from-indigo-50 to-purple-50',
+                borderColor: 'border-indigo-100',
+                titleColor: 'text-indigo-800',
+                title: 'Entra nel Team Eudora',
+                description: 'Sei interessato a far parte della nostra squadra? Scopri le posizioni aperte e candidati per contribuire al servizio di consegna farmaceutica.',
+                buttonText: 'Candidati',
+                buttonColor: 'bg-indigo-600',
+                buttonHover: 'hover:bg-indigo-700',
+                buttonUrl: 'mailto:Eudorabenessere@gmail.com'
+            });
+        }
+
         workWithUsContainer.innerHTML = `
             <section class="py-16 bg-white">
                 <div class="container mx-auto px-4">
@@ -268,8 +289,8 @@ const LandingPage = {
                         </p>
                     </div>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                        ${data.cards.map(card => `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                        ${cards.map(card => `
                             <div class="${card.bgGradient} p-8 rounded-xl shadow-md border ${card.borderColor}">
                                 <div class="flex flex-col md:flex-row">
                                     <div class="md:w-1/3 mb-6 md:mb-0 flex justify-center">

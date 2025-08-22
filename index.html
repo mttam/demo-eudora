@@ -402,7 +402,7 @@
     <!-- Footer -->
     <footer id="footer" class="bg-green-600 text-gray-100 py-12">
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div>
                     <img src="public/logo_eudora-noback.png" 
                          alt="Eudora Logo" 
@@ -417,9 +417,16 @@
                         <a href="https://www.instagram.com/eudora_pharma?igsh=d2w4NzhqaWJtb3g=" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
                             <i class="fab fa-instagram"></i>
                         </a>
+                        <a href="https://www.linkedin.com/company/eudora-pharma/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="font-bold text-white mb-2">Sede legale</h4>
+                        <p class="text-gray-200 text-sm">Via Roma 10 , 87100 - Cosenza (CS)</p>
                     </div>
                 </div>
-                                
+
                 <div>
                     <h3 class="text-white font-bold text-lg mb-4">Contatti</h3>
                     <ul class="space-y-2">
@@ -437,9 +444,66 @@
                         </li>
                     </ul>
                 </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Extra Info</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="hover:text-white transition">Città attive</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white transition">Missiona Futura</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white transition">Progetto Calabria</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Newsletter</h3>
+                    <p class="text-gray-200 text-sm mb-4">
+                        Iscriviti alla newsletter di Eudora per ricevere aggiornamenti e promozioni sul nostro servizio.
+                    </p>
+                    <form class="space-y-3" onsubmit="subscribeNewsletter(event)">
+                        <div>
+                            <input type="email" 
+                                   id="newsletter-email"
+                                   placeholder="La tua email" 
+                                   required
+                                   class="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400 text-sm">
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <input type="checkbox" 
+                                   id="newsletter-consent"
+                                   required
+                                   class="mt-1 w-4 h-4 text-green-600 bg-white border-gray-300 rounded focus:ring-green-500">
+                            <label for="newsletter-consent" class="text-xs text-gray-200 leading-tight">
+                                *Presto il consenso al trattamento dei miei dati personali per la finalità di marketing così come riportato nell'informativa ex art. 13 GDPR
+                            </label>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-white text-green-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                            <i class="fas fa-envelope mr-2"></i>
+                            Iscriviti
+                        </button>
+                    </form>
+                </div>
             </div>
             
             <div class="border-t border-green-500 mt-12 pt-8 text-center text-sm">
+                <!-- Policy Links -->
+                <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-4">
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Termini e condizioni</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Privacy policy</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Cookie policy</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Aggiorna le tue preferenze di tracciamento</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Preferenze pubblicitarie</a>
+                </div>
                 <p>&copy; 2025 Eudora. Tutti i diritti riservati.</p>
             </div>
         </div>
@@ -764,6 +828,38 @@
                 initializeProductSearch();
             }, 1000); // Delay to ensure all modules are loaded
         });
+
+        // Newsletter subscription function
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('newsletter-email');
+            const consentCheckbox = document.getElementById('newsletter-consent');
+            
+            if (!emailInput.value) {
+                alert('Inserisci la tua email per iscriverti alla newsletter.');
+                return;
+            }
+            
+            if (!consentCheckbox.checked) {
+                alert('È necessario prestare il consenso al trattamento dei dati per iscriversi alla newsletter.');
+                return;
+            }
+            
+            // Simulate newsletter subscription
+            console.log('📧 Newsletter subscription:', {
+                email: emailInput.value,
+                consent: consentCheckbox.checked,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Show success message
+            alert('Grazie per esserti iscritto alla nostra newsletter! Riceverai presto aggiornamenti e promozioni sui nostri servizi.');
+            
+            // Reset form
+            emailInput.value = '';
+            consentCheckbox.checked = false;
+        }
     </script>
 </body>
 </html>
