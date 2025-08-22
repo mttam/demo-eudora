@@ -89,13 +89,6 @@
         "description": "Scegli l'indirizzo di consegna più comodo per te, a casa, in ufficio o dove preferisci"
       },
       {
-        "iconClass": "fas fa-pills",
-        "iconColor": "text-red-500",
-        "bgColor": "bg-red-100",
-        "title": "Ampia selezione",
-        "description": "Disponiamo di tutti i prodotti farmaceutici di cui potresti aver bisogno"
-      },
-      {
         "iconClass": "fas fa-headset",
         "iconColor": "text-indigo-500",
         "bgColor": "bg-indigo-100",

@@ -65,7 +65,24 @@ html {
 }
 
 .hero-gradient {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+/* Green theme enhancements */
+.text-primary {
+    color: #16a34a !important;
+}
+
+.bg-primary {
+    background-color: #16a34a !important;
+}
+
+.bg-primary:hover {
+    background-color: #15803d !important;
+}
+
+.border-primary {
+    border-color: #16a34a !important;
 }
 
 .benefit-card:hover {

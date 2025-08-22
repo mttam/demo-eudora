@@ -8,13 +8,13 @@ const LandingPage = {
         console.log('📄 Checking DOM elements...');
         
         // Check if we're on the landing page
-        const heroElement = document.getElementById('hero');
-        if (!heroElement) {
-            console.log('📄 No hero element found - not on landing page, skipping initialization');
+        const benefitsElement = document.getElementById('benefits');
+        if (!benefitsElement) {
+            console.log('📄 No benefits element found - not on landing page, skipping initialization');
             return;
         }
         
-        console.log('📄 Hero element found, proceeding with landing page initialization');
+        console.log('📄 Benefits element found, proceeding with landing page initialization');
         
         this.loadPageData();
         this.setupWhatsAppLinks();
@@ -51,20 +51,11 @@ const LandingPage = {
             const data = await response.json();
             console.log('📊 Data loaded successfully:', data);
             
-            console.log('🎨 Rendering hero section...');
-            this.renderHeroSection(data.heroSection);
-            
-            console.log('🎨 Rendering how-to-order section...');
-            this.renderHowToOrderSection(data.howToOrderSection);
-            
             console.log('🎨 Rendering benefits section...');
             this.renderBenefitsSection(data.benefitsSection);
             
             console.log('🎨 Rendering work-with-us section...');
             this.renderWorkWithUsSection(data.workWithUsSection);
-            
-            console.log('🎨 Rendering CTA section...');
-            this.renderCtaSection(data.ctaSection);
             
             // Setup WhatsApp links after rendering
             console.log('📱 Setting up WhatsApp links...');
@@ -84,39 +75,6 @@ const LandingPage = {
 
     loadFallbackContent() {
         console.log('📄 Loading fallback static content...');
-        
-        // Basic hero section
-        const heroContainer = document.getElementById('hero');
-        if (heroContainer) {
-            heroContainer.innerHTML = `
-                <section class="hero-gradient py-16 md:py-24">
-                    <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-                            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-6">
-                                Consegna di farmaci a domicilio
-                            </h1>
-                            <p class="text-lg text-gray-600 mb-8">
-                                Ordina tutti i prodotti della farmacia di cui hai bisogno, anche quelli con ricetta e ricevili direttamente dove vuoi
-                            </p>
-                            <div class="flex flex-col sm:flex-row gap-4">
-                                <a href="whatsapp://send?phone=393500378569" 
-                                   class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center transition">
-                                    <i class="fab fa-whatsapp mr-2"></i>
-                                    Ordina su WhatsApp
-                                </a>
-                                <a href="tel:3500378569" 
-                                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center transition">
-                                    <i class="fas fa-phone-alt mr-2"></i>
-                                    Chiamaci ora
-                                </a>
-                            </div>
-                        </div>
-                        <div class="md:w-1/2">
-                            <img src="public/base.png" alt="Medicine delivery" class="w-full h-auto rounded-lg shadow-lg">
-                        </div>
-                    </div>
-                </section>`;
-        }
         
         // Basic benefits section
         const benefitsContainer = document.getElementById('benefits');
@@ -164,7 +122,7 @@ const LandingPage = {
                         <h2 class="text-3xl font-bold text-gray-800 mb-4">Lavora con noi</h2>
                         <p class="text-lg text-gray-600 mb-8">Unisciti al nostro team</p>
                         <a href="whatsapp://send?phone=393500378569" 
-                           class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium inline-flex items-center transition">
+                           class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-medium inline-flex items-center transition">
                             <i class="fab fa-whatsapp mr-2"></i>
                             Contattaci
                         </a>
