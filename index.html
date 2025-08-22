@@ -179,25 +179,57 @@
                         </svg>
                     </div>
                     
-                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Sai che cosa ti serve?</h2>
-                    <p class="text-lg text-gray-600 mb-8">Cerca il farmaco online e ordinalo a domicilio: il nostro team si occuperà di consegnarlo direttamente a casa tua</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Cerca i tuoi farmaci</h2>
+                    <p class="text-lg text-gray-600 mb-8">Trova rapidamente i prodotti che ti servono dal nostro ampio catalogo</p>
                 </div>
                 
-                <div class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto mb-8">
                     <!-- Product Search Input -->
-                    <div class="flex-1">
+                    <div class="flex-1 relative">
                         <input type="text" 
-                               placeholder="Cerca un prodotto" 
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-gray-700">
+                               id="product-search-input"
+                               placeholder="Cerca farmaci, integratori, cosmetici..." 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-gray-700"
+                               autocomplete="off">
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
                     </div>
                     
-                    <!-- Search Button -->
+                    <!-- Dashboard Button -->
                     <div>
-                        <button class="w-full sm:w-auto bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300 flex items-center justify-center">
-                            <i class="fas fa-search mr-2"></i>
-                            Cerca
+                        <button onclick="redirectToClientDashboard()" 
+                                class="w-full sm:w-auto bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300 flex items-center justify-center whitespace-nowrap">
+                            <i class="fas fa-shopping-cart mr-2"></i>
+                            Vai al Catalogo
                         </button>
                     </div>
+                </div>
+                
+                <!-- Product Results Container -->
+                <div id="product-search-results" class="hidden">
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Risultati della ricerca</h3>
+                        <div id="product-search-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Products will be populated here -->
+                        </div>
+                        <div class="text-center mt-6">
+                            <button onclick="redirectToClientDashboard()" 
+                                    class="bg-green-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300">
+                                Vedi tutti i prodotti
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="no-search-results" class="hidden text-center py-8">
+                    <i class="fas fa-search text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-gray-600 mb-4">Nessun prodotto trovato per la tua ricerca</p>
+                    <button onclick="redirectToClientDashboard()" 
+                            class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition duration-300">
+                        Esplora tutto il catalogo
+                    </button>
                 </div>
             </div>
         </div>
@@ -536,6 +568,202 @@
                 suggestionsDiv.classList.add('hidden');
             }
         }
+        
+        // Product search functionality
+        function initializeProductSearch() {
+            const searchInput = document.getElementById('product-search-input');
+            const resultsContainer = document.getElementById('product-search-results');
+            const resultsList = document.getElementById('product-search-list');
+            const noResultsContainer = document.getElementById('no-search-results');
+            
+            if (!searchInput || !resultsContainer || !resultsList || !noResultsContainer) {
+                console.warn('⚠️ Product search elements not found');
+                return;
+            }
+            
+            // Initialize sample data if needed
+            if (typeof Database !== 'undefined' && typeof SampleData !== 'undefined') {
+                try {
+                    // Check if products exist, if not create sample data
+                    const existingProducts = Database.getProducts();
+                    if (existingProducts.length === 0) {
+                        console.log('📦 No products found, initializing sample data...');
+                        SampleData.init();
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error initializing sample data:', error);
+                }
+            }
+            
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                // Clear previous timeout
+                clearTimeout(searchTimeout);
+                
+                if (query.length < 2) {
+                    hideSearchResults();
+                    return;
+                }
+                
+                // Debounce search to avoid too many calls
+                searchTimeout = setTimeout(() => {
+                    performProductSearch(query);
+                }, 300);
+            });
+            
+            function performProductSearch(query) {
+                console.log('🔍 Searching for products with query:', query);
+                
+                let products = [];
+                
+                // Try to get products from Database
+                if (typeof Database !== 'undefined') {
+                    try {
+                        products = Database.getProducts();
+                        console.log(`📦 Found ${products.length} products in database`);
+                    } catch (error) {
+                        console.warn('⚠️ Error loading products from database:', error);
+                    }
+                }
+                
+                // Filter products by search query
+                const filteredProducts = products.filter(product => {
+                    if (!product || !product.name) return false;
+                    
+                    const searchTerm = query.toLowerCase();
+                    const productName = product.name.toLowerCase();
+                    const productDescription = (product.description || '').toLowerCase();
+                    const productCategory = (product.category || '').toLowerCase();
+                    const productCategoryName = (product.categoryName || '').toLowerCase();
+                    
+                    return productName.includes(searchTerm) ||
+                           productDescription.includes(searchTerm) ||
+                           productCategory.includes(searchTerm) ||
+                           productCategoryName.includes(searchTerm);
+                });
+                
+                console.log(`🔍 Search results: ${filteredProducts.length} products found`);
+                
+                if (filteredProducts.length === 0) {
+                    showNoResults();
+                } else {
+                    showSearchResults(filteredProducts.slice(0, 6)); // Show max 6 results
+                }
+            }
+            
+            function showSearchResults(products) {
+                resultsList.innerHTML = products.map(product => `
+                    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                        <div class="flex flex-col h-full">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 mb-2 line-clamp-2">${product.name}</h4>
+                                <p class="text-sm text-gray-600 mb-2 line-clamp-2">${product.description || 'Descrizione non disponibile'}</p>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-lg font-bold text-green-600">€${product.price ? product.price.toFixed(2) : 'N/A'}</span>
+                                    ${product.requiresPrescription ? 
+                                        '<span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">Ricetta</span>' : 
+                                        '<span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">Libera vendita</span>'
+                                    }
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <span class="capitalize">${product.categoryName || product.category || 'Categoria'}</span>
+                                    ${product.stock ? ` • Stock: ${product.stock}` : ''}
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <button onclick="addToCartFromSearch('${product.id}')" 
+                                        class="w-full bg-green-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-green-700 transition-colors ${!product.stock || product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                                        ${!product.stock || product.stock === 0 ? 'disabled' : ''}>
+                                    <i class="fas fa-cart-plus mr-1"></i>
+                                    ${!product.stock || product.stock === 0 ? 'Non disponibile' : 'Aggiungi al carrello'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                resultsContainer.classList.remove('hidden');
+                noResultsContainer.classList.add('hidden');
+            }
+            
+            function showNoResults() {
+                resultsContainer.classList.add('hidden');
+                noResultsContainer.classList.remove('hidden');
+            }
+            
+            function hideSearchResults() {
+                resultsContainer.classList.add('hidden');
+                noResultsContainer.classList.add('hidden');
+            }
+        }
+        
+        // Function to add product to cart from search
+        function addToCartFromSearch(productId) {
+            console.log('🛒 Adding product to cart:', productId);
+            
+            // For now, just show a notification and redirect to dashboard
+            alert('Prodotto aggiunto al carrello! Verrai reindirizzato al catalogo per completare l\'ordine.');
+            redirectToClientDashboard();
+        }
+        
+        // Function to redirect to client dashboard
+        function redirectToClientDashboard() {
+            console.log('🔄 Redirecting to client dashboard...');
+            
+            // Check if user is logged in
+            let currentUser = null;
+            
+            // Try to get current user from localStorage
+            try {
+                const userData = localStorage.getItem('currentUser');
+                if (userData) {
+                    currentUser = JSON.parse(userData);
+                }
+            } catch (error) {
+                console.warn('⚠️ Error reading user data:', error);
+            }
+            
+            // If no user found, create demo user
+            if (!currentUser) {
+                console.log('👤 No user found, creating demo user...');
+                const demoUser = {
+                    id: 1,
+                    email: 'mario.rossi@email.com',
+                    role: 'customer',
+                    userType: 'customer',
+                    firstName: 'Mario',
+                    lastName: 'Rossi',
+                    name: 'Mario Rossi',
+                    phone: '+39 333 1234567',
+                    isActive: true
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(demoUser));
+                currentUser = demoUser;
+            }
+            
+            // Redirect to appropriate dashboard
+            if (currentUser.role === 'customer') {
+                window.location.href = 'dashboard-cliente.html';
+            } else if (currentUser.role === 'pharmacy') {
+                window.location.href = 'dashboard-farmacia.html';
+            } else if (currentUser.role === 'admin') {
+                window.location.href = 'dashboard-admin.html';
+            } else {
+                // Default to customer dashboard
+                window.location.href = 'dashboard-cliente.html';
+            }
+        }
+        
+        // Initialize product search when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                initializeProductSearch();
+            }, 1000); // Delay to ensure all modules are loaded
+        });
     </script>
 </body>
 </html>
