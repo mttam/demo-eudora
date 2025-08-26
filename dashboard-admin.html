@@ -318,7 +318,7 @@
     <div id="notification-container" class="notification-container"></div>
     
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <header class="bg-green-600 shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center">
                 <img src="public/logo_eudora-noback.png" 
@@ -326,17 +326,16 @@
                      class="h-16 md:h-20 object-contain">
             </div>
             
-            <nav class="hidden md:flex space-x-8">
-                <a href="index.html" class="hover:text-blue-600 transition">Home</a>
-                <a href="#" class="text-blue-600 font-medium">Dashboard</a>
+            <nav class="flex space-x-8 items-center px-4 py-2">
+                <a href="index.html" class="hover:text-gray-200 transition text-white font-medium">Home</a>
             </nav>
             
             <div class="flex items-center space-x-4">
                 
                 <div class="hidden md:flex items-center space-x-2">
-                    <span class="text-sm text-gray-600">Benvenuto,</span>
-                    <span id="user-name" class="text-sm font-medium text-gray-800"></span>
-                    <span id="user-role-badge" class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Admin</span>
+                    <span class="text-sm text-gray-200">Benvenuto,</span>
+                    <span id="user-name" class="text-sm font-medium text-white"></span>
+                    <span id="user-role-badge" class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Admin</span>
                     <div id="test-data-indicator" class="hidden bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">
                         <i class="fas fa-database mr-1"></i>
                         Dati di test caricati
@@ -344,7 +343,7 @@
                 </div>
                 
                 <button onclick="logout()" 
-                        class="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition">
+                        class="text-gray-200 hover:text-white p-2 rounded-full hover:bg-green-700 transition">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
