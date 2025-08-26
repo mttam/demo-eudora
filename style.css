@@ -153,9 +153,7 @@ html {
     overflow: visible !important;
 }
 
-.customer-tab:hover {
-    color: #3b82f6 !important;
-}
+
 
 /* Tab attivo: blu con testo bianco */
 .customer-tab.active-tab {

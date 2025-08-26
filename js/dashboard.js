@@ -204,7 +204,7 @@ const Dashboard = {
         // Remove active class from all tabs
         document.querySelectorAll('.customer-tab').forEach(tab => {
             tab.classList.remove('bg-blue-600', 'text-white');
-            tab.classList.add('bg-blue-600', 'hover:text-gray-800');
+            tab.classList.add('bg-gray-100', 'hover:text-gray-800');
         });
         
         // Show selected section
@@ -216,8 +216,8 @@ const Dashboard = {
         // Add active class to selected tab
         const activeTab = document.getElementById(`tab-${section}`);
         if (activeTab) {
+            activeTab.classList.remove('bg-gray-100', 'hover:text-gray-800');
             activeTab.classList.add('bg-blue-600', 'text-white');
-            activeTab.classList.remove('text-gray-600', 'hover:text-gray-800');
         }
         
         // Special handling for sections
