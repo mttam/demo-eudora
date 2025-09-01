@@ -831,12 +831,25 @@ const Database = {
 
     // Aggiorna carrello
     updateCart(userId, cart) {
+        console.log(`🛒 Database.updateCart called: userId=${userId}`);
+        console.log('🛒 Cart to save:', cart);
+        
         const carts = this.get(this.keys.cart) || {};
+        console.log('🛒 Current carts in storage:', carts);
+        
         carts[userId] = {
             ...cart,
             updatedAt: new Date().toISOString()
         };
-        this.set(this.keys.cart, carts);
+        
+        console.log('🛒 Updated carts object:', carts);
+        
+        const saveResult = this.set(this.keys.cart, carts);
+        console.log('🛒 Save result:', saveResult);
+        
+        // Verify the save by reading back
+        const verifyCart = this.get(this.keys.cart);
+        console.log('🛒 Verification - cart after save:', verifyCart[userId]);
         
         console.log('🛒 Cart updated for user:', userId);
         return carts[userId];
@@ -844,31 +857,45 @@ const Database = {
 
     // Aggiungi item al carrello
     addToCart(userId, productId, quantity = 1) {
+        console.log(`🛒 Database.addToCart called: userId=${userId}, productId=${productId}, quantity=${quantity}`);
+        
         const cart = this.getCart(userId);
+        console.log('🛒 Current cart for user:', cart);
+        
         const product = this.getProductById(productId);
+        console.log('🛒 Product found:', product);
         
         if (!product) {
+            console.error('❌ Product not found for ID:', productId);
             throw new Error('Prodotto non trovato');
         }
 
         const existingItem = cart.items.find(item => item.productId === productId);
+        console.log('🛒 Existing item in cart:', existingItem);
         
         if (existingItem) {
             existingItem.quantity += quantity;
+            console.log('🛒 Updated existing item quantity to:', existingItem.quantity);
         } else {
-            cart.items.push({
+            const newItem = {
                 productId,
                 name: product.name,
                 price: product.price,
                 quantity,
                 addedAt: new Date().toISOString()
-            });
+            };
+            cart.items.push(newItem);
+            console.log('🛒 Added new item to cart:', newItem);
         }
 
         // Ricalcola totale
         cart.total = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        console.log('🛒 Calculated cart total:', cart.total);
         
-        return this.updateCart(userId, cart);
+        const result = this.updateCart(userId, cart);
+        console.log('🛒 Cart update result:', result);
+        
+        return result;
     },
 
     // Rimuovi item dal carrello

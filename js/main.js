@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Initialize Authentication module
+    if (typeof Auth !== 'undefined') {
+        Auth.init();
+    }
+    
     // Detect which page we're on
     const isLandingPage = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/');
     const isDashboardPage = window.location.pathname.includes('dashboard.html');
@@ -44,6 +49,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof Database !== 'undefined') {
         window.db = Database;
         console.log('💾 Database available as window.db for debugging');
+    }
+    
+    // Make Customer available globally for debugging
+    if (typeof Customer !== 'undefined') {
+        window.customer = Customer;
+        console.log('🛍️ Customer available as window.customer for debugging');
     }
 });
 

@@ -29,9 +29,126 @@
         #hero, #benefits, #faq, #testimonials, #work-with-us, #footer {
             scroll-margin-top: 100px;
         }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification.error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.warning {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .notification.info {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification-content {
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .notification-icon {
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+        
+        .notification-message {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .notification-close:hover {
+            color: #6b7280;
+            background: #f3f4f6;
+        }
+        
+        .notification-progress {
+            height: 3px;
+            background: rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification-progress-bar {
+            height: 100%;
+            background: currentColor;
+            width: 100%;
+            transform: translateX(-100%);
+            transition: transform linear;
+        }
+        
+        .notification.success .notification-progress-bar {
+            background: #10b981;
+        }
+        
+        .notification.error .notification-progress-bar {
+            background: #ef4444;
+        }
+        
+        .notification.warning .notification-progress-bar {
+            background: #f59e0b;
+        }
+        
+        .notification.info .notification-progress-bar {
+            background: #3b82f6;
+        }
     </style>
 </head>
 <body class="font-sans text-gray-800 bg-gray-100">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+    
     <!-- Header -->
     <header class="bg-green-600 shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -528,6 +645,206 @@
     </a>
 
     <script>
+        // Landing Page Notification Manager
+        class LandingNotificationManager {
+            constructor() {
+                this.container = document.getElementById('notification-container');
+                this.notificationId = 0;
+            }
+            
+            show(type, title, message, duration = 5000) {
+                const notification = this.createNotification(type, title, message, duration);
+                this.container.appendChild(notification);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Auto dismiss
+                if (duration > 0) {
+                    setTimeout(() => {
+                        this.dismiss(notification);
+                    }, duration);
+                }
+                
+                return notification;
+            }
+            
+            createNotification(type, title, message, duration) {
+                const id = ++this.notificationId;
+                const icons = {
+                    success: 'fas fa-check-circle',
+                    error: 'fas fa-exclamation-circle',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle'
+                };
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.setAttribute('data-id', id);
+                
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <div class="notification-icon">
+                            <i class="${icons[type]} text-lg"></i>
+                        </div>
+                        <div class="notification-text">
+                            <div class="notification-title">${title}</div>
+                            <div class="notification-message">${message}</div>
+                        </div>
+                        <button class="notification-close" onclick="landingNotificationManager.dismiss(this.closest('.notification'))">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    ${duration > 0 ? '<div class="notification-progress"><div class="notification-progress-bar"></div></div>' : ''}
+                `;
+                
+                // Start progress bar animation
+                if (duration > 0) {
+                    setTimeout(() => {
+                        const progressBar = notification.querySelector('.notification-progress-bar');
+                        if (progressBar) {
+                            progressBar.style.transitionDuration = `${duration}ms`;
+                            progressBar.style.transform = 'translateX(0)';
+                        }
+                    }, 100);
+                }
+                
+                return notification;
+            }
+            
+            dismiss(notification) {
+                if (!notification) return;
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }
+            
+            success(title, message, duration = 5000) {
+                return this.show('success', title, message, duration);
+            }
+            
+            error(title, message, duration = 7000) {
+                return this.show('error', title, message, duration);
+            }
+            
+            warning(title, message, duration = 6000) {
+                return this.show('warning', title, message, duration);
+            }
+            
+            info(title, message, duration = 5000) {
+                return this.show('info', title, message, duration);
+            }
+        }
+        
+        // Initialize notification manager when DOM is loaded
+        let landingNotificationManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            landingNotificationManager = new LandingNotificationManager();
+            window.landingNotificationManager = landingNotificationManager;
+            
+            // Initialize pendingCartItems in localStorage if it doesn't exist
+            initializePendingCart();
+        });
+        
+        // Function to initialize pending cart in localStorage
+        function initializePendingCart() {
+            try {
+                // Check if pendingCartItems exists in localStorage
+                let pendingCartItems = localStorage.getItem('pendingCartItems');
+                
+                if (pendingCartItems === null) {
+                    // Create empty array if it doesn't exist
+                    localStorage.setItem('pendingCartItems', JSON.stringify([]));
+                    console.log('📦 Initialized empty pendingCartItems in localStorage');
+                } else {
+                    // Validate existing data
+                    try {
+                        const parsed = JSON.parse(pendingCartItems);
+                        if (!Array.isArray(parsed)) {
+                            // If it's not an array, reset it
+                            localStorage.setItem('pendingCartItems', JSON.stringify([]));
+                            console.log('📦 Reset invalid pendingCartItems in localStorage');
+                        } else {
+                            console.log('📦 Found existing pendingCartItems:', parsed.length, 'items');
+                        }
+                    } catch (parseError) {
+                        // If JSON is invalid, reset it
+                        localStorage.setItem('pendingCartItems', JSON.stringify([]));
+                        console.log('📦 Reset corrupted pendingCartItems in localStorage');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error initializing pendingCartItems:', error);
+            }
+        }
+        
+        // Function to add item to pending cart with validation
+        function addToPendingCart(item) {
+            try {
+                let pendingCartItems = JSON.parse(localStorage.getItem('pendingCartItems') || '[]');
+                
+                // Validate item structure
+                if (!item || !item.productId) {
+                    console.error('❌ Invalid item structure:', item);
+                    return false;
+                }
+                
+                // Add timestamp if not present
+                if (!item.timestamp) {
+                    item.timestamp = Date.now();
+                }
+                
+                // Add default quantity if not present
+                if (!item.quantity) {
+                    item.quantity = 1;
+                }
+                
+                pendingCartItems.push(item);
+                localStorage.setItem('pendingCartItems', JSON.stringify(pendingCartItems));
+                
+                console.log('📦 Successfully added item to pendingCartItems:', item);
+                console.log('📦 Total pending items:', pendingCartItems.length);
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Error adding to pendingCartItems:', error);
+                return false;
+            }
+        }
+        
+        // Function to get pending cart items
+        function getPendingCartItems() {
+            try {
+                return JSON.parse(localStorage.getItem('pendingCartItems') || '[]');
+            } catch (error) {
+                console.error('❌ Error getting pendingCartItems:', error);
+                return [];
+            }
+        }
+        
+        // Function to clear pending cart items
+        function clearPendingCartItems() {
+            try {
+                localStorage.setItem('pendingCartItems', JSON.stringify([]));
+                console.log('📦 Cleared pendingCartItems');
+                return true;
+            } catch (error) {
+                console.error('❌ Error clearing pendingCartItems:', error);
+                return false;
+            }
+        }
+        
+        // Make functions available globally
+        window.initializePendingCart = initializePendingCart;
+        window.addToPendingCart = addToPendingCart;
+        window.getPendingCartItems = getPendingCartItems;
+        window.clearPendingCartItems = clearPendingCartItems;
+        
         // Demo login function
         function demoLogin() {
             // Create demo user data
@@ -750,7 +1067,7 @@
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <button onclick="addToCartFromSearch('${product.id}')" 
+                                <button onclick="try { addToCartFromSearch('${product.id}'); } catch(e) { console.error('Error:', e); window.addToCartFromSearchBackup && window.addToCartFromSearchBackup('${product.id}'); }" 
                                         class="w-full bg-green-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-green-700 transition-colors ${!product.stock || product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
                                         ${!product.stock || product.stock === 0 ? 'disabled' : ''}>
                                     <i class="fas fa-cart-plus mr-1"></i>
@@ -780,56 +1097,156 @@
         function addToCartFromSearch(productId) {
             console.log('🛒 Adding product to cart:', productId);
             
-            // For now, just show a notification and redirect to dashboard
-            alert('Prodotto aggiunto al carrello! Verrai reindirizzato al catalogo per completare l\'ordine.');
-            redirectToClientDashboard();
+            // Check if modules are available
+            if (typeof Auth === 'undefined' || typeof Database === 'undefined') {
+                console.warn('⚠️ Required modules not yet loaded, retrying...');
+                setTimeout(() => addToCartFromSearch(productId), 500);
+                return;
+            }
+            
+            // Check if notification manager is available
+            if (typeof landingNotificationManager === 'undefined') {
+                console.warn('⚠️ Notification manager not available');
+                alert('Moduli ancora in caricamento. Riprova tra un momento.');
+                return;
+            }
+            
+            // Get product details from database FIRST (before checking authentication)
+            let product = null;
+            try {
+                product = Database.getProductById(productId);
+            } catch (error) {
+                console.error('❌ Error getting product from database:', error);
+                landingNotificationManager.error(
+                    'Errore Database', 
+                    'Errore durante il recupero del prodotto. Riprova più tardi.'
+                );
+                return;
+            }
+            
+            if (!product) {
+                console.error('❌ Product not found:', productId);
+                landingNotificationManager.error(
+                    'Prodotto Non Trovato', 
+                    'Il prodotto selezionato non è più disponibile. Riprova più tardi.'
+                );
+                return;
+            }
+            
+            // ADD PRODUCT TO PENDING CART FIRST, before any authentication checks
+            const cartItem = {
+                productId: productId,
+                name: product.name,
+                price: product.price,
+                quantity: 1,
+                timestamp: Date.now()
+            };
+            
+            const success = addToPendingCart(cartItem);
+            
+            if (!success) {
+                console.error('❌ Failed to store pending cart item');
+                landingNotificationManager.error(
+                    'Errore di Salvataggio', 
+                    'Errore durante il salvataggio del prodotto. Riprova più tardi.'
+                );
+                return;
+            }
+            
+            console.log('📦 Product successfully stored as pending cart item:', {
+                productId: productId,
+                name: product.name,
+                price: product.price
+            });
+            
+            // Now check if user is authenticated
+            let currentUser = null;
+            try {
+                currentUser = Auth.getCurrentUser();
+            } catch (error) {
+                console.warn('⚠️ Error getting current user:', error);
+                // Try fallback method
+                try {
+                    const userData = localStorage.getItem('currentUser');
+                    if (userData) {
+                        currentUser = JSON.parse(userData);
+                    }
+                } catch (fallbackError) {
+                    console.error('❌ Error with fallback user method:', fallbackError);
+                }
+            }
+            
+            if (!currentUser) {
+                console.log('🚫 User not authenticated, redirecting to login...');
+                landingNotificationManager.success(
+                    'Prodotto Salvato!', 
+                    'Il prodotto è stato aggiunto al carrello. Effettua il login per completare l\'ordine.'
+                );
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+            
+            // User is authenticated, show success message and redirect to dashboard
+            landingNotificationManager.success(
+                'Prodotto Salvato!', 
+                'Il prodotto è stato aggiunto al carrello. Verrai reindirizzato al catalogo per completare l\'ordine.'
+            );
+            
+            setTimeout(() => {
+                redirectToClientDashboard();
+            }, 1500);
         }
         
         // Function to redirect to client dashboard
         function redirectToClientDashboard() {
             console.log('🔄 Redirecting to client dashboard...');
             
-            // Check if user is logged in
+            // Check if user is authenticated using Auth module
             let currentUser = null;
-            
-            // Try to get current user from localStorage
-            try {
-                const userData = localStorage.getItem('currentUser');
-                if (userData) {
-                    currentUser = JSON.parse(userData);
-                }
-            } catch (error) {
-                console.warn('⚠️ Error reading user data:', error);
-            }
-            
-            // If no user found, create demo user
-            if (!currentUser) {
-                console.log('👤 No user found, creating demo user...');
-                const demoUser = {
-                    id: 1,
-                    email: 'mario.rossi@email.com',
-                    role: 'customer',
-                    userType: 'customer',
-                    firstName: 'Mario',
-                    lastName: 'Rossi',
-                    name: 'Mario Rossi',
-                    phone: '+39 333 1234567',
-                    isActive: true
-                };
-                
-                localStorage.setItem('currentUser', JSON.stringify(demoUser));
-                currentUser = demoUser;
-            }
-            
-            // Redirect to appropriate dashboard
-            if (currentUser.role === 'customer') {
-                window.location.href = 'dashboard-cliente.html';
-            } else if (currentUser.role === 'pharmacy') {
-                window.location.href = 'dashboard-farmacia.html';
-            } else if (currentUser.role === 'admin') {
-                window.location.href = 'dashboard-admin.html';
+            if (window.Auth && typeof Auth.getCurrentUser === 'function') {
+                currentUser = Auth.getCurrentUser();
             } else {
-                // Default to customer dashboard
+                // Fallback: Try to get current user from localStorage
+                try {
+                    const userData = localStorage.getItem('currentUser');
+                    if (userData) {
+                        currentUser = JSON.parse(userData);
+                    }
+                } catch (error) {
+                    console.warn('⚠️ Error reading user data:', error);
+                }
+            }
+            
+            // If no user found, redirect to login
+            if (!currentUser) {
+                console.log('� No authenticated user found, redirecting to login...');
+                landingNotificationManager.warning(
+                    'Accesso Richiesto', 
+                    'Devi essere loggato per accedere al catalogo. Verrai reindirizzato alla pagina di login.'
+                );
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+            
+            console.log('✅ Authenticated user found:', currentUser.email);
+            
+            // Redirect to appropriate dashboard based on user role
+            if (currentUser.role === 'customer' || currentUser.userType === 'customer') {
+                window.location.href = 'dashboard-cliente.html';
+            } else if (currentUser.role === 'pharmacy' || currentUser.userType === 'pharmacy') {
+                window.location.href = 'dashboard-farmacia.html';
+            } else if (currentUser.role === 'admin' || currentUser.userType === 'admin') {
+                window.location.href = 'dashboard-admin.html';
+            } else if (currentUser.role === 'rider' || currentUser.userType === 'rider') {
+                window.location.href = 'dashboard-rider.html';
+            } else {
+                // Default to customer dashboard for any unrecognized role
+                console.log('⚠️ Unknown user role, defaulting to customer dashboard');
                 window.location.href = 'dashboard-cliente.html';
             }
         }
@@ -849,12 +1266,18 @@
             const consentCheckbox = document.getElementById('newsletter-consent');
             
             if (!emailInput.value) {
-                alert('Inserisci la tua email per iscriverti alla newsletter.');
+                landingNotificationManager.warning(
+                    'Email Richiesta', 
+                    'Inserisci la tua email per iscriverti alla newsletter.'
+                );
                 return;
             }
             
             if (!consentCheckbox.checked) {
-                alert('È necessario prestare il consenso al trattamento dei dati per iscriversi alla newsletter.');
+                landingNotificationManager.warning(
+                    'Consenso Richiesto', 
+                    'È necessario prestare il consenso al trattamento dei dati per iscriversi alla newsletter.'
+                );
                 return;
             }
             
@@ -866,12 +1289,169 @@
             });
             
             // Show success message
-            alert('Grazie per esserti iscritto alla nostra newsletter! Riceverai presto aggiornamenti e promozioni sui nostri servizi.');
+            landingNotificationManager.success(
+                'Iscrizione Completata!', 
+                'Grazie per esserti iscritto alla nostra newsletter! Riceverai presto aggiornamenti e promozioni sui nostri servizi.'
+            );
             
             // Reset form
             emailInput.value = '';
             consentCheckbox.checked = false;
         }
+        
+        // Debug function to manually create test pending cart items
+        function createTestPendingCartItems() {
+            console.log('🧪 Creating test pending cart items...');
+            
+            // Get some products from the database
+            if (typeof Database === 'undefined') {
+                console.error('❌ Database not available');
+                return;
+            }
+            
+            const products = Database.get(Database.keys.products) || [];
+            console.log('📦 Available products:', products.length);
+            
+            if (products.length === 0) {
+                console.error('❌ No products available for testing');
+                return;
+            }
+            
+            // Create test pending items
+            const testItems = [
+                {
+                    productId: products[0].id,
+                    name: products[0].name,
+                    price: products[0].price,
+                    quantity: 2,
+                    timestamp: Date.now()
+                }
+            ];
+            
+            if (products.length > 1) {
+                testItems.push({
+                    productId: products[1].id,
+                    name: products[1].name,
+                    price: products[1].price,
+                    quantity: 1,
+                    timestamp: Date.now()
+                });
+            }
+            
+            localStorage.setItem('pendingCartItems', JSON.stringify(testItems));
+            console.log('✅ Test pending cart items created:', testItems);
+            
+            landingNotificationManager.success(
+                'Test Items Created', 
+                `${testItems.length} test items added to pending cart. Now log in to test the transfer.`
+            );
+        }
+        
+        // Make test function available globally
+        window.createTestPendingCartItems = createTestPendingCartItems;
+
+        // Test function to manually add items to pending cart
+        window.testPendingCart = function() {
+            console.log('🧪 Testing pending cart functionality...');
+            
+            // Clear existing items
+            clearPendingCartItems();
+            
+            // Add test items
+            const testItems = [
+                {
+                    productId: 'test-1',
+                    name: 'Test Medicine 1',
+                    price: 15.99,
+                    quantity: 1
+                },
+                {
+                    productId: 'test-2',
+                    name: 'Test Supplement 2',
+                    price: 25.50,
+                    quantity: 2
+                }
+            ];
+            
+            testItems.forEach(item => {
+                const success = addToPendingCart(item);
+                console.log(`📦 Added test item ${item.productId}: ${success ? 'Success' : 'Failed'}`);
+            });
+            
+            // Display current items
+            const currentItems = getPendingCartItems();
+            console.log('📦 Current pending cart items:', currentItems);
+            
+            if (typeof landingNotificationManager !== 'undefined') {
+                landingNotificationManager.success(
+                    'Test Completed', 
+                    `${currentItems.length} test items added to pending cart. Check console for details.`
+                );
+            } else {
+                alert(`Test completed! ${currentItems.length} items in pending cart.`);
+            }
+            
+            return currentItems;
+        };
+        
+        // Function to display current pending cart status
+        window.showPendingCartStatus = function() {
+            const items = getPendingCartItems();
+            console.log('📦 Pending Cart Status:');
+            console.log(`   - Total items: ${items.length}`);
+            items.forEach((item, index) => {
+                console.log(`   - Item ${index + 1}: ${item.name} (ID: ${item.productId}, Price: €${item.price}, Qty: ${item.quantity})`);
+            });
+            
+            if (typeof landingNotificationManager !== 'undefined') {
+                landingNotificationManager.info(
+                    'Pending Cart Status', 
+                    `${items.length} items in pending cart. Check console for details.`
+                );
+            } else {
+                alert(`Pending Cart: ${items.length} items. Check console for details.`);
+            }
+            
+            return items;
+        };
+
+        // Ensure notification manager is available globally
+        if (typeof landingNotificationManager === 'undefined') {
+            window.landingNotificationManager = new LandingNotificationManager();
+        }
+        
+        // Also add a backup function for when modules aren't loaded yet
+        window.addToCartFromSearchBackup = function(productId) {
+            console.log('🔄 Using backup method for adding to cart:', productId);
+            
+            // ALWAYS add to pending cart first, even in backup mode
+            const cartItem = {
+                productId: productId,
+                name: `Product ${productId}`,
+                price: 0,
+                quantity: 1,
+                timestamp: Date.now(),
+                needsValidation: true
+            };
+            
+            const success = addToPendingCart(cartItem);
+            
+            if (success) {
+                console.log('📦 Product stored as pending cart item (backup method)');
+                
+                // Show simple alert since notification manager might not be ready
+                alert('Prodotto salvato! Effettua il login per completare l\'ordine.');
+                
+                // Redirect to login AFTER adding to cart
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+                
+            } else {
+                console.error('❌ Error with backup method - failed to save to cart');
+                alert('Errore durante il salvataggio del prodotto. Riprova più tardi.');
+            }
+        };
     </script>
 </body>
 </html>

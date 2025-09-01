@@ -1322,6 +1322,66 @@
                     loadingManager.updateText('Inizializzazione Moduli...', 'Caricamento funzionalità cliente');
                     Customer.init();
                     
+                    // Process pending cart items from landing page
+                    setTimeout(() => {
+                        console.log('🛒 Checking for pending cart items...');
+                        const pendingCartItems = localStorage.getItem('pendingCartItems');
+                        
+                        if (pendingCartItems) {
+                            try {
+                                const items = JSON.parse(pendingCartItems);
+                                console.log('📦 Found pending cart items:', items);
+                                
+                                if (items.length > 0) {
+                                    console.log('� Processing pending cart items...');
+                                    
+                                    let addedCount = 0;
+                                    items.forEach((item, index) => {
+                                        try {
+                                            console.log(`📦 Adding item ${index + 1}/${items.length}:`, item);
+                                            Customer.addToCart(item.productId, item.name, item.price, item.quantity);
+                                            addedCount++;
+                                            console.log(`✅ Successfully added item ${index + 1}: ${item.name}`);
+                                        } catch (error) {
+                                            console.error(`❌ Error adding pending item ${index + 1} to cart:`, error);
+                                        }
+                                    });
+                                    
+                                    // Clear pending items after processing
+                                    localStorage.removeItem('pendingCartItems');
+                                    console.log('🧹 Cleared pending cart items from localStorage');
+                                    
+                                    if (addedCount > 0) {
+                                        // Refresh customer cart data from database to ensure sync
+                                        console.log('🔄 Refreshing customer cart data from database...');
+                                        const userId = EudoraApp.currentUser.id;
+                                        const updatedCart = Database.getCart(userId);
+                                        Customer.cart = updatedCart.items || [];
+                                        console.log(`✅ Customer cart refreshed: ${Customer.cart.length} items`);
+                                        
+                                        dashboardNotificationManager.success(
+                                            'Prodotti Aggiunti!', 
+                                            `${addedCount} prodotto${addedCount > 1 ? 'i' : ''} aggiunto${addedCount > 1 ? 'i' : ''} al carrello dal catalogo`
+                                        );
+                                        
+                                        // Force update cart display and badge
+                                        setTimeout(() => {
+                                            Customer.updateCartDisplay();
+                                            console.log('🔄 Cart display updated after adding pending items');
+                                        }, 500);
+                                    }
+                                } else {
+                                    console.log('📦 No pending cart items to process');
+                                }
+                            } catch (error) {
+                                console.error('❌ Error processing pending cart items:', error);
+                                localStorage.removeItem('pendingCartItems'); // Clear corrupted data
+                            }
+                        } else {
+                            console.log('📦 No pending cart items found in localStorage');
+                        }
+                    }, 2000); // Increased timeout to ensure Customer module is fully initialized
+                    
                     // Force update cart badge after customer initialization
                     setTimeout(() => {
                         if (window.updateCartBadge) {
@@ -3377,6 +3437,276 @@
             
             console.log('🔔 Both badges should now be visible. Check if they are cut off.');
             console.log('💡 To hide them again, run: hideAllNotificationBadges()');
+        };
+        
+        // ====== DEBUG FUNCTIONS FOR PENDING CART ITEMS ======
+        
+        // Function to manually process pending cart items for debugging
+        window.debugProcessPendingCartItems = function() {
+            console.log('🔍 === DEBUG: MANUALLY PROCESSING PENDING CART ITEMS ===');
+            
+            const pendingCartItems = localStorage.getItem('pendingCartItems');
+            console.log('📦 Raw pending cart items from localStorage:', pendingCartItems);
+            
+            if (!pendingCartItems) {
+                console.log('❌ No pending cart items found');
+                return false;
+            }
+            
+            try {
+                const items = JSON.parse(pendingCartItems);
+                console.log('📦 Parsed pending cart items:', items);
+                
+                if (items.length === 0) {
+                    console.log('📦 Pending cart items array is empty');
+                    return false;
+                }
+                
+                // Check if Customer module is available
+                if (typeof Customer === 'undefined') {
+                    console.error('❌ Customer module not available');
+                    return false;
+                }
+                
+                if (typeof Customer.addToCart !== 'function') {
+                    console.error('❌ Customer.addToCart method not available');
+                    return false;
+                }
+                
+                console.log('✅ Customer module is available, processing items...');
+                console.log('🛒 Cart before processing:', Customer.cart);
+                
+                let addedCount = 0;
+                items.forEach((item, index) => {
+                    try {
+                        console.log(`📦 Processing item ${index + 1}/${items.length}:`, item);
+                        Customer.addToCart(item.productId, item.name, item.price, item.quantity);
+                        addedCount++;
+                        console.log(`✅ Successfully added: ${item.name}`);
+                    } catch (error) {
+                        console.error(`❌ Failed to add item ${index + 1}:`, error);
+                    }
+                });
+                
+                if (addedCount > 0) {
+                    // Extra refresh to ensure sync
+                    console.log('🔄 Doing final cart refresh from database...');
+                    const userId = EudoraApp.currentUser.id;
+                    const dbCart = Database.getCart(userId);
+                    Customer.cart = dbCart.items || [];
+                    console.log('🛒 Cart after refresh:', Customer.cart);
+                    console.log('💾 Database cart:', dbCart);
+                    
+                    // Clear pending items
+                    localStorage.removeItem('pendingCartItems');
+                    console.log('🧹 Cleared pending items from localStorage');
+                    
+                    // Show notification
+                    if (typeof dashboardNotificationManager !== 'undefined') {
+                        dashboardNotificationManager.success(
+                            'Debug: Prodotti Aggiunti!', 
+                            `${addedCount} prodotto${addedCount > 1 ? 'i' : ''} aggiunto${addedCount > 1 ? 'i' : ''} al carrello manualmente`
+                        );
+                    }
+                    
+                    // Update cart display
+                    setTimeout(() => {
+                        Customer.updateCartDisplay();
+                        console.log('🔄 Cart display updated');
+                        
+                        // Final verification
+                        setTimeout(() => {
+                            console.log('🔍 Final verification:');
+                            console.log('  - Customer.cart length:', Customer.cart.length);
+                            console.log('  - Database cart items:', Database.getCart(EudoraApp.currentUser.id).items.length);
+                            console.log('  - eudora_cart in localStorage:', JSON.parse(localStorage.getItem('eudora_cart') || '{}'));
+                        }, 500);
+                    }, 500);
+                    
+                    return true;
+                }
+                
+                return false;
+                
+            } catch (error) {
+                console.error('❌ Error processing pending cart items:', error);
+                return false;
+            }
+        };
+        
+        // Function to check current cart status
+        window.debugCartStatus = function() {
+            console.log('🔍 === DEBUG: CURRENT CART STATUS ===');
+            
+            if (typeof Customer === 'undefined') {
+                console.error('❌ Customer module not available');
+                return;
+            }
+            
+            console.log('🛒 Customer.cart:', Customer.cart);
+            console.log('🛒 Customer.cart length:', Customer.cart ? Customer.cart.length : 'N/A');
+            
+            if (EudoraApp.currentUser) {
+                const userId = EudoraApp.currentUser.id;
+                console.log('👤 Current user ID:', userId);
+                
+                const dbCart = Database.getCart(userId);
+                console.log('💾 Database cart:', dbCart);
+                console.log('💾 Database cart items length:', dbCart.items ? dbCart.items.length : 'N/A');
+                
+                // Check raw localStorage data
+                const rawEudoraCart = localStorage.getItem('eudora_cart');
+                console.log('🔧 Raw eudora_cart localStorage:', rawEudoraCart);
+                
+                if (rawEudoraCart) {
+                    try {
+                        const parsedCart = JSON.parse(rawEudoraCart);
+                        console.log('� Parsed eudora_cart:', parsedCart);
+                        console.log('📦 User cart in localStorage:', parsedCart[userId]);
+                    } catch (error) {
+                        console.error('❌ Error parsing eudora_cart:', error);
+                    }
+                }
+            } else {
+                console.log('❌ No current user found');
+            }
+            
+            const pendingItems = localStorage.getItem('pendingCartItems');
+            console.log('📦 Pending cart items:', pendingItems ? JSON.parse(pendingItems) : 'None');
+            
+            // Check cart display elements
+            const cartTabCount = document.getElementById('cart-tab-count');
+            if (cartTabCount) {
+                console.log('🎯 Cart tab badge:', {
+                    textContent: cartTabCount.textContent,
+                    hidden: cartTabCount.classList.contains('hidden'),
+                    classes: cartTabCount.className
+                });
+            } else {
+                console.log('❌ Cart tab count element not found');
+            }
+        };
+        
+        // Function to simulate adding a product from landing page for testing
+        window.debugSimulateAddFromLanding = function(productId = 'test_product', productName = 'Test Product', productPrice = 9.99) {
+            console.log('🧪 === DEBUG: SIMULATING ADD FROM LANDING PAGE ===');
+            
+            // Store in pending items just like the landing page does
+            let pendingCartItems = JSON.parse(localStorage.getItem('pendingCartItems') || '[]');
+            pendingCartItems.push({
+                productId: productId,
+                name: productName,
+                price: productPrice,
+                quantity: 1,
+                timestamp: Date.now()
+            });
+            localStorage.setItem('pendingCartItems', JSON.stringify(pendingCartItems));
+            
+            console.log('📦 Added test product to pending cart items');
+            console.log('💡 Now run debugProcessPendingCartItems() to process it');
+            
+            return pendingCartItems;
+        };
+        
+        // Function to test the complete add to cart workflow
+        window.debugTestCompleteWorkflow = function() {
+            console.log('🧪 === DEBUG: TESTING COMPLETE WORKFLOW ===');
+            
+            // 1. Check if user is authenticated
+            if (!EudoraApp.currentUser) {
+                console.error('❌ No authenticated user found');
+                return false;
+            }
+            console.log('✅ User authenticated:', EudoraApp.currentUser.email);
+            
+            // 2. Check if Customer module is available
+            if (typeof Customer === 'undefined') {
+                console.error('❌ Customer module not available');
+                return false;
+            }
+            console.log('✅ Customer module available');
+            
+            // 3. Check if Database module is available
+            if (typeof Database === 'undefined') {
+                console.error('❌ Database module not available');
+                return false;
+            }
+            console.log('✅ Database module available');
+            
+            // 4. Test getting a product from database
+            const products = Database.getAllProducts();
+            if (products.length === 0) {
+                console.error('❌ No products in database');
+                return false;
+            }
+            const testProduct = products[0];
+            console.log('✅ Test product found:', testProduct);
+            
+            // 5. Test adding product directly to cart
+            try {
+                console.log('🛒 Testing direct add to cart...');
+                Customer.addToCart(testProduct.id, testProduct.name, testProduct.price, 1);
+                console.log('✅ Direct add to cart successful');
+                
+                // 6. Check cart contents
+                setTimeout(() => {
+                    console.log('🔍 Checking cart after add...');
+                    debugCartStatus();
+                    
+                    // 7. Test pending items workflow
+                    console.log('🧪 Testing pending items workflow...');
+                    const pendingProduct = products[1] || testProduct; // Use different product if available
+                    debugSimulateAddFromLanding(pendingProduct.id, pendingProduct.name, pendingProduct.price);
+                    
+                    setTimeout(() => {
+                        debugProcessPendingCartItems();
+                        
+                        setTimeout(() => {
+                            console.log('🔍 Final cart status check...');
+                            debugCartStatus();
+                            console.log('✅ Complete workflow test finished');
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+                
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Direct add to cart failed:', error);
+                return false;
+            }
+        };
+        
+        // Function to force refresh cart from database
+        window.debugForceRefreshCart = function() {
+            console.log('🔄 === DEBUG: FORCE REFRESH CART FROM DATABASE ===');
+            
+            if (!EudoraApp.currentUser) {
+                console.error('❌ No current user');
+                return false;
+            }
+            
+            if (typeof Customer === 'undefined') {
+                console.error('❌ Customer module not available');
+                return false;
+            }
+            
+            const userId = EudoraApp.currentUser.id;
+            console.log('👤 Refreshing cart for user:', userId);
+            
+            console.log('🛒 Cart BEFORE refresh:', Customer.cart);
+            
+            // Force refresh from database
+            const dbCart = Database.getCart(userId);
+            Customer.cart = dbCart.items || [];
+            
+            console.log('🛒 Cart AFTER refresh:', Customer.cart);
+            console.log('💾 Database cart:', dbCart);
+            
+            // Update display
+            Customer.updateCartDisplay();
+            
+            return true;
         };
     </script>
 </body>

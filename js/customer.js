@@ -25,7 +25,18 @@ const Customer = {
             // Carica il carrello
             const cart = Database.getCart(userId);
             this.cart = cart.items || [];
-            console.log(`📦 Loaded ${this.cart.length} cart items`);
+            console.log(`📦 Loaded ${this.cart.length} cart items from database`);
+            console.log('🛒 Cart items:', this.cart);
+            
+            // Verify database cart storage
+            const rawCart = localStorage.getItem('eudora_cart');
+            if (rawCart) {
+                const parsedCart = JSON.parse(rawCart);
+                console.log(`💾 Raw database cart for user ${userId}:`, parsedCart[userId]);
+            }
+            
+            // Process pending cart items from landing page
+            this.processPendingCartItems();
             
             // Carica gli indirizzi
             const addresses = Database.getUserAddresses(userId);
@@ -81,6 +92,175 @@ const Customer = {
             console.error('❌ Error loading customer data:', error);
             Auth.showNotification('Errore nel caricamento dei dati utente', 'error');
         }
+    },
+
+    // Process pending cart items that were added from the landing page
+    processPendingCartItems() {
+        console.log('🔄 Starting processPendingCartItems...');
+        
+        if (!EudoraApp.currentUser) {
+            console.log('❌ No current user found for processing pending cart items');
+            return;
+        }
+        
+        const userId = EudoraApp.currentUser.id;
+        console.log('👤 Processing pending cart items for user:', userId, 'email:', EudoraApp.currentUser.email);
+        
+        const pendingItems = localStorage.getItem('pendingCartItems');
+        if (!pendingItems) {
+            console.log('📦 No pending cart items to process');
+            return;
+        }
+
+        try {
+            const items = JSON.parse(pendingItems);
+            console.log('📦 Raw pending items from localStorage:', items);
+            
+            if (!Array.isArray(items) || items.length === 0) {
+                console.log('📦 No valid pending cart items found');
+                localStorage.removeItem('pendingCartItems');
+                return;
+            }
+
+            console.log(`📦 Processing ${items.length} pending cart items...`);
+            
+            let addedCount = 0;
+
+            items.forEach((item, index) => {
+                console.log(`📦 Processing item ${index + 1}:`, item);
+                
+                try {
+                    // Validate item structure
+                    if (!item.productId || !item.name || !item.price) {
+                        console.warn('⚠️ Invalid pending cart item:', item);
+                        return;
+                    }
+
+                    // Check if product exists in database
+                    const product = Database.getProductById(item.productId);
+                    if (!product) {
+                        console.warn(`⚠️ Product ${item.productId} not found in database`);
+                        return;
+                    }
+
+                    // Add to cart using the same logic as addToCart
+                    const quantity = parseInt(item.quantity) || 1;
+                    console.log(`🛒 Adding to cart: userId=${userId}, productId=${item.productId}, quantity=${quantity}`);
+                    
+                    const cartResult = Database.addToCart(userId, item.productId, quantity);
+                    console.log('🛒 Database.addToCart result:', cartResult);
+                    
+                    addedCount++;
+                    
+                    console.log(`✅ Added pending item to cart: ${item.name} (${quantity}x)`);
+                } catch (error) {
+                    console.error('❌ Error adding pending cart item:', item, error);
+                }
+            });
+
+            // Reload cart after adding pending items
+            if (addedCount > 0) {
+                console.log(`🔄 Reloading cart after adding ${addedCount} items...`);
+                
+                const updatedCart = Database.getCart(userId);
+                console.log('🛒 Updated cart from database:', updatedCart);
+                
+                this.cart = updatedCart.items || [];
+                console.log('🛒 Customer.cart updated:', this.cart);
+                
+                this.updateCartDisplay();
+                
+                // Manually trigger cart badge update
+                if (window.NotificationSystem && NotificationSystem.refreshCartBadge) {
+                    NotificationSystem.refreshCartBadge();
+                }
+                
+                // Show notification about added items
+                const message = addedCount === 1 
+                    ? 'Prodotto aggiunto al carrello dalla navigazione precedente!'
+                    : `${addedCount} prodotti aggiunti al carrello dalla navigazione precedente!`;
+                
+                // Use dashboard notification manager if available
+                if (typeof dashboardNotificationManager !== 'undefined') {
+                    dashboardNotificationManager.success('Carrello Ripristinato', message);
+                } else if (typeof Auth !== 'undefined' && Auth.showNotification) {
+                    Auth.showNotification(message, 'success');
+                }
+                
+                console.log(`✅ Successfully processed ${addedCount} pending cart items`);
+            } else {
+                console.log('⚠️ No items were successfully added to cart');
+            }
+
+            // Clear pending items from localStorage
+            localStorage.removeItem('pendingCartItems');
+            console.log('🧹 Cleared pending cart items from localStorage');
+
+        } catch (error) {
+            console.error('❌ Error processing pending cart items:', error);
+            // Clear invalid data
+            localStorage.removeItem('pendingCartItems');
+        }
+    },
+
+    // Debug function to test cart functionality step by step
+    debugCartFunctionality() {
+        console.log('🔧 === DEBUGGING CART FUNCTIONALITY ===');
+        
+        if (!EudoraApp.currentUser) {
+            console.log('❌ No current user found');
+            return;
+        }
+        
+        const userId = EudoraApp.currentUser.id;
+        console.log('👤 Current user ID:', userId);
+        
+        // Test 1: Get all products
+        const allProducts = Database.get(Database.keys.products) || [];
+        console.log('📦 Total products in database:', allProducts.length);
+        console.log('📦 First few products:', allProducts.slice(0, 3));
+        
+        if (allProducts.length === 0) {
+            console.log('❌ No products found in database!');
+            return;
+        }
+        
+        // Test 2: Get first product
+        const firstProduct = allProducts[0];
+        console.log('🎯 Testing with first product:', firstProduct);
+        
+        // Test 3: Test getProductById
+        const retrievedProduct = Database.getProductById(firstProduct.id);
+        console.log('🔍 Retrieved product by ID:', retrievedProduct);
+        
+        // Test 4: Get current cart
+        const currentCart = Database.getCart(userId);
+        console.log('🛒 Current cart:', currentCart);
+        
+        // Test 5: Test addToCart
+        try {
+            console.log('🛒 Testing addToCart...');
+            const cartResult = Database.addToCart(userId, firstProduct.id, 1);
+            console.log('✅ AddToCart result:', cartResult);
+            
+            // Test 6: Verify cart was updated
+            const updatedCart = Database.getCart(userId);
+            console.log('🛒 Updated cart:', updatedCart);
+            
+            // Test 7: Check localStorage directly
+            const rawCart = localStorage.getItem('eudora_cart');
+            console.log('💾 Raw cart from localStorage:', rawCart);
+            if (rawCart) {
+                const parsedCart = JSON.parse(rawCart);
+                console.log('💾 Parsed cart:', parsedCart);
+                console.log('💾 Cart for current user:', parsedCart[userId]);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error in addToCart test:', error);
+        }
+        
+        console.log('🔧 === END CART DEBUGGING ===');
     },
 
     // Crea metodi di pagamento di default per l'utente
@@ -183,6 +363,11 @@ const Customer = {
             Database.removeFromCart(userId, productId);
             Database.addToCart(userId, productId, existingItem.quantity);
             console.log(`📦 Updated cart item quantity: ${existingItem.quantity}`);
+            
+            // Ricarica il carrello per mantenere la sincronizzazione
+            const updatedCart = Database.getCart(userId);
+            this.cart = updatedCart.items || [];
+            console.log(`✅ Cart refreshed after updating existing item`);
         } else {
             // Aggiungi nuovo item - usa addToCart del database
             Database.addToCart(userId, productId, quantity);
@@ -194,7 +379,17 @@ const Customer = {
         }
         
         this.updateCartDisplay();
-        Auth.showNotification(`${name} aggiunto al carrello`);
+        
+        // Use dashboard notification manager if available, otherwise fallback to Auth.showNotification
+        if (typeof dashboardNotificationManager !== 'undefined') {
+            dashboardNotificationManager.success('Prodotto Aggiunto', `${name} aggiunto al carrello`);
+        } else if (typeof notificationManager !== 'undefined') {
+            notificationManager.success('Prodotto Aggiunto', `${name} aggiunto al carrello`);
+        } else {
+            Auth.showNotification(`${name} aggiunto al carrello`);
+        }
+        
+        console.log(`✅ Product added to cart successfully: ${name}`);
         
         // Trigger cart badge update in notification system
         if (window.NotificationSystem && NotificationSystem.refreshCartBadge) {
@@ -286,7 +481,9 @@ const Customer = {
     
     // Aggiorna la visualizzazione del carrello
     updateCartDisplay() {
-        console.log('🔄 Updating cart display...', this.cart);
+        console.log('🔄 === UPDATING CART DISPLAY ===');
+        console.log('🛒 Current cart:', this.cart);
+        console.log('🛒 Cart items count:', this.cart ? this.cart.length : 'N/A');
         
         const cartCount = document.getElementById('cart-count');
         const cartItems = document.getElementById('cart-items');
@@ -295,8 +492,14 @@ const Customer = {
         const totalItems = this.cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
         const totalPrice = this.cart.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 0)), 0);
         
+        console.log('🔢 Total items:', totalItems);
+        console.log('💰 Total price:', totalPrice);
+        
         if (cartCount) {
             cartCount.textContent = totalItems;
+            console.log('✅ Updated cart count element:', totalItems);
+        } else {
+            console.log('❌ Cart count element not found');
         }
         
         // Update cart count in tab - ALWAYS show badge when items exist
