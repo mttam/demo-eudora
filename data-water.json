@@ -40,7 +40,7 @@
       },
       {
         "title": "Pagamenti Sicuri",
-        "description": "Contrassegno, bonifico, PayPal o carta di credito - scegli come preferisci pagare",
+        "description": "Contrassegno o carta di credito - scegli come preferisci pagare",
         "iconClass": "fas fa-shield-alt",
         "iconColor": "text-red-600",
         "bgColor": "bg-red-100"
@@ -101,7 +101,7 @@
     "buttons": [
       {
         "text": "Ordina Subito",
-        "url": "https://docs.google.com/forms/d/e/1FAIpQLSf-MainOrder/viewform",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSfKuCU98wOGXeUBkKjir0MkYulfVgjJhEaHZ1KseLhUEUjMrQ/viewform?usp=header",
         "bgColor": "bg-blue-600",
         "hoverColor": "hover:bg-blue-700",
         "iconClass": "fas fa-shopping-cart"
@@ -312,7 +312,7 @@
     }
   },
   "googleForms": {
-    "mainOrder": "https://docs.google.com/forms/d/e/1FAIpQLSf-REPLACE_WITH_YOUR_FORM_ID/viewform",
+    "mainOrder": "https://docs.google.com/forms/d/e/1FAIpQLSfKuCU98wOGXeUBkKjir0MkYulfVgjJhEaHZ1KseLhUEUjMrQ/viewform?usp=header",
     "riderApplication": "https://docs.google.com/forms/d/e/1FAIpQLSf-RIDER_FORM_ID/viewform",
     "partnerApplication": "https://docs.google.com/forms/d/e/1FAIpQLSf-PARTNER_FORM_ID/viewform",
     "customerService": "https://docs.google.com/forms/d/e/1FAIpQLSf-SUPPORT_FORM_ID/viewform",
