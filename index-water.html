@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consegna Acqua a Domicilio | EudoraAcqua</title>
+    <meta name="description" content="Acqua minerale di qualità consegnata a casa tua. Ordina online acqua naturale e frizzante delle migliori marche italiane.">
+    <meta name="keywords" content="consegna acqua, acqua a domicilio, acqua minerale, san pellegrino, evian, ferrarelle">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style-water.css">
+    
+    <!-- JavaScript modules for water delivery -->
+    <script src="js/utils.js" defer></script>
+    <script src="landing-page-water.js" defer></script>
+    
+    <style>
+        /* Scroll offset for sticky header navigation */
+        section[id] {
+            scroll-margin-top: 100px;
+        }
+        
+        #hero, #benefits, #products, #faq, #testimonials, #work-with-us, #footer {
+            scroll-margin-top: 100px;
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .water-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 50%, #1e3a8a 100%);
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-100">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+    
+    <!-- Header -->
+    <header class="bg-blue-600 shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="flex items-center text-white font-bold text-2xl">
+                    <i class="fas fa-tint mr-2 text-3xl"></i>
+                    EudoraAcqua
+                </div>
+            </div>
+            <nav id="desktop-nav" class="hidden md:flex space-x-8">
+                <a href="#hero" class="text-white font-medium">Home</a>
+                <a href="#benefits" class="text-white hover:text-gray-200">Servizi</a>
+                <a href="#products" class="text-white hover:text-gray-200">Prodotti</a>
+                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
+                <a href="#testimonials" class="text-white hover:text-gray-200">Recensioni</a>
+                <a href="#work-with-us" class="text-white hover:text-gray-200">Lavora con noi</a>
+                <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
+                <button onclick="openOrderForm()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">Ordina Ora</button>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-blue-600 border-t border-blue-500">
+            <nav class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#hero" class="text-white font-medium">Home</a>
+                <a href="#benefits" class="text-white hover:text-gray-200">Servizi</a>
+                <a href="#products" class="text-white hover:text-gray-200">Prodotti</a>
+                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
+                <a href="#testimonials" class="text-white hover:text-gray-200">Recensioni</a>
+                <a href="#work-with-us" class="text-white hover:text-gray-200">Lavora con noi</a>
+                <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
+                <button onclick="openOrderForm()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition text-center">Ordina Ora</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="py-16 water-gradient">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 text-center leading-tight">
+                Acqua pura di qualità, a casa tua!
+            </h1>
+            
+            <div class="bg-white rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-blue-100 p-4 rounded-full">
+                            <i class="fas fa-map-marker-alt text-blue-600 text-3xl"></i>
+                        </div>
+                    </div>
+                    
+                    <h2 class="text-3xl font-bold text-blue-600 mb-4">Trova la tua zona di consegna</h2>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Ordina online e ricevi a casa tua acqua minerale, naturale o frizzante delle migliori marche
+                    </p>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Address Input -->
+                    <div class="relative">
+                        <input type="text" 
+                               id="address-input"
+                               placeholder="Inserisci indirizzo di consegna" 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-gray-700"
+                               autocomplete="off">
+                        
+                        <!-- Address Suggestions Dropdown -->
+                        <div id="address-suggestions" class="hidden absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1 max-h-60 overflow-y-auto">
+                            <!-- Suggestions will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Search Button -->
+                    <button onclick="checkDeliveryZone()" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition duration-300 text-lg">
+                        <i class="fas fa-search mr-2"></i>
+                        Verifica Disponibilità
+                    </button>
+                    
+                    <!-- Quick Order Button -->
+                    <button onclick="openOrderForm()" 
+                            class="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-medium transition duration-300 text-lg">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Ordina Subito
+                    </button>
+                </div>
+                
+                <!-- Delivery Zone Results -->
+                <div id="delivery-results" class="hidden mt-6">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
+                            <div>
+                                <h3 class="font-semibold text-green-800">Ottimo! Consegniamo nella tua zona</h3>
+                                <p class="text-green-600 text-sm">Consegna gratuita per ordini superiori a €25</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button onclick="openOrderForm()" 
+                                    class="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition">
+                                Procedi con l'Ordine
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-16 bg-gray-50">
+        <!-- This will be populated by JavaScript -->
+    </section>
+    
+    <!-- Products Section -->
+    <section id="products" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">I Nostri Prodotti</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Selezione delle migliori marche di acqua minerale italiana
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Acqua Naturale -->
+                <div class="product-card bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                    <div class="text-center">
+                        <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-tint text-blue-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Acqua Naturale</h3>
+                        <p class="text-gray-600 mb-4">
+                            Acqua minerale naturale delle migliori fonti italiane
+                        </p>
+                        <div class="text-2xl font-bold text-blue-600 mb-4">Da €8.50</div>
+                        <ul class="text-sm text-gray-600 mb-6 space-y-1">
+                            <li>• Evian 1.5L (6-pack)</li>
+                            <li>• Panna 1L (12-pack)</li>
+                            <li>• Acqua Panna 0.5L (24-pack)</li>
+                        </ul>
+                        <button onclick="orderProduct('naturale')" 
+                                class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+                            Ordina Ora
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Acqua Frizzante -->
+                <div class="product-card bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                    <div class="text-center">
+                        <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-wine-bottle text-green-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Acqua Frizzante</h3>
+                        <p class="text-gray-600 mb-4">
+                            Acqua effervescente naturale per un gusto rinfrescante
+                        </p>
+                        <div class="text-2xl font-bold text-green-600 mb-4">Da €9.50</div>
+                        <ul class="text-sm text-gray-600 mb-6 space-y-1">
+                            <li>• San Pellegrino 0.75L (12-pack)</li>
+                            <li>• Ferrarelle 1L (6-pack)</li>
+                            <li>• Perrier 0.33L (24-pack)</li>
+                        </ul>
+                        <button onclick="orderProduct('frizzante')" 
+                                class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition">
+                            Ordina Ora
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Pacchi Famiglia -->
+                <div class="product-card bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                    <div class="text-center">
+                        <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-boxes text-purple-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Pacchi Famiglia</h3>
+                        <p class="text-gray-600 mb-4">
+                            Offerte convenienti per famiglie e uffici
+                        </p>
+                        <div class="text-2xl font-bold text-purple-600 mb-4">Da €29.90</div>
+                        <ul class="text-sm text-gray-600 mb-6 space-y-1">
+                            <li>• Mix Naturale + Frizzante</li>
+                            <li>• Confezioni da 48 bottiglie</li>
+                            <li>• Sconto del 15% sul prezzo</li>
+                        </ul>
+                        <button onclick="orderProduct('famiglia')" 
+                                class="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition">
+                            Ordina Ora
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button onclick="openOrderForm()" 
+                        class="bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition text-lg">
+                    <i class="fas fa-list mr-2"></i>
+                    Vedi Tutti i Prodotti
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Hai qualche domanda?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Trova le risposte alle domande più frequenti sui nostri servizi
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-6">
+                    <!-- FAQ Item 1 -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(1)">
+                            <h3 class="text-lg font-semibold text-gray-800">Come funziona il servizio di consegna?</h3>
+                            <i id="faq-icon-1" class="fas fa-chevron-down text-blue-600"></i>
+                        </div>
+                        <div id="faq-content-1" class="hidden mt-4 text-gray-600">
+                            <p>Ordini tramite il nostro modulo online, scegli data e orario di consegna, e noi consegniamo direttamente a casa tua. È semplice, veloce e sicuro!</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 2 -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(2)">
+                            <h3 class="text-lg font-semibold text-gray-800">Quali zone coprite per la consegna?</h3>
+                            <i id="faq-icon-2" class="fas fa-chevron-down text-blue-600"></i>
+                        </div>
+                        <div id="faq-content-2" class="hidden mt-4 text-gray-600">
+                            <p>Consegniamo in tutta Roma e provincia, Milano e hinterland, e Napoli città. Verifica la disponibilità nella tua zona inserendo il tuo indirizzo nel campo di ricerca.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 3 -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(3)">
+                            <h3 class="text-lg font-semibold text-gray-800">Quanto costa la consegna?</h3>
+                            <i id="faq-icon-3" class="fas fa-chevron-down text-blue-600"></i>
+                        </div>
+                        <div id="faq-content-3" class="hidden mt-4 text-gray-600">
+                            <p>La consegna è gratuita per ordini superiori a €25. Per ordini inferiori, il costo di consegna è di €3.50.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 4 -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(4)">
+                            <h3 class="text-lg font-semibold text-gray-800">Posso programmare consegne ricorrenti?</h3>
+                            <i id="faq-icon-4" class="fas fa-chevron-down text-blue-600"></i>
+                        </div>
+                        <div id="faq-content-4" class="hidden mt-4 text-gray-600">
+                            <p>Sì! Puoi impostare consegne settimanali o mensili per non rimanere mai senza acqua. Contattaci via WhatsApp per configurare il tuo abbonamento.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ Item 5 -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(5)">
+                            <h3 class="text-lg font-semibold text-gray-800">Quali metodi di pagamento accettate?</h3>
+                            <i id="faq-icon-5" class="fas fa-chevron-down text-blue-600"></i>
+                        </div>
+                        <div id="faq-content-5" class="hidden mt-4 text-gray-600">
+                            <p>Accettiamo contrassegno (pagamento alla consegna), bonifico bancario, PayPal e pagamenti con carta di credito online tramite sistemi sicuri.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Cosa dicono di noi</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Le esperienze dei nostri clienti parlano per noi
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Testimonial 1 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Servizio fantastico! L'acqua arriva sempre puntuale e la qualità è eccellente. Non posso più farne a meno!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-blue-600 font-bold">MR</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Marco Rossi</h4>
+                            <p class="text-sm text-gray-500">Milano</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Perfetto per il nostro ufficio. Ordiniamo ogni settimana e non abbiamo mai avuto problemi. Consigliato!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-green-600 font-bold">LB</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Laura Bianchi</h4>
+                            <p class="text-sm text-gray-500">Roma</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-md border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">"Finalmente un servizio che funziona! Prezzi ottimi e consegna sempre puntuale. Lo uso da mesi!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-purple-600 font-bold">AG</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">Andrea Gialli</h4>
+                            <p class="text-sm text-gray-500">Napoli</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work With Us Section -->
+    <section id="work-with-us" class="py-16 bg-gray-50">
+        <!-- This will be populated by JavaScript -->
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-blue-600 text-gray-100 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center text-white font-bold text-2xl mb-4">
+                        <i class="fas fa-tint mr-2 text-3xl"></i>
+                        EudoraAcqua
+                    </div>
+                    <p class="mb-4">
+                        Consegna di acqua di qualità semplice e sicura.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/people/Eudora-Pharma/61553006976233/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.instagram.com/eudora_pharma?igsh=d2w4NzhqaWJtb3g=" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/eudora-pharma/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-400 text-xl">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="font-bold text-white mb-2">Sede legale</h4>
+                        <p class="text-gray-200 text-sm">Via Roma 10 , 87100 - Cosenza (CS)</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Contatti</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt mt-1 mr-2 text-sm"></i>
+                            <a href="tel:3500378569" class="hover:text-white transition">350 0378569</a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fab fa-whatsapp mt-1 mr-2 text-sm"></i>
+                            <a href="whatsapp://send?phone=393500378569" onclick="this.href = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'whatsapp://send?phone=393500378569' : 'https://wa.me/393500378569'" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">WhatsApp</a>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-2 text-sm"></i>
+                            <a href="mailto:Eudorabenessere@gmail.com" class="hover:text-white transition">Eudorabenessere@gmail.com</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Azienda</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <a href="#hero" class="hover:text-white transition">Chi siamo?</a>
+                        </li>
+                        <li class="flex items-start">
+                            <a href="#work-with-us" class="hover:text-white transition">Lavora con noi</a>
+                        </li>
+                        <li class="flex items-start">
+                            <a href="#work-with-us" class="hover:text-white transition">Diventa Partner</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white transition">Zone di consegna</a>
+                        </li>
+                        <li>
+                            <a href="#" class="hover:text-white transition">Sostenibilità</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-4">Newsletter</h3>
+                    <p class="text-gray-200 text-sm mb-4">
+                        Iscriviti alla newsletter di EudoraAcqua per ricevere offerte e aggiornamenti.
+                    </p>
+                    <form class="space-y-3" onsubmit="subscribeNewsletter(event)">
+                        <div>
+                            <input type="email" 
+                                   id="newsletter-email"
+                                   placeholder="La tua email" 
+                                   required
+                                   class="w-full px-3 py-2 bg-white text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:border-green-400 text-sm">
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <input type="checkbox" 
+                                   id="newsletter-consent"
+                                   required
+                                   class="mt-1 w-4 h-4 text-green-600 bg-white border-gray-300 rounded focus:ring-green-500">
+                            <label for="newsletter-consent" class="text-xs text-gray-200 leading-tight">
+                                *Presto il consenso al trattamento dei miei dati personali per la finalità di marketing così come riportato nell'informativa ex art. 13 GDPR
+                            </label>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-white text-blue-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition duration-300 text-sm font-medium">
+                            <i class="fas fa-envelope mr-2"></i>
+                            Iscriviti
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-blue-500 mt-12 pt-8 text-center text-sm">
+                <!-- Policy Links -->
+                <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 mb-4">
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Termini e condizioni</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Privacy policy</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Cookie policy</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Aggiorna le tue preferenze di tracciamento</a>
+                    <span class="text-gray-400">•</span>
+                    <a href="#" class="text-gray-200 hover:text-white transition text-xs md:text-sm">Preferenze pubblicitarie</a>
+                </div>
+                <p>&copy; 2025 Eudora. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="whatsapp://send?phone=393500378569" onclick="this.href = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'whatsapp://send?phone=393500378569' : 'https://wa.me/393500378569'" target="_blank" rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex flex-col items-center justify-center shadow-lg z-50 transition transform hover:scale-110">
+        <span class="text-xs font-semibold leading-none">Info</span>
+        <i class="fab fa-whatsapp text-2xl mt-1"></i>
+    </a>
+
+    <script>
+        // FAQ toggle functionality
+        function toggleFaq(index) {
+            const content = document.getElementById(`faq-content-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Address suggestions functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const addressInput = document.getElementById('address-input');
+            const suggestionsDiv = document.getElementById('address-suggestions');
+            
+            // Delivery zones for water service
+            const deliveryZones = [
+                'Via Roma 123, 00100 Roma',
+                'Corso Italia 45, 20100 Milano',
+                'Via Garibaldi 78, 80100 Napoli',
+                'Viale Europa 234, 00100 Roma',
+                'Via Torino 56, 20100 Milano',
+                'Corso Vittorio Emanuele 89, 80100 Napoli',
+                'Via Nazionale 145, 00100 Roma',
+                'Piazza Duomo 67, 20100 Milano',
+                'Via Toledo 123, 80100 Napoli'
+            ];
+
+            if (addressInput) {
+                addressInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    
+                    if (query.length < 2) {
+                        suggestionsDiv.classList.add('hidden');
+                        return;
+                    }
+                    
+                    const matches = deliveryZones.filter(address => 
+                        address.toLowerCase().includes(query)
+                    );
+                    
+                    if (matches.length > 0) {
+                        suggestionsDiv.innerHTML = matches.map(address => `
+                            <div class="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0" 
+                                 onclick="selectAddress('${address}')">
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-2"></i>
+                                ${address}
+                            </div>
+                        `).join('');
+                        suggestionsDiv.classList.remove('hidden');
+                    } else {
+                        suggestionsDiv.classList.add('hidden');
+                    }
+                });
+
+                // Hide suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!addressInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                        suggestionsDiv.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        function selectAddress(address) {
+            document.getElementById('address-input').value = address;
+            document.getElementById('address-suggestions').classList.add('hidden');
+        }
+
+        function checkDeliveryZone() {
+            const address = document.getElementById('address-input').value.trim();
+            const resultsDiv = document.getElementById('delivery-results');
+            
+            if (address.length < 5) {
+                alert('Inserisci un indirizzo valido per verificare la disponibilità');
+                return;
+            }
+            
+            // Show delivery availability (always positive for demo)
+            resultsDiv.classList.remove('hidden');
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Google Forms integration
+        function openOrderForm(productType = '') {
+            let formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSf9xH_YourFormIdHere/viewform';
+            
+            // Pre-fill product type if specified
+            if (productType) {
+                formUrl += `?entry.productType=${encodeURIComponent(productType)}`;
+            }
+            
+            // Pre-fill address if available
+            const address = document.getElementById('address-input')?.value;
+            if (address && address.trim()) {
+                const separator = productType ? '&' : '?';
+                formUrl += `${separator}entry.address=${encodeURIComponent(address)}`;
+            }
+            
+            window.open(formUrl, '_blank');
+        }
+
+        function orderProduct(productType) {
+            openOrderForm(productType);
+        }
+    </script>
+</body>
+</html>
