@@ -22,6 +22,23 @@ class WaterDeliveryApp {
         try {
             const response = await fetch('./data-water.json');
             this.data = await response.json();
+            
+            // If data doesn't have the structure we need, add fallback sections
+            if (!this.data.benefitsSection) {
+                this.data.benefitsSection = this.getFallbackData().benefitsSection;
+            }
+            if (!this.data.googleForms) {
+                this.data.googleForms = this.getFallbackData().googleForms;
+            }
+            if (!this.data.workWithUsSection) {
+                this.data.workWithUsSection = this.getFallbackData().workWithUsSection;
+            }
+            if (!this.data.deliveryZones) {
+                this.data.deliveryZones = this.getFallbackData().deliveryZones;
+            }
+            if (!this.data.faqs) {
+                this.data.faqs = this.getFallbackData().faqs;
+            }
         } catch (error) {
             console.error('Error loading data:', error);
             // Fallback data if file doesn't exist
@@ -41,17 +58,69 @@ class WaterDeliveryApp {
                         iconClass: "fas fa-tint",
                         iconColor: "text-blue-600",
                         bgColor: "bg-blue-100"
+                    },
+                    {
+                        title: "Consegna Veloce",
+                        description: "Consegna rapida e affidabile direttamente a casa tua",
+                        iconClass: "fas fa-shipping-fast",
+                        iconColor: "text-green-600",
+                        bgColor: "bg-green-100"
+                    },
+                    {
+                        title: "Prezzi Competitivi",
+                        description: "I migliori prezzi del mercato per acqua di qualità",
+                        iconClass: "fas fa-tag",
+                        iconColor: "text-purple-600",
+                        bgColor: "bg-purple-100"
                     }
                 ]
             },
             googleForms: {
-                mainOrder: "#",
+                mainOrder: "https://docs.google.com/forms/d/e/1FAIpQLSfKuCU98wOGXeUBkKjir0MkYulfVgjJhEaHZ1KseLhUEUjMrQ/viewform",
                 riderApplication: "#",
-                partnerApplication: "#"
+                partnerApplication: "#",
+                newsletter: "#"
             },
-            deliveryZones: [],
-            faqs: [],
-            products: { categories: [] }
+            deliveryZones: [
+                {
+                    city: "Roma",
+                    areas: ["Centro", "Prati", "Trastevere"],
+                    freeDeliveryMin: 25,
+                    timeSlots: ["9:00-13:00", "14:00-18:00"]
+                },
+                {
+                    city: "Milano",
+                    areas: ["Centro", "Porta Romana", "Navigli"],
+                    freeDeliveryMin: 25,
+                    timeSlots: ["9:00-13:00", "14:00-18:00"]
+                }
+            ],
+            faqs: [
+                {
+                    question: "Come funziona il servizio?",
+                    answer: "Ordini online e consegniamo a casa tua."
+                }
+            ],
+            workWithUsSection: {
+                title: "Lavora con noi",
+                subtitle: "Unisciti al nostro team",
+                cards: [
+                    {
+                        title: "Diventa Rider",
+                        description: "Consegna acqua e guadagna con flessibilità",
+                        iconClass: "fas fa-motorcycle",
+                        iconColor: "text-blue-600",
+                        bgIconColor: "bg-blue-100",
+                        titleColor: "text-blue-600",
+                        borderColor: "border-blue-200",
+                        buttonColor: "bg-blue-600",
+                        buttonHover: "hover:bg-blue-700",
+                        buttonText: "Candidati come Rider",
+                        buttonUrl: "#"
+                    }
+                ]
+            },
+            products: []
         };
     }
 
@@ -132,41 +201,68 @@ class WaterDeliveryApp {
 
     renderProducts() {
         const container = document.getElementById('products-container');
-        if (!container || !this.data.products?.categories) return;
+        if (!container || !this.data.products) return;
 
-        const categoriesHTML = this.data.products.categories.map(category => `
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
-                <div class="bg-gradient-to-r from-${category.color}-500 to-${category.color}-600 p-6 text-white">
-                    <div class="flex items-center">
-                        <i class="${category.icon} text-2xl mr-3"></i>
-                        <div>
-                            <h3 class="text-xl font-bold">${category.name}</h3>
-                            <p class="text-${category.color}-100 mt-1">${category.description}</p>
-                        </div>
+        // Get products array and create cards
+        const products = Array.isArray(this.data.products) ? this.data.products : [];
+        
+        if (products.length === 0) {
+            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile</p>';
+            return;
+        }
+
+        const productsHTML = products.map(product => {
+            // Determine color scheme based on water type
+            let colorScheme = {
+                bg: 'bg-blue-100',
+                text: 'text-blue-600',
+                button: 'bg-blue-600',
+                buttonHover: 'hover:bg-blue-700',
+                icon: 'fas fa-tint'
+            };
+
+            if (product.type === 'effervescente' || product.type === 'gassata') {
+                colorScheme = {
+                    bg: 'bg-green-100',
+                    text: 'text-green-600',
+                    button: 'bg-green-600',
+                    buttonHover: 'hover:bg-green-700',
+                    icon: 'fas fa-wine-bottle'
+                };
+            }
+
+            // Format type label
+            const typeLabel = product.type.charAt(0).toUpperCase() + product.type.slice(1);
+
+            // Build image path
+            const imagePath = product.filename ? `./public/img_water/${product.filename}` : '';
+            const imageHTML = imagePath ? 
+                `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
+                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                 </div>` :
+                `<div class="${colorScheme.bg} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                 </div>`;
+
+            return `
+                <div class="product-card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="text-center">
+                        ${imageHTML}
+                        <h3 class="text-xl font-bold mb-2">${product.brand}</h3>
+                        <p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
+                        <p class="text-sm text-gray-500 mb-4">${product.pack_description}</p>
+                        <div class="text-2xl font-bold ${colorScheme.text} mb-6">${product.price_text}</div>
+                        <button onclick="openOrderForm('${product.id}')" 
+                                class="w-full ${colorScheme.button} text-white py-3 rounded-lg font-medium ${colorScheme.buttonHover} transition">
+                            Ordina Ora
+                        </button>
                     </div>
                 </div>
-                <div class="p-6">
-                    ${category.products.map(product => `
-                        <div class="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
-                            <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900">${product.name}</h4>
-                                <p class="text-sm text-gray-600 mt-1">${product.description}</p>
-                            </div>
-                            <div class="text-right ml-4">
-                                <span class="text-xl font-bold text-${category.color}-600">€${product.price.toFixed(2)}</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                    <button onclick="this.orderProduct('${category.id}')" 
-                            class="w-full mt-4 bg-${category.color}-600 hover:bg-${category.color}-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300">
-                        <i class="fas fa-shopping-cart mr-2"></i>
-                        Ordina ${category.name}
-                    </button>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
-        container.innerHTML = categoriesHTML;
+        container.innerHTML = productsHTML;
     }
 
     renderFAQ() {
@@ -276,7 +372,7 @@ class WaterDeliveryApp {
     }
 
     orderProduct(categoryId) {
-        const orderUrl = this.data.googleForms.mainOrder + `&entry.category=${categoryId}`;
+        const orderUrl = this.data.googleForms.mainOrder + (categoryId ? `?entry.product=${categoryId}` : '');
         window.open(orderUrl, '_blank');
         this.trackEvent('product_order_clicked', { category: categoryId });
     }
@@ -408,5 +504,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // Global functions for inline event handlers
 window.subscribeNewsletter = subscribeNewsletter;
 window.openWhatsApp = openWhatsApp;
-window.orderProduct = (categoryId) => app.orderProduct(categoryId);
+window.orderProduct = (categoryId) => {
+    if (app && app.data && app.data.googleForms) {
+        app.orderProduct(categoryId);
+    } else {
+        openOrderForm(categoryId);
+    }
+};
 window.scrollToTop = WaterDeliveryApp.scrollToTop;
+window.openOrderForm = (productId = '') => {
+    let formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfKuCU98wOGXeUBkKjir0MkYulfVgjJhEaHZ1KseLhUEUjMrQ/viewform';
+    
+    if (productId) {
+        formUrl += `?entry.product=${encodeURIComponent(productId)}`;
+    }
+    
+    window.open(formUrl, '_blank');
+};
