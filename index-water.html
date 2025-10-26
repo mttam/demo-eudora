@@ -96,7 +96,7 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-blue-600 border-t border-blue-500">
+        <div id="mobile-menu" class="hidden md:hidden bg-green-600 border-t border-green-500">
             <nav class="container mx-auto px-4 py-4 flex flex-col space-y-4">
                 <a href="#hero" class="text-white font-medium">Home</a>
                 <a href="#benefits" class="text-white hover:text-gray-200">Servizi</a>
@@ -118,10 +118,16 @@
     <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden"></div>
 
     <!-- Cart Panel -->
-    <div id="cart-panel" class="fixed right-0 top-0 h-full w-full sm:w-96 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[9999]">
-        <div class="p-4 border-b flex items-center justify-between">
-            <h3 class="text-lg font-semibold">Il tuo Carrello</h3>
-            <button id="close-cart" aria-label="Chiudi carrello" class="text-gray-600 hover:text-gray-900"><i class="fas fa-times"></i></button>
+    <div id="cart-panel" class="fixed right-0 top-0 h-full w-full sm:w-96 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[9999] overflow-y-auto">
+        <!-- Mobile drag indicator -->
+        <div class="cart-drag-indicator md:hidden w-full bg-gray-100 py-2 flex justify-center">
+            <div class="w-12 h-1 bg-gray-400 rounded-full"></div>
+        </div>
+        <div class="p-4 border-b flex items-center justify-between bg-white sticky top-0 z-10">
+            <h3 class="text-lg font-bold text-gray-900">Il tuo Carrello</h3>
+            <button id="close-cart" aria-label="Chiudi carrello" class="text-gray-600 hover:text-gray-900 p-2 hover:bg-gray-100 rounded-lg transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
         </div>
         <div id="cart-items" class="p-4 overflow-y-auto" style="max-height: 35vh;">
             <!-- Items injected here -->
@@ -620,12 +626,6 @@
                 icon.classList.add('fa-chevron-down');
             }
         }
-
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        });
 
         // Address suggestions functionality
         document.addEventListener('DOMContentLoaded', function() {

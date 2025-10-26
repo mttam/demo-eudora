@@ -3,6 +3,8 @@ class WaterDeliveryApp {
     constructor() {
         this.data = null;
         this.cart = {}; // cart keyed by productId { id, product, qty }
+        this.touchSliderActive = false;
+        this._touchHandlers = null;
         this.init();
     }
 
@@ -17,7 +19,6 @@ class WaterDeliveryApp {
         this.renderFAQ();
         this.setupDeliveryZoneChecker();
         this.setupSmoothScrolling();
-        this.setupMobileMenu();
         this.setupFormTracking();
     }
 
@@ -133,14 +134,23 @@ class WaterDeliveryApp {
         const mobileMenu = document.getElementById('mobile-menu');
         
         if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 mobileMenu.classList.toggle('hidden');
+            });
+
+            // Close mobile menu when clicking on menu links
+            const menuLinks = mobileMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
             });
         }
 
         // Close mobile menu when clicking outside
         document.addEventListener('click', (e) => {
-            if (mobileMenu && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            if (mobileMenu && mobileMenuBtn && !mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 mobileMenu.classList.add('hidden');
             }
         });
@@ -500,17 +510,25 @@ class WaterDeliveryApp {
             subtotal += lineSubtotal;
             shipping += (item.qty * (item.product.shippingCost || shippingPerItem));
             return `
-                <div class="flex items-center justify-between py-3 border-b">
-                    <div>
-                        <div class="font-semibold">${item.product.brand}</div>
-                        <div class="text-sm text-gray-500">${item.product.size_label} • ${item.product.pack_description}</div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-sm text-gray-600 mb-2">${WaterDeliveryApp.formatPrice(lineSubtotal)}</div>
-                        <div class="flex items-center space-x-2">
-                            <input aria-label="Quantità" type="number" min="0" value="${item.qty}" data-product-id="${item.id}" class="w-16 py-1 px-2 border rounded text-sm qty-input">
-                            <button data-remove-id="${item.id}" class="text-sm text-red-600">Rimuovi</button>
+                <div class="cart-item py-4 border-b border-gray-200">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1 pr-2">
+                            <div class="font-semibold text-gray-900 mb-1">${item.product.brand}</div>
+                            <div class="text-xs text-gray-500">${item.product.size_label} • ${item.product.pack_description}</div>
                         </div>
+                        <div class="text-right">
+                            <div class="font-bold text-green-700">${WaterDeliveryApp.formatPrice(lineSubtotal)}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm text-gray-600">Qtà:</label>
+                            <input aria-label="Quantità" type="number" min="0" value="${item.qty}" data-product-id="${item.id}" 
+                                   class="w-20 py-2 px-3 border border-gray-300 rounded-lg text-center qty-input focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                        </div>
+                        <button data-remove-id="${item.id}" class="text-sm text-red-600 hover:text-red-800 font-medium px-3 py-2">
+                            <i class="fas fa-trash mr-1"></i>Rimuovi
+                        </button>
                     </div>
                 </div>
             `;
@@ -618,13 +636,114 @@ class WaterDeliveryApp {
             if (overlay) overlay.classList.remove('hidden');
             // Prevent body scroll on mobile when cart is open
             document.body.style.overflow = 'hidden';
+            // Setup touch slider after opening
+            this.setupTouchSlider();
         } else {
             panel.classList.remove('translate-x-0');
             panel.classList.add('translate-x-full');
             if (overlay) overlay.classList.add('hidden');
             // Restore body scroll
             document.body.style.overflow = '';
+            // Remove touch slider
+            this.removeTouchSlider();
         }
+    }
+
+    setupTouchSlider() {
+        const panel = document.getElementById('cart-panel');
+        if (!panel || this.touchSliderActive) return;
+        
+        this.touchSliderActive = true;
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let startTime = 0;
+        
+        const handleTouchStart = (e) => {
+            // Only start drag from the edge or drag indicator
+            const touchX = e.touches[0].clientX;
+            const panelRect = panel.getBoundingClientRect();
+            
+            // Allow drag from left 50px of panel or from drag indicator
+            if (touchX > panelRect.left + 50 && !e.target.closest('.cart-drag-indicator')) {
+                return;
+            }
+            
+            startX = touchX;
+            currentX = startX;
+            startTime = Date.now();
+            isDragging = true;
+            panel.classList.add('dragging');
+        };
+        
+        const handleTouchMove = (e) => {
+            if (!isDragging) return;
+            
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            
+            // Only allow dragging to the right (closing)
+            if (diff > 0) {
+                e.preventDefault(); // Prevent scrolling while dragging
+                panel.style.transform = `translateX(${diff}px)`;
+                
+                // Add visual feedback based on drag distance
+                const opacity = Math.max(0.3, 1 - (diff / panel.offsetWidth));
+                const overlay = document.getElementById('cart-overlay');
+                if (overlay) {
+                    overlay.style.opacity = opacity;
+                }
+            }
+        };
+        
+        const handleTouchEnd = (e) => {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            panel.classList.remove('dragging');
+            
+            const diff = currentX - startX;
+            const timeElapsed = Date.now() - startTime;
+            const velocity = Math.abs(diff) / timeElapsed;
+            
+            // Close if dragged more than 30% or fast swipe (velocity > 0.5)
+            if (diff > panel.offsetWidth * 0.3 || velocity > 0.5) {
+                this.toggleCart(false);
+            } else {
+                // Return to original position with animation
+                panel.style.transform = '';
+                const overlay = document.getElementById('cart-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '';
+                }
+            }
+        };
+        
+        this._touchHandlers = {
+            start: handleTouchStart,
+            move: handleTouchMove,
+            end: handleTouchEnd
+        };
+        
+        panel.addEventListener('touchstart', this._touchHandlers.start, { passive: false });
+        panel.addEventListener('touchmove', this._touchHandlers.move, { passive: false });
+        panel.addEventListener('touchend', this._touchHandlers.end, { passive: true });
+    }
+    
+    removeTouchSlider() {
+        const panel = document.getElementById('cart-panel');
+        if (!panel || !this.touchSliderActive) return;
+        
+        if (this._touchHandlers) {
+            panel.removeEventListener('touchstart', this._touchHandlers.start);
+            panel.removeEventListener('touchmove', this._touchHandlers.move);
+            panel.removeEventListener('touchend', this._touchHandlers.end);
+            this._touchHandlers = null;
+        }
+        
+        this.touchSliderActive = false;
+        panel.style.transform = '';
+        panel.style.transition = '';
     }
 
     showNotification(message, type = 'info') {
