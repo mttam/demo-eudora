@@ -84,7 +84,11 @@
                 <a href="#testimonials" class="text-white hover:text-gray-200">Recensioni</a>
                 <a href="#work-with-us" class="text-white hover:text-gray-200">Lavora con noi</a>
                 <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
-                <button onclick="openOrderForm()" class="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">Ordina Ora</button>
+                <!-- Cart button replaces the old 'Ordina Ora' CTA -->
+                <button id="cart-button" aria-label="Apri carrello" class="relative bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
             </nav>
             <button id="mobile-menu-button" class="md:hidden text-white">
                 <i class="fas fa-bars text-2xl"></i>
@@ -101,10 +105,76 @@
                 <a href="#testimonials" class="text-white hover:text-gray-200">Recensioni</a>
                 <a href="#work-with-us" class="text-white hover:text-gray-200">Lavora con noi</a>
                 <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
-                <button onclick="openOrderForm()" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition text-center">Ordina Ora</button>
+                <!-- Mobile cart button (replaces 'Ordina Ora') -->
+                <button id="cart-button-mobile" aria-label="Apri carrello mobile" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition text-center">
+                    <i class="fas fa-shopping-cart mr-2"></i>
+                    Carrello <span id="cart-count-mobile" class="ml-2 inline-block bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full align-middle">0</span>
+                </button>
             </nav>
         </div>
     </header>
+
+    <!-- Cart Panel -->
+    <div id="cart-panel" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform z-50">
+        <div class="p-4 border-b flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Il tuo Carrello</h3>
+            <button id="close-cart" aria-label="Chiudi carrello" class="text-gray-600 hover:text-gray-900"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="cart-items" class="p-4 overflow-y-auto" style="max-height: 35vh;">
+            <!-- Items injected here -->
+        </div>
+        <!-- Mini checkout form (name, surname, address, payment method) -->
+        <div class="p-4 border-t bg-green-50 border-green-200">
+            <h4 class="font-bold text-green-800 mb-3 text-base">📝 Dati di consegna</h4>
+            <div class="space-y-3">
+                <input id="cart-customer-name" type="text" placeholder="Nome *" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none" />
+                <input id="cart-customer-surname" type="text" placeholder="Cognome *" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none" />
+                <input id="cart-customer-address" type="text" placeholder="Indirizzo di consegna *" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none" />
+                <div>
+                    <label for="cart-payment-method" class="text-sm font-medium text-gray-700 mb-1 block">Metodo di pagamento</label>
+                    <select id="cart-payment-method" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-white">
+                        <option value="Contrassegno">Contrassegno (alla consegna)</option>
+                        <option value="Bonifico">Bonifico</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Carta">Carta di credito</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Totals section above WhatsApp button -->
+            <div class="mt-4 pt-3 border-t border-green-300">
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Articoli</span>
+                        <span id="cart-items-count" class="text-sm font-medium">0</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Subtotale</span>
+                        <span id="cart-subtotal" class="text-sm font-medium">€0,00</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-700">Spedizione</span>
+                        <span id="cart-shipping" class="text-sm font-medium">€0,00</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t border-green-200">
+                        <span class="font-bold text-base text-gray-800">Totale</span>
+                        <span id="cart-total" class="font-bold text-lg text-green-700">€0,00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <button id="send-whatsapp" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-md flex items-center justify-center">
+                    <i class="fab fa-whatsapp mr-2 text-xl"></i>
+                    Invia ordine su WhatsApp
+                </button>
+            </div>
+        </div>
+        <div class="p-4 border-t">
+            <div class="space-y-2">
+                <button id="clear-cart" class="w-full bg-gray-100 text-gray-800 py-2 rounded-lg font-medium hover:bg-gray-200 transition">Svuota carrello</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section id="hero" class="py-16 water-gradient">

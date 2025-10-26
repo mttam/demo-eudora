@@ -2,15 +2,18 @@
 class WaterDeliveryApp {
     constructor() {
         this.data = null;
+        this.cart = {}; // cart keyed by productId { id, product, qty }
         this.init();
     }
 
     async init() {
         await this.loadData();
+        this.loadCart();
         this.setupEventListeners();
         this.renderBenefits();
         this.renderWorkWithUs();
         this.renderProducts();
+        this.renderCart();
         this.renderFAQ();
         this.setupDeliveryZoneChecker();
         this.setupSmoothScrolling();
@@ -149,6 +152,36 @@ class WaterDeliveryApp {
             });
         });
 
+        // Cart button (desktop)
+        const cartBtn = document.getElementById('cart-button');
+        if (cartBtn) {
+            cartBtn.addEventListener('click', () => this.toggleCart());
+        }
+
+        // Cart button (mobile)
+        const cartBtnMobile = document.getElementById('cart-button-mobile');
+        if (cartBtnMobile) {
+            cartBtnMobile.addEventListener('click', () => this.toggleCart());
+        }
+
+        // Close cart
+        const closeCart = document.getElementById('close-cart');
+        if (closeCart) {
+            closeCart.addEventListener('click', () => this.toggleCart(false));
+        }
+
+        // Clear cart button
+        const clearBtn = document.getElementById('clear-cart');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => { this.cart = {}; this.saveCart(); this.renderCart(); });
+        }
+
+        // Send order via WhatsApp from cart form
+        const sendWhatsAppBtn = document.getElementById('send-whatsapp');
+        if (sendWhatsAppBtn) {
+            sendWhatsAppBtn.addEventListener('click', () => this.sendCartToWhatsApp());
+        }
+
         // WhatsApp button tracking
         document.querySelectorAll('[data-action="whatsapp"]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -253,9 +286,9 @@ class WaterDeliveryApp {
                         <p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
                         <p class="text-sm text-gray-500 mb-4">${product.pack_description}</p>
                         <div class="text-2xl font-bold ${colorScheme.text} mb-6">${product.price_text}</div>
-                        <button onclick="openOrderForm('${product.id}')" 
+                        <button onclick="app.addToCart('${product.id}')" 
                                 class="w-full ${colorScheme.button} text-white py-3 rounded-lg font-medium ${colorScheme.buttonHover} transition">
-                            Ordina Ora
+                            Aggiungi al carrello
                         </button>
                     </div>
                 </div>
@@ -375,6 +408,221 @@ class WaterDeliveryApp {
         const orderUrl = this.data.googleForms.mainOrder + (categoryId ? `?entry.product=${categoryId}` : '');
         window.open(orderUrl, '_blank');
         this.trackEvent('product_order_clicked', { category: categoryId });
+    }
+
+    /* -------------------- Cart Functionality -------------------- */
+    loadCart() {
+        try {
+            const raw = localStorage.getItem('eudora_water_cart');
+            this.cart = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.error('Unable to load cart', e);
+            this.cart = {};
+        }
+    }
+
+    saveCart() {
+        try {
+            localStorage.setItem('eudora_water_cart', JSON.stringify(this.cart || {}));
+            this.updateCartCount();
+        } catch (e) {
+            console.error('Unable to save cart', e);
+        }
+    }
+
+    addToCart(productId, qty = 1) {
+        const product = this.data.products.find(p => p.id === productId);
+        if (!product) {
+            this.showNotification('Prodotto non trovato', 'error');
+            return;
+        }
+
+        if (!this.cart[productId]) {
+            this.cart[productId] = { id: productId, product: product, qty: 0 };
+        }
+        this.cart[productId].qty += qty;
+        this.saveCart();
+        this.renderCart();
+        this.showNotification(`${product.brand} aggiunto al carrello`);
+        this.trackEvent('add_to_cart', { productId, qty });
+    }
+
+    removeFromCart(productId) {
+        if (this.cart[productId]) {
+            delete this.cart[productId];
+            this.saveCart();
+            this.renderCart();
+        }
+    }
+
+    updateQuantity(productId, qty) {
+        if (this.cart[productId]) {
+            this.cart[productId].qty = Math.max(0, Number(qty) || 0);
+            if (this.cart[productId].qty === 0) delete this.cart[productId];
+            this.saveCart();
+            this.renderCart();
+        }
+    }
+
+    renderCart() {
+        const container = document.getElementById('cart-items');
+        const countEl = document.getElementById('cart-count');
+        const countElMobile = document.getElementById('cart-count-mobile');
+        const totalEl = document.getElementById('cart-total');
+        const subtotalEl = document.getElementById('cart-subtotal');
+        const shippingEl = document.getElementById('cart-shipping');
+        const itemsCountEl = document.getElementById('cart-items-count');
+
+        if (!container) return;
+
+        const items = Object.values(this.cart || {});
+        if (items.length === 0) {
+            container.innerHTML = '<p class="text-gray-600">Il carrello è vuoto.</p>';
+            if (totalEl) totalEl.textContent = '€0,00';
+            if (countEl) countEl.textContent = '0';
+            if (countElMobile) countElMobile.textContent = '0';
+            return;
+        }
+
+        let subtotal = 0;
+        const shippingPerItem = 0.5; // €0.50 per unit (configurable)
+        let shipping = 0;
+        container.innerHTML = items.map(item => {
+            // determine numeric price from data
+            const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
+            const lineSubtotal = (price * item.qty) || 0;
+            subtotal += lineSubtotal;
+            shipping += (item.qty * (item.product.shippingCost || shippingPerItem));
+            return `
+                <div class="flex items-center justify-between py-3 border-b">
+                    <div>
+                        <div class="font-semibold">${item.product.brand}</div>
+                        <div class="text-sm text-gray-500">${item.product.size_label} • ${item.product.pack_description}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-600 mb-2">${WaterDeliveryApp.formatPrice(lineSubtotal)}</div>
+                        <div class="flex items-center space-x-2">
+                            <input aria-label="Quantità" type="number" min="0" value="${item.qty}" data-product-id="${item.id}" class="w-16 py-1 px-2 border rounded text-sm qty-input">
+                            <button data-remove-id="${item.id}" class="text-sm text-red-600">Rimuovi</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    const total = subtotal + shipping;
+        if (subtotalEl) subtotalEl.textContent = WaterDeliveryApp.formatPrice(subtotal);
+        if (shippingEl) shippingEl.textContent = WaterDeliveryApp.formatPrice(shipping);
+        if (totalEl) totalEl.textContent = WaterDeliveryApp.formatPrice(total);
+        const itemsCount = items.reduce((s, i) => s + i.qty, 0);
+        if (countEl) countEl.textContent = String(itemsCount);
+        if (countElMobile) countElMobile.textContent = String(itemsCount);
+        if (itemsCountEl) itemsCountEl.textContent = String(itemsCount);
+
+        // Attach listeners for qty inputs and remove buttons
+        container.querySelectorAll('.qty-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const id = e.target.dataset.productId;
+                const value = Number(e.target.value);
+                this.updateQuantity(id, value);
+            });
+        });
+
+        container.querySelectorAll('[data-remove-id]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = btn.dataset.removeId;
+                this.removeFromCart(id);
+            });
+        });
+    }
+
+    computeCartTotals() {
+        const items = Object.values(this.cart || {});
+        let subtotal = 0;
+        const shippingPerItem = 0.5;
+        let shipping = 0;
+        items.forEach(item => {
+            const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
+            subtotal += (price * item.qty) || 0;
+            shipping += (item.qty * (item.product.shippingCost || shippingPerItem));
+        });
+        const total = subtotal + shipping;
+        return { items, subtotal, shipping, total };
+    }
+
+    sendCartToWhatsApp() {
+        // Gather form fields
+        const name = document.getElementById('cart-customer-name')?.value?.trim();
+        const surname = document.getElementById('cart-customer-surname')?.value?.trim();
+        const address = document.getElementById('cart-customer-address')?.value?.trim();
+        const payment = document.getElementById('cart-payment-method')?.value || '';
+
+        if (!name || !surname || !address) {
+            this.showNotification('Inserisci nome, cognome e indirizzo di consegna', 'error');
+            return;
+        }
+
+        const { items, subtotal, shipping, total } = this.computeCartTotals();
+        if (!items || items.length === 0) {
+            this.showNotification('Il carrello è vuoto', 'warning');
+            return;
+        }
+
+        const lines = items.map(i => `${i.qty} x ${i.product.brand} (${i.product.size_label}) - ${WaterDeliveryApp.formatPrice(((i.product.price_eur||i.product.price||0) * i.qty))}`).join('\n');
+
+        const messageLines = [];
+        messageLines.push(`Nuovo ordine da: ${name} ${surname}`);
+        messageLines.push(`Indirizzo: ${address}`);
+        messageLines.push(`Metodo di pagamento: ${payment}`);
+        messageLines.push('---');
+        messageLines.push('Prodotti:');
+        messageLines.push(lines);
+        messageLines.push('---');
+        messageLines.push(`Subtotale: ${WaterDeliveryApp.formatPrice(subtotal)}`);
+        messageLines.push(`Spedizione: ${WaterDeliveryApp.formatPrice(shipping)}`);
+        messageLines.push(`Totale: ${WaterDeliveryApp.formatPrice(total)}`);
+
+        const finalMessage = encodeURIComponent(messageLines.join('\n'));
+        const phone = '393500378569';
+        const url = `https://wa.me/${phone}?text=${finalMessage}`;
+        window.open(url, '_blank');
+        this.trackEvent('send_whatsapp_order', { items: items.length, total });
+    }
+
+    updateCartCount() {
+        const countEl = document.getElementById('cart-count');
+        const countElMobile = document.getElementById('cart-count-mobile');
+        const items = Object.values(this.cart || {});
+        const count = items.reduce((s, i) => s + i.qty, 0);
+        if (countEl) countEl.textContent = String(count);
+        if (countElMobile) countElMobile.textContent = String(count);
+    }
+
+    toggleCart(forceOpen) {
+        const panel = document.getElementById('cart-panel');
+        if (!panel) return;
+        const isOpen = !panel.classList.contains('translate-x-full');
+        const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+        if (willOpen) {
+            panel.classList.remove('translate-x-full');
+            panel.classList.add('translate-x-0');
+        } else {
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('translate-x-full');
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        const container = document.getElementById('notification-container');
+        if (!container) return;
+        const el = document.createElement('div');
+        el.className = 'notification show p-4';
+        el.innerHTML = `<div class="font-medium">${message}</div>`;
+        container.appendChild(el);
+        setTimeout(() => {
+            el.classList.remove('show');
+            setTimeout(() => el.remove(), 300);
+        }, 2500);
     }
 
     setupSmoothScrolling() {
