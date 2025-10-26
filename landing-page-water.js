@@ -569,7 +569,6 @@ class WaterDeliveryApp {
         this.cart[productId].qty += qty;
         this.saveCart();
         this.renderCart();
-        this.showNotification(`${product.brand} aggiunto al carrello`);
         this.trackEvent('add_to_cart', { productId, qty, location: this.currentLocation });
     }
 
