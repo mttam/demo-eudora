@@ -579,10 +579,16 @@ class WaterDeliveryApp {
         const name = document.getElementById('cart-customer-name')?.value?.trim();
         const surname = document.getElementById('cart-customer-surname')?.value?.trim();
         const address = document.getElementById('cart-customer-address')?.value?.trim();
+        const deliveryTime = document.getElementById('cart-delivery-time')?.value || '';
         const payment = document.getElementById('cart-payment-method')?.value || '';
 
         if (!name || !surname || !address) {
             this.showNotification('Inserisci nome, cognome e indirizzo di consegna', 'error');
+            return;
+        }
+
+        if (!deliveryTime) {
+            this.showNotification('Seleziona una fascia oraria di consegna', 'error');
             return;
         }
 
@@ -597,6 +603,7 @@ class WaterDeliveryApp {
         const messageLines = [];
         messageLines.push(`Nuovo ordine da: ${name} ${surname}`);
         messageLines.push(`Indirizzo: ${address}`);
+        messageLines.push(`Fascia oraria: ${deliveryTime}`);
         messageLines.push(`Metodo di pagamento: ${payment}`);
         messageLines.push('---');
         messageLines.push('Prodotti:');
