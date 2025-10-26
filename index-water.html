@@ -61,6 +61,30 @@
         .water-gradient {
             background: linear-gradient(135deg,  #34d399 0%, #15803d 0%, #16a34a 100%);
         }
+        
+        /* Location toggle buttons */
+        .location-toggle, .location-toggle-mobile {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .location-toggle::before, .location-toggle-mobile::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+        }
+        
+        .location-toggle:active::before, .location-toggle-mobile:active::before {
+            width: 300px;
+            height: 300px;
+        }
     </style>
 </head>
 <body class="font-sans text-gray-800 bg-gray-100">
@@ -209,19 +233,43 @@
                     Selezione delle migliori marche di acqua minerale italiana
                 </p>
             </div>
+            <!-- Location Selector - Desktop -->
+            <div class="hidden md:flex justify-center mb-8">
+                <div class="inline-flex bg-white rounded-lg shadow-md p-1 border border-gray-200">
+                    <button id="location-cosenza-desktop" class="location-toggle px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-green-600 text-white" data-location="cosenza">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Cosenza
+                    </button>
+                    <button id="location-rende-desktop" class="location-toggle px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-location="rende">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Rende
+                    </button>
+                </div>
+            </div>
+
+            <!-- Location Selector - Mobile -->
+            <div class="md:hidden flex justify-center mb-8">
+                <div class="w-full max-w-sm bg-white rounded-lg shadow-md p-1 border border-gray-200">
+                    <button id="location-cosenza-mobile" class="location-toggle-mobile w-1/2 inline-block px-4 py-3 rounded-lg font-semibold transition-all duration-200 bg-green-600 text-white text-center" data-location="cosenza">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Cosenza
+                    </button>
+                    <button id="location-rende-mobile" class="location-toggle-mobile w-1/2 inline-block px-4 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100 text-center" data-location="rende">
+                        <i class="fas fa-map-marker-alt mr-1"></i>Rende
+                    </button>
+                </div>
+            </div>
+
             <!-- Order Info - Centered -->
             <div class="bg-white border-2 border-green-400 rounded-xl p-6 shadow-lg max-w-xl mx-auto mb-8">
                 <div class="text-center">
                     <i class="fas fa-info-circle text-green-600 text-3xl mb-3"></i>
-                    <h3 class="text-xl font-bold text-green-800 mb-3">Condizioni di ordine</h3>
+                    <h3 class="text-xl font-bold text-green-800 mb-3">Condizioni di ordine - <span id="current-location-display">Cosenza</span></h3>
                     <div class="space-y-2 text-gray-700">
                         <p class="flex items-center justify-center">
                             <i class="fas fa-box text-green-600 mr-2"></i>
-                            <span class="font-semibold">Ordine minimo: 2 casse</span>
+                            <span class="font-semibold">Ordine minimo: <span id="min-order-display">2</span> casse</span>
                         </p>
                         <p class="flex items-center justify-center">
                             <i class="fas fa-truck text-green-600 mr-2"></i>
-                            <span class="font-semibold">Spese di spedizione: €0,50 a cassa</span>
+                            <span class="font-semibold">Spese di spedizione: €<span id="delivery-fee-display">0,50</span> a cassa</span>
                         </p>
                     </div>
                 </div>

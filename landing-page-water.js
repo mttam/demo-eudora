@@ -2,6 +2,8 @@
 class WaterDeliveryApp {
     constructor() {
         this.data = null;
+        this.productsData = null; // Water products data from water-prodocts.json
+        this.currentLocation = 'cosenza'; // Default location
         this.cart = {}; // cart keyed by productId { id, product, qty }
         this.touchSliderActive = false;
         this._touchHandlers = null;
@@ -10,8 +12,11 @@ class WaterDeliveryApp {
 
     async init() {
         await this.loadData();
+        await this.loadProductsData();
+        this.loadLocation(); // Load saved location preference
         this.loadCart();
         this.setupEventListeners();
+        this.setupLocationSwitcher();
         this.renderBenefits();
         this.renderWorkWithUs();
         this.renderProducts();
@@ -48,6 +53,102 @@ class WaterDeliveryApp {
             // Fallback data if file doesn't exist
             this.data = this.getFallbackData();
         }
+    }
+
+    async loadProductsData() {
+        try {
+            const response = await fetch('./water-prodocts.json');
+            this.productsData = await response.json();
+            console.log('Products data loaded:', this.productsData);
+        } catch (error) {
+            console.error('Error loading products data:', error);
+            this.productsData = { locations: {} };
+        }
+    }
+
+    loadLocation() {
+        try {
+            const saved = localStorage.getItem('eudora_water_location');
+            if (saved && this.productsData?.locations?.[saved]) {
+                this.currentLocation = saved;
+            } else {
+                this.currentLocation = 'cosenza'; // Default
+            }
+        } catch (e) {
+            console.error('Unable to load location', e);
+            this.currentLocation = 'cosenza';
+        }
+    }
+
+    saveLocation() {
+        try {
+            localStorage.setItem('eudora_water_location', this.currentLocation);
+        } catch (e) {
+            console.error('Unable to save location', e);
+        }
+    }
+
+    setLocation(location) {
+        if (!this.productsData?.locations?.[location]) {
+            console.error('Invalid location:', location);
+            return;
+        }
+        
+        this.currentLocation = location;
+        this.saveLocation();
+        this.updateLocationUI();
+        this.renderProducts();
+        
+        // Show notification
+        const locationData = this.productsData.locations[location];
+        this.showNotification(`Località cambiata a ${locationData.city}`);
+    }
+
+    updateLocationUI() {
+        // Update all location toggle buttons
+        document.querySelectorAll('.location-toggle, .location-toggle-mobile').forEach(btn => {
+            const btnLocation = btn.dataset.location;
+            if (btnLocation === this.currentLocation) {
+                btn.classList.add('bg-green-600', 'text-white');
+                btn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+            } else {
+                btn.classList.remove('bg-green-600', 'text-white');
+                btn.classList.add('text-gray-700', 'hover:bg-gray-100');
+            }
+        });
+
+        // Update location display info
+        const locationData = this.productsData?.locations?.[this.currentLocation];
+        if (locationData) {
+            const cityDisplay = document.getElementById('current-location-display');
+            const minOrderDisplay = document.getElementById('min-order-display');
+            const deliveryFeeDisplay = document.getElementById('delivery-fee-display');
+            
+            if (cityDisplay) cityDisplay.textContent = locationData.city;
+            if (minOrderDisplay) minOrderDisplay.textContent = locationData.min_order_cases;
+            if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = locationData.delivery_fee.toFixed(2);
+        }
+    }
+
+    setupLocationSwitcher() {
+        // Desktop location buttons
+        document.querySelectorAll('.location-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const location = btn.dataset.location;
+                this.setLocation(location);
+            });
+        });
+
+        // Mobile location buttons
+        document.querySelectorAll('.location-toggle-mobile').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const location = btn.dataset.location;
+                this.setLocation(location);
+            });
+        });
+
+        // Initial UI update
+        this.updateLocationUI();
     }
 
     getFallbackData() {
@@ -250,13 +351,14 @@ class WaterDeliveryApp {
 
     renderProducts() {
         const container = document.getElementById('products-container');
-        if (!container || !this.data.products) return;
+        if (!container) return;
 
-        // Get products array and create cards
-        const products = Array.isArray(this.data.products) ? this.data.products : [];
+        // Get products from current location
+        const locationData = this.productsData?.locations?.[this.currentLocation];
+        const products = locationData?.products || [];
         
         if (products.length === 0) {
-            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile</p>';
+            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile per questa località</p>';
             return;
         }
 
@@ -283,8 +385,8 @@ class WaterDeliveryApp {
             // Format type label
             const typeLabel = product.type.charAt(0).toUpperCase() + product.type.slice(1);
 
-            // Build image path
-            const imagePath = product.filename ? `./public/img_water/${product.filename}` : '';
+            // Build image path - use 'image' field from JSON
+            const imagePath = product.image || '';
             const imageHTML = imagePath ? 
                 `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                  <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
@@ -447,20 +549,28 @@ class WaterDeliveryApp {
     }
 
     addToCart(productId, qty = 1) {
-        const product = this.data.products.find(p => p.id === productId);
+        // Find product in current location
+        const locationData = this.productsData?.locations?.[this.currentLocation];
+        const product = locationData?.products?.find(p => p.id === productId);
+        
         if (!product) {
             this.showNotification('Prodotto non trovato', 'error');
             return;
         }
 
         if (!this.cart[productId]) {
-            this.cart[productId] = { id: productId, product: product, qty: 0 };
+            this.cart[productId] = { 
+                id: productId, 
+                product: product, 
+                qty: 0,
+                location: this.currentLocation // Store location with cart item
+            };
         }
         this.cart[productId].qty += qty;
         this.saveCart();
         this.renderCart();
         this.showNotification(`${product.brand} aggiunto al carrello`);
-        this.trackEvent('add_to_cart', { productId, qty });
+        this.trackEvent('add_to_cart', { productId, qty, location: this.currentLocation });
     }
 
     removeFromCart(productId) {
@@ -501,14 +611,19 @@ class WaterDeliveryApp {
         }
 
         let subtotal = 0;
-        const shippingPerItem = 0.5; // €0.50 per unit (configurable)
         let shipping = 0;
         container.innerHTML = items.map(item => {
             // determine numeric price from data
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             const lineSubtotal = (price * item.qty) || 0;
             subtotal += lineSubtotal;
-            shipping += (item.qty * (item.product.shippingCost || shippingPerItem));
+            
+            // Get delivery fee from the item's location
+            const itemLocation = item.location || this.currentLocation;
+            const locationData = this.productsData?.locations?.[itemLocation];
+            const deliveryFee = locationData?.delivery_fee || 0.5;
+            shipping += (item.qty * deliveryFee);
+            
             return `
                 <div class="cart-item py-4 border-b border-gray-200">
                     <div class="flex items-start justify-between mb-3">
@@ -563,13 +678,19 @@ class WaterDeliveryApp {
     computeCartTotals() {
         const items = Object.values(this.cart || {});
         let subtotal = 0;
-        const shippingPerItem = 0.5;
         let shipping = 0;
+        
         items.forEach(item => {
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             subtotal += (price * item.qty) || 0;
-            shipping += (item.qty * (item.product.shippingCost || shippingPerItem));
+            
+            // Get delivery fee from the item's location
+            const itemLocation = item.location || this.currentLocation;
+            const locationData = this.productsData?.locations?.[itemLocation];
+            const deliveryFee = locationData?.delivery_fee || 0.5;
+            shipping += (item.qty * deliveryFee);
         });
+        
         const total = subtotal + shipping;
         return { items, subtotal, shipping, total };
     }
@@ -600,7 +721,11 @@ class WaterDeliveryApp {
 
         const lines = items.map(i => `${i.qty} x ${i.product.brand} (${i.product.size_label}) - ${WaterDeliveryApp.formatPrice(((i.product.price_eur||i.product.price||0) * i.qty))}`).join('\n');
 
+        const locationData = this.productsData?.locations?.[this.currentLocation];
+        const cityName = locationData?.city || this.currentLocation;
+
         const messageLines = [];
+        messageLines.push(`🛒 Nuovo ordine - ${cityName}`);
         messageLines.push(`Nuovo ordine da: ${name} ${surname}`);
         messageLines.push(`Indirizzo: ${address}`);
         messageLines.push(`Fascia oraria: ${deliveryTime}`);
