@@ -299,6 +299,25 @@ class WaterDeliveryApp {
             sendWhatsAppBtn.addEventListener('click', () => this.sendCartToWhatsApp());
         }
 
+        // Payment method change handler
+        const paymentMethod = document.getElementById('cart-payment-method');
+        if (paymentMethod) {
+            paymentMethod.addEventListener('change', () => this.handlePaymentMethodChange());
+        }
+
+        // Cash option radio buttons
+        document.addEventListener('change', (e) => {
+            if (e.target.name === 'cash-option') {
+                this.handleCashOptionChange(e.target.value);
+            }
+        });
+
+        // Custom amount input for change calculation
+        const customAmountInput = document.getElementById('customer-pays-amount');
+        if (customAmountInput) {
+            customAmountInput.addEventListener('input', () => this.updateChangeDisplay());
+        }
+
         // WhatsApp button tracking
         document.querySelectorAll('[data-action="whatsapp"]').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -729,6 +748,22 @@ class WaterDeliveryApp {
         messageLines.push(`Indirizzo: ${address}`);
         messageLines.push(`Fascia oraria: ${deliveryTime}`);
         messageLines.push(`Metodo di pagamento: ${payment}`);
+        
+        // Add cash payment details if Contrassegno is selected
+        if (payment === 'Contrassegno') {
+            const cashOption = document.querySelector('input[name="cash-option"]:checked')?.value;
+            if (cashOption === 'exact') {
+                messageLines.push(`💰 Pagamento: Importo esatto`);
+            } else if (cashOption === 'custom') {
+                const customerPaysAmount = parseFloat(document.getElementById('customer-pays-amount')?.value || 0);
+                if (customerPaysAmount > 0) {
+                    const change = customerPaysAmount - total;
+                    messageLines.push(`💰 Cliente pagherà con: ${WaterDeliveryApp.formatPrice(customerPaysAmount)}`);
+                    messageLines.push(`💵 Resto da dare: ${WaterDeliveryApp.formatPrice(change)}`);
+                }
+            }
+        }
+        
         messageLines.push('---');
         messageLines.push('Prodotti:');
         messageLines.push(lines);
@@ -742,6 +777,50 @@ class WaterDeliveryApp {
         const url = `https://wa.me/${phone}?text=${finalMessage}`;
         window.open(url, '_blank');
         this.trackEvent('send_whatsapp_order', { items: items.length, total });
+    }
+
+    handlePaymentMethodChange() {
+        const paymentMethod = document.getElementById('cart-payment-method')?.value;
+        const cashOptions = document.getElementById('cash-payment-options');
+        
+        if (paymentMethod === 'Contrassegno') {
+            cashOptions?.classList.remove('hidden');
+        } else {
+            cashOptions?.classList.add('hidden');
+            this.hideChangeDisplay();
+        }
+    }
+
+    handleCashOptionChange(option) {
+        const customAmountContainer = document.getElementById('custom-amount-container');
+        
+        if (option === 'custom') {
+            customAmountContainer?.classList.remove('hidden');
+            this.updateChangeDisplay();
+        } else {
+            customAmountContainer?.classList.add('hidden');
+            this.hideChangeDisplay();
+        }
+    }
+
+    updateChangeDisplay() {
+        const changeRow = document.getElementById('change-row');
+        const changeAmount = document.getElementById('cart-change');
+        const customerPaysAmount = parseFloat(document.getElementById('customer-pays-amount')?.value || 0);
+        const { total } = this.computeCartTotals();
+        
+        if (customerPaysAmount > 0 && customerPaysAmount >= total) {
+            const change = customerPaysAmount - total;
+            if (changeAmount) changeAmount.textContent = WaterDeliveryApp.formatPrice(change);
+            changeRow?.classList.remove('hidden');
+        } else {
+            this.hideChangeDisplay();
+        }
+    }
+
+    hideChangeDisplay() {
+        const changeRow = document.getElementById('change-row');
+        changeRow?.classList.add('hidden');
     }
 
     updateCartCount() {
