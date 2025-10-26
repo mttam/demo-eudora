@@ -170,6 +170,12 @@ class WaterDeliveryApp {
             closeCart.addEventListener('click', () => this.toggleCart(false));
         }
 
+        // Close cart when clicking overlay
+        const cartOverlay = document.getElementById('cart-overlay');
+        if (cartOverlay) {
+            cartOverlay.addEventListener('click', () => this.toggleCart(false));
+        }
+
         // Clear cart button
         const clearBtn = document.getElementById('clear-cart');
         if (clearBtn) {
@@ -600,15 +606,24 @@ class WaterDeliveryApp {
 
     toggleCart(forceOpen) {
         const panel = document.getElementById('cart-panel');
+        const overlay = document.getElementById('cart-overlay');
         if (!panel) return;
+        
         const isOpen = !panel.classList.contains('translate-x-full');
         const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
+        
         if (willOpen) {
             panel.classList.remove('translate-x-full');
             panel.classList.add('translate-x-0');
+            if (overlay) overlay.classList.remove('hidden');
+            // Prevent body scroll on mobile when cart is open
+            document.body.style.overflow = 'hidden';
         } else {
             panel.classList.remove('translate-x-0');
             panel.classList.add('translate-x-full');
+            if (overlay) overlay.classList.add('hidden');
+            // Restore body scroll
+            document.body.style.overflow = '';
         }
     }
 

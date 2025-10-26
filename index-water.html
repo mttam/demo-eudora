@@ -114,8 +114,11 @@
         </div>
     </header>
 
+    <!-- Cart Overlay (for mobile) -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[9998] hidden"></div>
+
     <!-- Cart Panel -->
-    <div id="cart-panel" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform z-50">
+    <div id="cart-panel" class="fixed right-0 top-0 h-full w-full sm:w-96 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[9999]">
         <div class="p-4 border-b flex items-center justify-between">
             <h3 class="text-lg font-semibold">Il tuo Carrello</h3>
             <button id="close-cart" aria-label="Chiudi carrello" class="text-gray-600 hover:text-gray-900"><i class="fas fa-times"></i></button>
