@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consegna Acqua a Domicilio | EudoraWater</title>
-    <meta name="description" content="Acqua minerale di qualità consegnata a casa tua. Ordina online acqua naturale e frizzante delle migliori marche italiane.">
-    <meta name="keywords" content="consegna acqua, acqua a domicilio, acqua minerale, san pellegrino, evian, ferrarelle">
+    <title>Consegna a Domicilio | Eudora Delivery</title>
+    <meta name="description" content="Acqua, detergenti e prodotti per la casa consegnati direttamente a domicilio. Ordina online e ricevi tutto ciò che ti serve.">
+    <meta name="keywords" content="consegna a domicilio, acqua, detergenti, prodotti casa, lavatrice, cucina, carta igienica">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style-water.css">
@@ -96,8 +96,8 @@
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center">
                 <div class="flex items-center text-white font-bold text-2xl">
-                    <i class="fas fa-tint mr-2 text-3xl"></i>
-                    EudoraWater
+                    <i class="fas fa-truck mr-2 text-3xl"></i>
+                    Eudora Delivery
                 </div>
             </div>
             <nav id="desktop-nav" class="hidden md:flex space-x-8">
@@ -235,7 +235,7 @@
     <section id="hero" class="py-16 water-gradient">
         <div class="container mx-auto px-4">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 text-center leading-tight">
-                La tua Acqua a domicilio senza fatica!
+                Tutto ciò che ti serve, consegnato a casa tua!
             </h1>
             
             
@@ -252,8 +252,29 @@
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">I Nostri Prodotti</h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Selezione delle migliori marche di acqua minerale italiana
+                    Acqua, detergenti e prodotti per la casa
                 </p>
+            </div>
+            
+            <!-- Category Tabs -->
+            <div class="flex justify-center mb-8 overflow-x-auto">
+                <div class="inline-flex bg-white rounded-lg shadow-md p-1 border border-gray-200">
+                    <button id="category-acqua" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 bg-green-600 text-white" data-category="acqua">
+                        <i class="fas fa-tint mr-2"></i>Acqua
+                    </button>
+                    <button id="category-detergenti" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="DETERGENTI">
+                        <i class="fas fa-spray-can mr-2"></i>Detergenti
+                    </button>
+                    <button id="category-lavatrice" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="LAVATRICE">
+                        <i class="fas fa-jug-detergent mr-2"></i>Lavatrice
+                    </button>
+                    <button id="category-cucina" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="CUCINA">
+                        <i class="fas fa-utensils mr-2"></i>Cucina
+                    </button>
+                    <button id="category-carta" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="CARTA E MONOUSO">
+                        <i class="fas fa-toilet-paper mr-2"></i>Carta
+                    </button>
+                </div>
             </div>
             <!-- Location Selector - Desktop -->
             <div class="hidden md:flex justify-center mb-8">
@@ -322,7 +343,7 @@
                             <i id="faq-icon-1" class="fas fa-chevron-down text-green-600"></i>
                         </div>
                         <div id="faq-content-1" class="hidden mt-4 text-gray-600">
-                            <p>Le consegne avvengono in due fasce orarie prestabilite (12:30 - 14:30 o 18:30 - 20:30). Basta inserire il proprio indirizzo di consegna e la modalità di pagamento preferita. È semplice, veloce e sicuro!</p>
+                            <p>Scegli i prodotti che ti servono (acqua, detergenti, prodotti per la casa), aggiungi al carrello e completa l'ordine. Le consegne avvengono in due fasce orarie prestabilite (12:30 - 14:30 o 18:30 - 20:30). È semplice, veloce e sicuro!</p>
                         </div>
                     </div>
                     
@@ -344,7 +365,7 @@
                             <i id="faq-icon-3" class="fas fa-chevron-down text-green-600"></i>
                         </div>
                         <div id="faq-content-3" class="hidden mt-4 text-gray-600">
-                            <p>Le spese di spedizione sono di €0,50 a cassa d'acqua. L'ordine minimo è di 2 casse.</p>
+                            <p>Le spese di spedizione variano in base ai prodotti ordinati. Per l'acqua: €0,50 a cassa con ordine minimo di 2 casse. Per gli altri prodotti: le spese sono calcolate in base al peso e al volume.</p>
                         </div>
                     </div>
                     
@@ -357,7 +378,7 @@
                             <i id="faq-icon-5" class="fas fa-chevron-down text-green-600"></i>
                         </div>
                         <div id="faq-content-5" class="hidden mt-4 text-gray-600">
-                            <p>Il pagamento avviene alla consegna, in contante o tramite POS    .</p>
+                            <p>Accettiamo pagamento alla consegna in contanti o con carta di credito tramite POS. Puoi selezionare il metodo preferito durante il checkout.</p>
                         </div>
                     </div>
                 </div>
@@ -372,11 +393,11 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div>
                     <div class="flex items-center text-white font-bold text-2xl mb-4">
-                        <i class="fas fa-tint mr-2 text-3xl"></i>
-                        EudoraWater
+                        <i class="fas fa-truck mr-2 text-3xl"></i>
+                        Eudora Delivery
                     </div>
                     <p class="mb-4">
-                        Consegna di acqua di qualità semplice e sicura.
+                        Acqua, detergenti e prodotti per la casa consegnati con cura.
                     </p>
                     <div class="flex space-x-4">
                         <a href="https://www.facebook.com/people/Eudora-Pharma/61553006976233/" target="_blank" rel="noopener noreferrer" class="text-white hover:text-green-400 text-xl">

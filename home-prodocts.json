@@ -1,0 +1,440 @@
+{
+  "locations": {
+    "rende": {
+      "city": "Rende",
+      "delivery_fee": 0.5,
+      "min_order_cases": 2,
+      "products": [
+        {
+          "id": "ace_candegina_classica_1l",
+          "brand": "ACE",
+          "product_name": "candegina classica 1l",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 1.67,
+          "price_text": "€ 1,67",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_candegina_classica_1l.png"
+        },
+        {
+          "id": "ace_candegina_classica_3l",
+          "brand": "ACE",
+          "product_name": "candegina classica 3l",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.75,
+          "price_text": "€ 2,75",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_candegina_classica_3l.png"
+        },
+        {
+          "id": "ace_detersivo_igenizzante_classico",
+          "brand": "ACE",
+          "product_name": "detersivo igenizzante classico",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 4.19,
+          "price_text": "€ 4,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_detersivo_igenizzante_classico.png"
+        },
+        {
+          "id": "ace_detersivo_igenizzante_colorati",
+          "brand": "ACE",
+          "product_name": "detersivo igenizzante colorati",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 4.19,
+          "price_text": "€ 4,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_detersivo_igenizzante_colorati.png"
+        },
+        {
+          "id": "ace_detersivo_talco_e_muschio_rende",
+          "brand": "ACE",
+          "product_name": "detersivo talco e muschio rende",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 4.19,
+          "price_text": "€ 4,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_detersivo_talco_e_muschio_rende.png"
+        },
+        {
+          "id": "ace_pavimenti_igenizzante",
+          "brand": "ACE",
+          "product_name": "pavimenti igenizzante",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.15,
+          "price_text": "€ 2,15",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ace_pavimenti_igenizzante.png"
+        },
+        {
+          "id": "cif_infinte_clean_all_in_one",
+          "brand": "CIF",
+          "product_name": "infinte clean all in one",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.63,
+          "price_text": "€ 2,63",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/cif_infinte_clean_all_in_one.png"
+        },
+        {
+          "id": "cif_vetri_brillanti_olio_essenziali_arancia",
+          "brand": "CIF",
+          "product_name": "vetri brillanti olio essenziali arancia",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/cif_vetri_brillanti_olio_essenziali_arancia.png"
+        },
+        {
+          "id": "cif_vetri_brillanti_olio_essenziali_bergamotto",
+          "brand": "CIF",
+          "product_name": "vetri brillanti olio essenziali bergamotto",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/cif_vetri_brillanti_olio_essenziali_bergamotto.png"
+        },
+        {
+          "id": "cif_vetri_spray_attivo_multiuso_con_candeggina",
+          "brand": "CIF",
+          "product_name": "vetri spray attivo multiuso con candeggina",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/cif_vetri_spray_attivo_multiuso_con_candeggina.png"
+        },
+        {
+          "id": "felce_azzurra_ammorbidente_classico",
+          "brand": "FELCE",
+          "product_name": "azzurra ammorbidente classico",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 3.11,
+          "price_text": "€ 3,11",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/felce_azzurra_ammorbidente_classico.png"
+        },
+        {
+          "id": "felce_azzurra_ammorbidente_lavanda _e_iris",
+          "brand": "FELCE",
+          "product_name": "azzurra ammorbidente lavanda  e iris",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 3.11,
+          "price_text": "€ 3,11",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/felce_azzurra_ammorbidente_lavanda _e_iris.png"
+        },
+        {
+          "id": "finisch_power_3_1",
+          "brand": "FINISCH",
+          "product_name": "power 3 1",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 5.51,
+          "price_text": "€ 5,51",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/finisch_power_3_1.png"
+        },
+        {
+          "id": "finish_brillasciuga_lavastoviglia",
+          "brand": "FINISH",
+          "product_name": "brillasciuga lavastoviglia",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 4.19,
+          "price_text": "€ 4,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/finish_brillasciuga_lavastoviglia.png"
+        },
+        {
+          "id": "finish_cristalli_di_sale",
+          "brand": "FINISH",
+          "product_name": "cristalli di sale",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.15,
+          "price_text": "€ 2,15",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/finish_cristalli_di_sale.png"
+        },
+        {
+          "id": "floyd_acido_muriatico",
+          "brand": "FLOYD",
+          "product_name": "acido muriatico",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 1.19,
+          "price_text": "€ 1,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/floyd_acido_muriatico.png"
+        },
+        {
+          "id": "general_colorati_delicati",
+          "brand": "GENERAL",
+          "product_name": "colorati delicati",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 3.71,
+          "price_text": "€ 3,71",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/general_colorati_delicati.png"
+        },
+        {
+          "id": "general_universale_5_in_1",
+          "brand": "GENERAL",
+          "product_name": "universale 5 in 1",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 3.71,
+          "price_text": "€ 3,71",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/general_universale_5_in_1.png"
+        },
+        {
+          "id": "guanti_nitrile_nero_rende",
+          "brand": "GUANTI",
+          "product_name": "nitrile nero rende",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 4.43,
+          "price_text": "€ 4,43",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/guanti_nitrile_nero_rende.png"
+        },
+        {
+          "id": "home_line_sacchetti_neri_50x60_rende",
+          "brand": "HOME",
+          "product_name": "line sacchetti neri 50x60 rende",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 1.07,
+          "price_text": "€ 1,07",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/home_line_sacchetti_neri_50x60_rende.png"
+        },
+        {
+          "id": "mastro_lindo_extra_potente",
+          "brand": "MASTRO",
+          "product_name": "lindo extra potente",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 2.75,
+          "price_text": "€ 2,75",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/mastro_lindo_extra_potente.png"
+        },
+        {
+          "id": "nelsen_piatti_aceto_lavanda",
+          "brand": "NELSEN",
+          "product_name": "piatti aceto lavanda",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.03,
+          "price_text": "€ 2,03",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/nelsen_piatti_aceto_lavanda.png"
+        },
+        {
+          "id": "nelsen_piatti_carboni_attivi",
+          "brand": "NELSEN",
+          "product_name": "piatti carboni attivi",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.03,
+          "price_text": "€ 2,03",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/nelsen_piatti_carboni_attivi.png"
+        },
+        {
+          "id": "nelsen_piatti_limone",
+          "brand": "NELSEN",
+          "product_name": "piatti limone",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.03,
+          "price_text": "€ 2,03",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/nelsen_piatti_limone.png"
+        },
+        {
+          "id": "nicky_maxi_carta_igenica",
+          "brand": "NICKY",
+          "product_name": "maxi carta igenica",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 2.99,
+          "price_text": "€ 2,99",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/nicky_maxi_carta_igenica.png"
+        },
+        {
+          "id": "regina_tovaglioli_pic_nic_rende",
+          "brand": "REGINA",
+          "product_name": "tovaglioli pic nic rende",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 2.15,
+          "price_text": "€ 2,15",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/regina_tovaglioli_pic_nic_rende.png"
+        },
+        {
+          "id": "scala_carta_igenica",
+          "brand": "SCALA",
+          "product_name": "carta igenica",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 2.63,
+          "price_text": "€ 2,63",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_carta_igenica.png"
+        },
+        {
+          "id": "scala_lavatrice_igienizzante_bicarbonato_bouquet_florito",
+          "brand": "SCALA",
+          "product_name": "lavatrice igienizzante bicarbonato bouquet florito",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_bouquet_florito.png"
+        },
+        {
+          "id": "scala_lavatrice_igienizzante_bicarbonato_fresco_benessere",
+          "brand": "SCALA",
+          "product_name": "lavatrice igienizzante bicarbonato fresco benessere",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_fresco_benessere.png"
+        },
+        {
+          "id": "scala_lavatrice_igienizzante_bicarbonato_gelsomino_e_patchouli",
+          "brand": "SCALA",
+          "product_name": "lavatrice igienizzante bicarbonato gelsomino e patchouli",
+          "size_label": "N/D",
+          "category": "LAVATRICE",
+          "price_eur": 2.87,
+          "price_text": "€ 2,87",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_gelsomino_e_patchouli.png"
+        },
+        {
+          "id": "scala_piatti_igienizzante_anti_odore_agrumi",
+          "brand": "SCALA",
+          "product_name": "piatti igienizzante anti odore agrumi",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 1.19,
+          "price_text": "€ 1,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_piatti_igienizzante_anti_odore_agrumi.png"
+        },
+        {
+          "id": "scala_piatti_igienizzante_bicarbonato",
+          "brand": "SCALA",
+          "product_name": "piatti igienizzante bicarbonato",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 1.19,
+          "price_text": "€ 1,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_piatti_igienizzante_bicarbonato.png"
+        },
+        {
+          "id": "scala_piatti_igienizzante_sgrassante_limone",
+          "brand": "SCALA",
+          "product_name": "piatti igienizzante sgrassante limone",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 1.19,
+          "price_text": "€ 1,19",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/scala_piatti_igienizzante_sgrassante_limone.png"
+        },
+        {
+          "id": "svelto_sapone_piatti_aceto",
+          "brand": "SVELTO",
+          "product_name": "sapone piatti aceto",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.15,
+          "price_text": "€ 2,15",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/svelto_sapone_piatti_aceto.png"
+        },
+        {
+          "id": "svelto_sapone_piatti_limone",
+          "brand": "SVELTO",
+          "product_name": "sapone piatti limone",
+          "size_label": "N/D",
+          "category": "CUCINA",
+          "price_eur": 2.15,
+          "price_text": "€ 2,15",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/svelto_sapone_piatti_limone.png"
+        },
+        {
+          "id": "ters_ammoniaca_profumata_multiuso",
+          "brand": "TERS",
+          "product_name": "ammoniaca profumata multiuso",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 1.91,
+          "price_text": "€ 1,91",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/ters_ammoniaca_profumata_multiuso.png"
+        },
+        {
+          "id": "viakal_classico",
+          "brand": "VIAKAL",
+          "product_name": "classico",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 3.47,
+          "price_text": "€ 3,47",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/viakal_classico.png"
+        },
+        {
+          "id": "viakal_fresco_profumo",
+          "brand": "VIAKAL",
+          "product_name": "fresco profumo",
+          "size_label": "N/D",
+          "category": "DETERGENTI",
+          "price_eur": 3.47,
+          "price_text": "€ 3,47",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/viakal_fresco_profumo.png"
+        },
+        {
+          "id": "vit_bobina_mister_500_rende",
+          "brand": "VIT",
+          "product_name": "bobina mister 500 rende",
+          "size_label": "N/D",
+          "category": "CARTA E MONOUSO",
+          "price_eur": 3.23,
+          "price_text": "€ 3,23",
+          "pack_description": "N/D",
+          "image": "public/img_home_products/vit_bobina_mister_500_rende.png"
+        }
+      ]
+    }
+  }
+}

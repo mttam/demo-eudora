@@ -3,7 +3,9 @@ class WaterDeliveryApp {
     constructor() {
         this.data = null;
         this.productsData = null; // Water products data from water-prodocts.json
+        this.homeProductsData = null; // Home products data from home-prodocts.json
         this.currentLocation = 'cosenza'; // Default location
+        this.currentCategory = 'acqua'; // Default category (acqua, DETERGENTI, etc.)
         this.cart = {}; // cart keyed by productId { id, product, qty }
         this.touchSliderActive = false;
         this._touchHandlers = null;
@@ -13,10 +15,12 @@ class WaterDeliveryApp {
     async init() {
         await this.loadData();
         await this.loadProductsData();
+        await this.loadHomeProductsData();
         this.loadLocation(); // Load saved location preference
         this.loadCart();
         this.setupEventListeners();
         this.setupLocationSwitcher();
+        this.setupCategorySwitcher();
         this.renderBenefits();
         this.renderWorkWithUs();
         this.renderProducts();
@@ -63,6 +67,17 @@ class WaterDeliveryApp {
         } catch (error) {
             console.error('Error loading products data:', error);
             this.productsData = { locations: {} };
+        }
+    }
+
+    async loadHomeProductsData() {
+        try {
+            const response = await fetch('./home-prodocts.json');
+            this.homeProductsData = await response.json();
+            console.log('Home products data loaded:', this.homeProductsData);
+        } catch (error) {
+            console.error('Error loading home products data:', error);
+            this.homeProductsData = { locations: {} };
         }
     }
 
@@ -149,6 +164,49 @@ class WaterDeliveryApp {
 
         // Initial UI update
         this.updateLocationUI();
+    }
+
+    setupCategorySwitcher() {
+        // Category tab buttons
+        document.querySelectorAll('.category-tab').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const category = btn.dataset.category;
+                this.setCategory(category);
+            });
+        });
+
+        // Initial UI update
+        this.updateCategoryUI();
+    }
+
+    setCategory(category) {
+        this.currentCategory = category;
+        this.updateCategoryUI();
+        this.renderProducts();
+        
+        // Show notification
+        const categoryNames = {
+            'acqua': 'Acqua',
+            'DETERGENTI': 'Detergenti',
+            'LAVATRICE': 'Lavatrice',
+            'CUCINA': 'Cucina',
+            'CARTA E MONOUSO': 'Carta e Monouso'
+        };
+        this.showNotification(`Categoria: ${categoryNames[category] || category}`);
+    }
+
+    updateCategoryUI() {
+        // Update all category tab buttons
+        document.querySelectorAll('.category-tab').forEach(btn => {
+            const btnCategory = btn.dataset.category;
+            if (btnCategory === this.currentCategory) {
+                btn.classList.add('bg-green-600', 'text-white');
+                btn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+            } else {
+                btn.classList.remove('bg-green-600', 'text-white');
+                btn.classList.add('text-gray-700', 'hover:bg-gray-100');
+            }
+        });
     }
 
     getFallbackData() {
@@ -372,17 +430,26 @@ class WaterDeliveryApp {
         const container = document.getElementById('products-container');
         if (!container) return;
 
-        // Get products from current location
-        const locationData = this.productsData?.locations?.[this.currentLocation];
-        const products = locationData?.products || [];
+        let products = [];
+        
+        // If category is "acqua", get water products
+        if (this.currentCategory === 'acqua') {
+            const locationData = this.productsData?.locations?.[this.currentLocation];
+            products = locationData?.products || [];
+        } else {
+            // Get home products for the current category
+            const locationData = this.homeProductsData?.locations?.[this.currentLocation];
+            const allHomeProducts = locationData?.products || [];
+            products = allHomeProducts.filter(p => p.category === this.currentCategory);
+        }
         
         if (products.length === 0) {
-            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile per questa località</p>';
+            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile per questa categoria</p>';
             return;
         }
 
         const productsHTML = products.map(product => {
-            // Determine color scheme based on water type
+            // Determine color scheme based on category
             let colorScheme = {
                 bg: 'bg-blue-100',
                 text: 'text-blue-600',
@@ -391,6 +458,7 @@ class WaterDeliveryApp {
                 icon: 'fas fa-tint'
             };
 
+            // For water products
             if (product.type === 'effervescente' || product.type === 'gassata') {
                 colorScheme = {
                     bg: 'bg-green-100',
@@ -401,8 +469,61 @@ class WaterDeliveryApp {
                 };
             }
 
-            // Format type label
-            const typeLabel = product.type.charAt(0).toUpperCase() + product.type.slice(1);
+            // For home products, set color scheme by category
+            if (product.category) {
+                switch(product.category) {
+                    case 'DETERGENTI':
+                        colorScheme = {
+                            bg: 'bg-purple-100',
+                            text: 'text-purple-600',
+                            button: 'bg-purple-600',
+                            buttonHover: 'hover:bg-purple-700',
+                            icon: 'fas fa-spray-can'
+                        };
+                        break;
+                    case 'LAVATRICE':
+                        colorScheme = {
+                            bg: 'bg-indigo-100',
+                            text: 'text-indigo-600',
+                            button: 'bg-indigo-600',
+                            buttonHover: 'hover:bg-indigo-700',
+                            icon: 'fas fa-jug-detergent'
+                        };
+                        break;
+                    case 'CUCINA':
+                        colorScheme = {
+                            bg: 'bg-orange-100',
+                            text: 'text-orange-600',
+                            button: 'bg-orange-600',
+                            buttonHover: 'hover:bg-orange-700',
+                            icon: 'fas fa-utensils'
+                        };
+                        break;
+                    case 'CARTA E MONOUSO':
+                        colorScheme = {
+                            bg: 'bg-teal-100',
+                            text: 'text-teal-600',
+                            button: 'bg-teal-600',
+                            buttonHover: 'hover:bg-teal-700',
+                            icon: 'fas fa-toilet-paper'
+                        };
+                        break;
+                }
+            }
+
+            // Build product description based on type
+            let description = '';
+            if (product.type) {
+                // Water product
+                const typeLabel = product.type.charAt(0).toUpperCase() + product.type.slice(1);
+                description = `<p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
+                              <p class="text-sm text-gray-500 mb-4">${product.pack_description}</p>`;
+            } else {
+                // Home product
+                const productName = product.product_name || '';
+                description = `<p class="text-gray-600 mb-1 font-medium">${productName}</p>
+                              <p class="text-sm text-gray-500 mb-4">${product.category}</p>`;
+            }
 
             // Build image path - use 'image' field from JSON
             const imagePath = product.image || '';
@@ -420,8 +541,7 @@ class WaterDeliveryApp {
                     <div class="text-center">
                         ${imageHTML}
                         <h3 class="text-xl font-bold mb-2">${product.brand}</h3>
-                        <p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
-                        <p class="text-sm text-gray-500 mb-4">${product.pack_description}</p>
+                        ${description}
                         <div class="text-2xl font-bold ${colorScheme.text} mb-6">${product.price_text}</div>
                         <button onclick="app.addToCart('${product.id}')" 
                                 class="w-full ${colorScheme.button} text-white py-3 rounded-lg font-medium ${colorScheme.buttonHover} transition">
@@ -568,9 +688,18 @@ class WaterDeliveryApp {
     }
 
     addToCart(productId, qty = 1) {
-        // Find product in current location
-        const locationData = this.productsData?.locations?.[this.currentLocation];
-        const product = locationData?.products?.find(p => p.id === productId);
+        // Find product in current location - check both water and home products
+        let product = null;
+        
+        // Check water products
+        const waterLocationData = this.productsData?.locations?.[this.currentLocation];
+        product = waterLocationData?.products?.find(p => p.id === productId);
+        
+        // If not found, check home products
+        if (!product) {
+            const homeLocationData = this.homeProductsData?.locations?.[this.currentLocation];
+            product = homeLocationData?.products?.find(p => p.id === productId);
+        }
         
         if (!product) {
             this.showNotification('Prodotto non trovato', 'error');
