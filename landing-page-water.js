@@ -207,6 +207,23 @@ class WaterDeliveryApp {
                 btn.classList.add('text-gray-700', 'hover:bg-gray-100');
             }
         });
+
+        // Show/hide order info and location selectors based on category (only for 'acqua')
+        const orderInfoSection = document.getElementById('order-info-section');
+        const locationSelectorDesktop = document.getElementById('location-selector-desktop');
+        const locationSelectorMobile = document.getElementById('location-selector-mobile');
+        
+        const isAcquaCategory = this.currentCategory === 'acqua';
+        
+        if (orderInfoSection) {
+            orderInfoSection.style.display = isAcquaCategory ? 'block' : 'none';
+        }
+        if (locationSelectorDesktop) {
+            locationSelectorDesktop.style.display = isAcquaCategory ? '' : 'none';
+        }
+        if (locationSelectorMobile) {
+            locationSelectorMobile.style.display = isAcquaCategory ? '' : 'none';
+        }
     }
 
     getFallbackData() {
