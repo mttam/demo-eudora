@@ -94,18 +94,24 @@
     <!-- Header -->
     <header class="bg-green-600 shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center">
+            <div class="flex items-center space-x-4">
                 <div class="flex items-center text-white font-bold text-2xl">
                     <i class="fas fa-truck mr-2 text-3xl"></i>
                     Eudora
                 </div>
+                <!-- Search input next to brand -->
+                <div class="hidden sm:block">
+                    <div class="relative">
+                        <input id="water-product-search" type="text" placeholder="Cerca prodotti..." class="px-3 py-2 rounded-lg w-64 text-gray-800" autocomplete="off" />
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <nav id="desktop-nav" class="hidden md:flex space-x-8">
-                <a href="#hero" class="text-white font-medium">Home</a>
-                <a href="#products" class="text-white hover:text-gray-200">Prodotti</a>
-                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
-                <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
-                <!-- Cart button replaces the old 'Ordina Ora' CTA -->
+            <nav id="desktop-nav" class="hidden md:flex items-center space-x-6">
+                <a href="#faq" class="text-white font-medium">Aiuto</a>
+                <!-- Cart button -->
                 <button id="cart-button" aria-label="Apri carrello" class="relative bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
@@ -119,15 +125,13 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-green-600 border-t border-green-500">
             <nav class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="#hero" class="text-white font-medium">Home</a>
-                <a href="#products" class="text-white hover:text-gray-200">Prodotti</a>
-                <a href="#faq" class="text-white hover:text-gray-200">FAQ</a>
-                <a href="#footer" class="text-white hover:text-gray-200">Contatti</a>
-                <!-- Mobile cart button (replaces 'Ordina Ora') -->
+                <a href="#help" class="text-white font-medium">Aiuto</a>
+                <!-- Mobile cart button -->
                 <button id="cart-button-mobile" aria-label="Apri carrello mobile" class="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition text-center">
                     <i class="fas fa-shopping-cart mr-2"></i>
                     Carrello <span id="cart-count-mobile" class="ml-2 inline-block bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full align-middle">0</span>
                 </button>
+            </nav>
             </nav>
         </div>
     </header>
@@ -252,8 +256,27 @@
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">I Nostri Prodotti</h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Acqua, detergenti e prodotti per la casa
+                    Acqua, detergenti ,prodotti per la casa e molto altro: scopri il nostro catalogo e ordina online con consegna a domicilio.
                 </p>
+            </div>
+
+            <!-- Search Results Card -->
+            <div id="search-results-card" class="hidden max-w-7xl mx-auto mb-12 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-lg border-2 border-green-200 p-8 search-results-animation">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-search text-green-600 text-3xl mr-4"></i>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">Risultati della ricerca</h2>
+                            <p id="search-results-count" class="text-green-600 font-semibold text-sm mt-1">0 prodotti trovati</p>
+                        </div>
+                    </div>
+                    <button id="close-search-results" class="text-gray-500 hover:text-gray-700 text-2xl p-2 hover:bg-gray-200 rounded-lg transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="search-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Search results will be rendered here -->
+                </div>
             </div>
             
             <!-- Category Tabs -->
@@ -273,6 +296,9 @@
                     </button>
                     <button id="category-carta" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="CARTA E MONOUSO">
                         <i class="fas fa-toilet-paper mr-2"></i>Carta & Monouso
+                    </button>
+                    <button id="category-pharma" class="category-tab px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-gray-700 hover:bg-gray-100" data-category="FARMACI">
+                        <i class="fas fa-pills mr-2"></i>Farmaci & Parafarmaci
                     </button>
                 </div>
             </div>
@@ -317,12 +343,31 @@
                     </div>
                 </div>
             </div>
+            <!-- Farmaci & Parafarmaci - shown only when FARMACI category is active -->
+            <div id="pharma-content" class="hidden max-w-7xl mx-auto mb-8">
+                <div class="container mx-auto px-4">
+                    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow p-8 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                        <div class="text-left">
+                            <h3 class="text-xl font-semibold text-gray-800">Servizio dedicato in chat</h3>
+                            <p class="text-sm text-gray-600 mt-2">Per richieste di farmaci o  su parafarmaci, utilizza la chat Eudora: sarai messo in contatto con il nostro staff dedicato.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <a id="pharma-chat-link" href="https://wa.me/393500378569?text=Salve%20vorrei%20informazioni%20su%20Farmaci%20e%20Parafarmaci" onclick="this.href = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'whatsapp://send?phone=393500378569&text=Salve%20vorrei%20informazioni%20su%20Farmaci%20e%20Parafarmaci' : 'https://wa.me/393500378569?text=Salve%20vorrei%20informazioni%20su%20Farmaci%20e%20Parafarmaci'" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-lg shadow">
+                                <i class="fab fa-whatsapp mr-3"></i>Chatta con Eudora
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
                 <!-- Products will be loaded here by JavaScript -->
             </div>
             
         </div>
     </section>
+
+  
 
     <!-- FAQ Section -->
     <section id="faq" class="py-16 bg-gray-50">
@@ -584,5 +629,6 @@
             openOrderForm(productType);
         }
     </script>
+
 </body>
 </html>

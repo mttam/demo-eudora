@@ -180,6 +180,15 @@ class WaterDeliveryApp {
     }
 
     setCategory(category) {
+        // When FARMACI is selected, show the dedicated pharma section
+        // (do NOT auto-redirect to WhatsApp; users can use the chat button inside the section)
+        if (category === 'FARMACI') {
+            this.currentCategory = category;
+            this.updateCategoryUI();
+            this.showNotification('Categoria: Farmaci & Parafarmaci (usa la chat nella sezione per informazioni)');
+            return;
+        }
+
         this.currentCategory = category;
         this.updateCategoryUI();
         this.renderProducts();
@@ -190,7 +199,8 @@ class WaterDeliveryApp {
             'DETERGENTI': 'Detergenti',
             'LAVATRICE': 'Lavatrice',
             'CUCINA': 'Cucina',
-            'CARTA E MONOUSO': 'Carta e Monouso'
+            'CARTA E MONOUSO': 'Carta e Monouso',
+            'FARMACI': 'Farmaci & Parafarmaci'
         };
         this.showNotification(`Categoria: ${categoryNames[category] || category}`);
     }
@@ -212,6 +222,8 @@ class WaterDeliveryApp {
         const orderInfoSection = document.getElementById('order-info-section');
         const locationSelectorDesktop = document.getElementById('location-selector-desktop');
         const locationSelectorMobile = document.getElementById('location-selector-mobile');
+        const pharmaSection = document.getElementById('pharma-content');
+        const productsContainer = document.getElementById('products-container');
         
         const isAcquaCategory = this.currentCategory === 'acqua';
         
@@ -223,6 +235,14 @@ class WaterDeliveryApp {
         }
         if (locationSelectorMobile) {
             locationSelectorMobile.style.display = isAcquaCategory ? '' : 'none';
+        }
+
+        // Show Pharma content when FARMACI category is active; hide products container in that case
+        if (pharmaSection) {
+            pharmaSection.style.display = (this.currentCategory === 'FARMACI') ? 'block' : 'none';
+        }
+        if (productsContainer) {
+            productsContainer.style.display = (this.currentCategory === 'FARMACI') ? 'none' : '';
         }
     }
 
@@ -399,6 +419,267 @@ class WaterDeliveryApp {
                 this.trackEvent('whatsapp_clicked', { section: btn.closest('section')?.id || 'unknown' });
             });
         });
+
+        // Setup search functionality
+        this.setupSearch();
+    }
+
+    setupSearch() {
+        const searchInput = document.getElementById('water-product-search');
+        const searchResultsCard = document.getElementById('search-results-card');
+        const closeSearchBtn = document.getElementById('close-search-results');
+
+        if (!searchInput) return;
+
+        // Real-time search as user types
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            if (query.length === 0) {
+                // Hide search results if input is empty
+                if (searchResultsCard) {
+                    searchResultsCard.classList.add('hidden');
+                }
+                return;
+            }
+
+            if (query.length < 2) {
+                // Require at least 2 characters
+                if (searchResultsCard) {
+                    searchResultsCard.classList.add('hidden');
+                }
+                return;
+            }
+
+            // Perform search
+            const results = this.performSearch(query);
+            this.displaySearchResults(results, query);
+        });
+
+        // Close search results button
+        if (closeSearchBtn) {
+            closeSearchBtn.addEventListener('click', () => {
+                if (searchResultsCard) {
+                    searchResultsCard.classList.add('hidden');
+                }
+                searchInput.value = '';
+            });
+        }
+
+        // Clear search when clicking on a category or location selector
+        document.querySelectorAll('.category-tab, .location-toggle, .location-toggle-mobile').forEach(btn => {
+            btn.addEventListener('click', () => {
+                searchInput.value = '';
+                if (searchResultsCard) {
+                    searchResultsCard.classList.add('hidden');
+                }
+            });
+        });
+    }
+
+    performSearch(query) {
+        const lowerQuery = query.toLowerCase();
+        const results = [];
+
+        // Get all products from current location
+        const waterLocationData = this.productsData?.locations?.[this.currentLocation];
+        const homeLocationData = this.homeProductsData?.locations?.[this.currentLocation];
+
+        // Search in water products
+        if (waterLocationData?.products) {
+            waterLocationData.products.forEach(product => {
+                if (this.productMatches(product, lowerQuery)) {
+                    results.push({
+                        ...product,
+                        type: 'acqua',
+                        category: 'acqua'
+                    });
+                }
+            });
+        }
+
+        // Search in home products
+        if (homeLocationData?.products) {
+            homeLocationData.products.forEach(product => {
+                if (this.productMatches(product, lowerQuery)) {
+                    results.push({
+                        ...product,
+                        type: 'home'
+                    });
+                }
+            });
+        }
+
+        return results;
+    }
+
+    productMatches(product, query) {
+        const brand = (product.brand || '').toLowerCase();
+        const productName = (product.product_name || '').toLowerCase();
+        const category = (product.category || '').toLowerCase();
+        const sizeLabel = (product.size_label || '').toLowerCase();
+        const packDescription = (product.pack_description || '').toLowerCase();
+
+        return (
+            brand.includes(query) ||
+            productName.includes(query) ||
+            category.includes(query) ||
+            sizeLabel.includes(query) ||
+            packDescription.includes(query)
+        );
+    }
+
+    displaySearchResults(results, query) {
+        const searchResultsCard = document.getElementById('search-results-card');
+        const searchResultsContainer = document.getElementById('search-results-container');
+        const searchResultsCount = document.getElementById('search-results-count');
+
+        if (!searchResultsCard || !searchResultsContainer) return;
+
+        // Show the results card
+        searchResultsCard.classList.remove('hidden');
+
+        // Update the count
+        if (searchResultsCount) {
+            if (results.length === 0) {
+                searchResultsCount.textContent = 'Nessun prodotto trovato';
+            } else if (results.length === 1) {
+                searchResultsCount.textContent = '1 prodotto trovato';
+            } else {
+                searchResultsCount.textContent = `${results.length} prodotti trovati`;
+            }
+        }
+
+        // If no results, show empty state
+        if (results.length === 0) {
+            searchResultsContainer.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-search text-gray-300 text-6xl mb-4"></i>
+                    <p class="text-gray-500 text-lg">Nessun prodotto corrisponde a "<strong>${query}</strong>"</p>
+                    <p class="text-gray-400 text-sm mt-2">Prova a cercare con altri termini</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Display product results
+        const productsHTML = results.map(product => {
+            // Determine color scheme based on category
+            let colorScheme = {
+                bg: 'bg-blue-100',
+                text: 'text-blue-600',
+                button: 'bg-blue-600',
+                buttonHover: 'hover:bg-blue-700',
+                icon: 'fas fa-tint'
+            };
+
+            // For water products
+            if (product.type === 'effervescente' || product.type === 'gassata' || product.category === 'acqua') {
+                colorScheme = {
+                    bg: 'bg-green-100',
+                    text: 'text-green-600',
+                    button: 'bg-green-600',
+                    buttonHover: 'hover:bg-green-700',
+                    icon: 'fas fa-wine-bottle'
+                };
+            }
+
+            // For home products, set color scheme by category
+            if (product.category && product.category !== 'acqua') {
+                switch(product.category) {
+                    case 'DETERGENTI':
+                        colorScheme = {
+                            bg: 'bg-purple-100',
+                            text: 'text-purple-600',
+                            button: 'bg-purple-600',
+                            buttonHover: 'hover:bg-purple-700',
+                            icon: 'fas fa-spray-can'
+                        };
+                        break;
+                    case 'LAVATRICE':
+                        colorScheme = {
+                            bg: 'bg-indigo-100',
+                            text: 'text-indigo-600',
+                            button: 'bg-indigo-600',
+                            buttonHover: 'hover:bg-indigo-700',
+                            icon: 'fas fa-jug-detergent'
+                        };
+                        break;
+                    case 'CUCINA':
+                        colorScheme = {
+                            bg: 'bg-orange-100',
+                            text: 'text-orange-600',
+                            button: 'bg-orange-600',
+                            buttonHover: 'hover:bg-orange-700',
+                            icon: 'fas fa-utensils'
+                        };
+                        break;
+                    case 'CARTA E MONOUSO':
+                        colorScheme = {
+                            bg: 'bg-teal-100',
+                            text: 'text-teal-600',
+                            button: 'bg-teal-600',
+                            buttonHover: 'hover:bg-teal-700',
+                            icon: 'fas fa-toilet-paper'
+                        };
+                        break;
+                }
+            }
+
+            // Build product description based on type
+            let description = '';
+            if (product.type === 'acqua' || product.pack_description) {
+                // Water product
+                const typeLabel = (product.type && product.type !== 'acqua') ? product.type.charAt(0).toUpperCase() + product.type.slice(1) : 'Acqua';
+                description = `<p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
+                              <p class="text-sm text-gray-500 mb-4">${product.pack_description || ''}</p>`;
+            } else {
+                // Home product
+                const productName = product.product_name || '';
+                description = `<p class="text-gray-600 mb-1 font-medium">${productName}</p>
+                              <p class="text-sm text-gray-500 mb-4">${product.category}</p>`;
+            }
+
+            // Build image path
+            const imagePath = product.image || '';
+            const imageHTML = imagePath ? 
+                `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
+                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                 </div>` :
+                `<div class="${colorScheme.bg} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                 </div>`;
+
+            // Get category name for display
+            const categoryName = product.category || (product.type === 'acqua' ? 'Acqua' : 'Prodotto');
+            
+            return `
+                <div class="relative">
+                    <!-- Category Badge -->
+                    <div class="absolute -top-3 left-4 z-10">
+                        <span class="${colorScheme.bg} ${colorScheme.text} px-4 py-1 rounded-full text-sm font-semibold border-2 border-white shadow-md">
+                            ${categoryName}
+                        </span>
+                    </div>
+                    <!-- Product Card -->
+                    <div class="product-card search-result-product-card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow pt-8">
+                        <div class="text-center">
+                            ${imageHTML}
+                            <h3 class="text-xl font-bold mb-2">${product.brand}</h3>
+                            ${description}
+                            <div class="text-2xl font-bold ${colorScheme.text} mb-6">${product.price_text}</div>
+                            <button onclick="app.addToCart('${product.id}')" 
+                                    class="w-full ${colorScheme.button} text-white py-3 rounded-lg font-medium ${colorScheme.buttonHover} transition">
+                                Aggiungi al carrello
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        searchResultsContainer.innerHTML = productsHTML;
     }
 
     renderBenefits() {
