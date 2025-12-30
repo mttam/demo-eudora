@@ -426,35 +426,49 @@ class WaterDeliveryApp {
 
     setupSearch() {
         const searchInput = document.getElementById('water-product-search');
+        const searchInputSection = document.getElementById('water-product-search-section');
         const searchResultsCard = document.getElementById('search-results-card');
         const closeSearchBtn = document.getElementById('close-search-results');
 
-        if (!searchInput) return;
+        // Setup all search inputs
+        const setupSearchInput = (input) => {
+            if (!input) return;
 
-        // Real-time search as user types
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            
-            if (query.length === 0) {
-                // Hide search results if input is empty
-                if (searchResultsCard) {
-                    searchResultsCard.classList.add('hidden');
+            // Real-time search as user types
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                
+                if (query.length === 0) {
+                    // Hide search results if input is empty
+                    if (searchResultsCard) {
+                        searchResultsCard.classList.add('hidden');
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (query.length < 2) {
-                // Require at least 2 characters
-                if (searchResultsCard) {
-                    searchResultsCard.classList.add('hidden');
+                if (query.length < 2) {
+                    // Require at least 2 characters
+                    if (searchResultsCard) {
+                        searchResultsCard.classList.add('hidden');
+                    }
+                    return;
                 }
-                return;
-            }
 
-            // Perform search
-            const results = this.performSearch(query);
-            this.displaySearchResults(results, query);
-        });
+                // Perform search
+                const results = this.performSearch(query);
+                this.displaySearchResults(results, query);
+                
+                // On mobile, scroll to results
+                if (window.innerWidth < 768 && searchResultsCard && !searchResultsCard.classList.contains('hidden')) {
+                    setTimeout(() => {
+                        searchResultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
+            });
+        };
+
+        setupSearchInput(searchInput);
+        setupSearchInput(searchInputSection);
 
         // Close search results button
         if (closeSearchBtn) {
@@ -462,14 +476,16 @@ class WaterDeliveryApp {
                 if (searchResultsCard) {
                     searchResultsCard.classList.add('hidden');
                 }
-                searchInput.value = '';
+                if (searchInput) searchInput.value = '';
+                if (searchInputSection) searchInputSection.value = '';
             });
         }
 
         // Clear search when clicking on a category or location selector
         document.querySelectorAll('.category-tab, .location-toggle, .location-toggle-mobile').forEach(btn => {
             btn.addEventListener('click', () => {
-                searchInput.value = '';
+                if (searchInput) searchInput.value = '';
+                if (searchInputSection) searchInputSection.value = '';
                 if (searchResultsCard) {
                     searchResultsCard.classList.add('hidden');
                 }
