@@ -555,30 +555,34 @@ class WaterDeliveryApp {
         const lowerQuery = query.toLowerCase();
         const results = [];
 
-        // Get all products from current location
-        const waterLocationData = this.productsData?.locations?.[this.currentLocation];
-        const homeLocationData = this.homeProductsData?.locations?.[this.currentLocation];
-
-        // Search in water products
-        if (waterLocationData?.products) {
-            waterLocationData.products.forEach(product => {
-                if (this.productMatches(product, lowerQuery)) {
-                    results.push({
-                        ...product,
-                        type: 'acqua',
-                        category: 'acqua'
+        // Search in all locations for water products
+        if (this.productsData?.locations) {
+            Object.values(this.productsData.locations).forEach(locationData => {
+                if (locationData?.products) {
+                    locationData.products.forEach(product => {
+                        if (this.productMatches(product, lowerQuery)) {
+                            results.push({
+                                ...product,
+                                type: 'acqua',
+                                category: 'acqua'
+                            });
+                        }
                     });
                 }
             });
         }
 
-        // Search in home products
-        if (homeLocationData?.products) {
-            homeLocationData.products.forEach(product => {
-                if (this.productMatches(product, lowerQuery)) {
-                    results.push({
-                        ...product,
-                        type: 'home'
+        // Search in all locations for home products
+        if (this.homeProductsData?.locations) {
+            Object.values(this.homeProductsData.locations).forEach(locationData => {
+                if (locationData?.products) {
+                    locationData.products.forEach(product => {
+                        if (this.productMatches(product, lowerQuery)) {
+                            results.push({
+                                ...product,
+                                type: 'home'
+                            });
+                        }
                     });
                 }
             });
