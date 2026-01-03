@@ -5,10 +5,16 @@ class WaterDeliveryApp {
         this.productsData = null; // Water products data from water-prodocts.json
         this.homeProductsData = null; // Home products data from home-prodocts.json
         this.currentLocation = 'cosenza'; // Default location
-        this.currentCategory = 'acqua'; // Default category (acqua, DETERGENTI, etc.)
+        this.currentCategory = 'acqua'; // Default category (acqua, cura_casa, FARMACI)
+        this.currentSubcategory = null; // For hierarchical categories (CUCINA, LAVATRICE, DETERGENTI, BAGNO, CARTA E MONOUSO)
         this.cart = {}; // cart keyed by productId { id, product, qty }
         this.touchSliderActive = false;
         this._touchHandlers = null;
+        this.categoryHierarchy = {
+            'acqua': null,
+            'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
+            'FARMACI': null
+        };
         this.init();
     }
 
@@ -167,11 +173,19 @@ class WaterDeliveryApp {
     }
 
     setupCategorySwitcher() {
-        // Category tab buttons
-        document.querySelectorAll('.category-tab').forEach(btn => {
+        // Main category tab buttons
+        document.querySelectorAll('.category-tab-main').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const category = btn.dataset.category;
                 this.setCategory(category);
+            });
+        });
+
+        // Sub-category tab buttons
+        document.querySelectorAll('.category-tab-sub').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const subcategory = btn.dataset.subcategory;
+                this.setSubcategory(subcategory);
             });
         });
 
@@ -181,33 +195,51 @@ class WaterDeliveryApp {
 
     setCategory(category) {
         // When FARMACI is selected, show the dedicated pharma section
-        // (do NOT auto-redirect to WhatsApp; users can use the chat button inside the section)
         if (category === 'FARMACI') {
             this.currentCategory = category;
+            this.currentSubcategory = null;
             this.updateCategoryUI();
             this.showNotification('Categoria: Farmaci & Parafarmaci (usa la chat nella sezione per informazioni)');
             return;
         }
 
         this.currentCategory = category;
+        this.currentSubcategory = null; // Reset subcategory when changing main category
         this.updateCategoryUI();
+        
+        // If this category has subcategories, show them and set the first as default
+        if (this.categoryHierarchy[category] && this.categoryHierarchy[category].length > 0) {
+            this.currentSubcategory = this.categoryHierarchy[category][0];
+        }
+        
         this.renderProducts();
         
         // Show notification
         const categoryNames = {
             'acqua': 'Acqua',
-            'DETERGENTI': 'Detergenti',
-            'LAVATRICE': 'Lavatrice',
-            'CUCINA': 'Cucina',
-            'CARTA E MONOUSO': 'Carta e Monouso',
+            'cura_casa': 'Cura Casa',
             'FARMACI': 'Farmaci & Parafarmaci'
         };
         this.showNotification(`Categoria: ${categoryNames[category] || category}`);
     }
 
+    setSubcategory(subcategory) {
+        this.currentSubcategory = subcategory;
+        this.updateCategoryUI();
+        this.renderProducts();
+        
+        const subcategoryNames = {
+            'CUCINA': 'Cucina',
+            'LAVATRICE': 'Lavatrice',
+            'DETERGENTI': 'Detergenti',
+            'CARTA E MONOUSO': 'Carta & Monouso'
+        };
+        this.showNotification(`Filtro: ${subcategoryNames[subcategory] || subcategory}`);
+    }
+
     updateCategoryUI() {
-        // Update all category tab buttons
-        document.querySelectorAll('.category-tab').forEach(btn => {
+        // Update all main category tab buttons
+        document.querySelectorAll('.category-tab-main').forEach(btn => {
             const btnCategory = btn.dataset.category;
             if (btnCategory === this.currentCategory) {
                 btn.classList.add('bg-green-600', 'text-white');
@@ -217,6 +249,28 @@ class WaterDeliveryApp {
                 btn.classList.add('text-gray-700', 'hover:bg-gray-100');
             }
         });
+
+        // Update sub-category buttons
+        document.querySelectorAll('.category-tab-sub').forEach(btn => {
+            const btnSubcategory = btn.dataset.subcategory;
+            if (btnSubcategory === this.currentSubcategory) {
+                btn.classList.add('bg-green-500', 'text-white', 'border-green-500');
+                btn.classList.remove('text-gray-700', 'hover:bg-white', 'border-gray-300');
+            } else {
+                btn.classList.remove('bg-green-500', 'text-white', 'border-green-500');
+                btn.classList.add('text-gray-700', 'hover:bg-white', 'border-gray-300');
+            }
+        });
+
+        // Show/hide subcategories container based on whether category has subs
+        const subcategoriesContainer = document.getElementById('subcategories-container');
+        if (subcategoriesContainer) {
+            if (this.categoryHierarchy[this.currentCategory] && this.categoryHierarchy[this.currentCategory].length > 0) {
+                subcategoriesContainer.style.display = '';
+            } else {
+                subcategoriesContainer.style.display = 'none';
+            }
+        }
 
         // Show/hide order info and location selectors based on category
         const orderInfoSection = document.getElementById('order-info-section');
@@ -754,15 +808,29 @@ class WaterDeliveryApp {
         if (this.currentCategory === 'acqua') {
             const locationData = this.productsData?.locations?.[this.currentLocation];
             products = locationData?.products || [];
+        } else if (this.currentCategory === 'cura_casa') {
+            // Get home products for the current subcategory
+            const locationData = this.homeProductsData?.locations?.[this.currentLocation];
+            const allHomeProducts = locationData?.products || [];
+            
+            if (this.currentSubcategory) {
+                products = allHomeProducts.filter(p => p.category === this.currentSubcategory);
+            } else {
+                // If no subcategory selected, show nothing
+                products = [];
+            }
         } else {
-            // Get home products for the current category
+            // For other categories (shouldn't happen with new hierarchy)
             const locationData = this.homeProductsData?.locations?.[this.currentLocation];
             const allHomeProducts = locationData?.products || [];
             products = allHomeProducts.filter(p => p.category === this.currentCategory);
         }
         
         if (products.length === 0) {
-            container.innerHTML = '<p class="text-center text-gray-600">Nessun prodotto disponibile per questa categoria</p>';
+            const emptyMessage = this.currentSubcategory 
+                ? `Nessun prodotto disponibile per questa categoria`
+                : 'Seleziona una categoria';
+            container.innerHTML = `<p class="text-center text-gray-600">${emptyMessage}</p>`;
             return;
         }
 

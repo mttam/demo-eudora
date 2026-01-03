@@ -697,3 +697,171 @@ body {
         left: 100%;
     }
 }
+
+/* Hierarchical Category Filter Styles */
+
+/* Main category tabs styling */
+.category-tab-main {
+    position: relative;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-tab-main:hover:not(.bg-green-600) {
+    background-color: #f3f4f6;
+    transform: translateY(-2px);
+}
+
+/* Sub-category filter styling */
+#subcategories-container {
+    animation: slideDown 0.3s ease-out;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    position: relative;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sub-category buttons */
+.category-tab-sub {
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-tab-sub::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.category-tab-sub:hover::before {
+    left: 100%;
+}
+
+.category-tab-sub:hover:not(.bg-green-500) {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-tab-sub.bg-green-500 {
+    animation: activeButtonPulse 0.4s ease-out;
+}
+
+@keyframes activeButtonPulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+/* Visual hierarchy indicators */
+.category-hierarchy-indicator {
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: var(--water-primary);
+    margin-right: 0.5rem;
+    border-radius: 2px;
+    animation: hierarchyPulse 2s ease-in-out infinite;
+}
+
+@keyframes hierarchyPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Category icons enhancement */
+.category-tab-main i,
+.category-tab-main svg,
+.category-tab-sub i,
+.category-tab-sub svg {
+    transition: transform 0.3s ease;
+}
+
+.category-tab-main:hover i,
+.category-tab-main:hover svg,
+.category-tab-sub:hover i,
+.category-tab-sub:hover svg {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.category-tab-main.bg-green-600 i,
+.category-tab-main.bg-green-600 svg,
+.category-tab-sub.bg-green-500 i,
+.category-tab-sub.bg-green-500 svg {
+    transform: scale(1.2);
+}
+
+/* Filter badge styling */
+.filter-badge {
+    display: inline-block;
+    background: var(--water-secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    animation: badgeSlideIn 0.3s ease-out;
+}
+
+@keyframes badgeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive adjustments for category filters */
+@media (max-width: 768px) {
+    #subcategories-container {
+        padding: 0.75rem;
+    }
+
+    .category-tab-main,
+    .category-tab-sub {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .category-tab-main i,
+    .category-tab-main svg,
+    .category-tab-sub i,
+    .category-tab-sub svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
