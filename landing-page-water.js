@@ -218,7 +218,7 @@ class WaterDeliveryApp {
             }
         });
 
-        // Show/hide order info and location selectors based on category (only for 'acqua')
+        // Show/hide order info and location selectors based on category
         const orderInfoSection = document.getElementById('order-info-section');
         const locationSelectorDesktop = document.getElementById('location-selector-desktop');
         const locationSelectorMobile = document.getElementById('location-selector-mobile');
@@ -226,23 +226,27 @@ class WaterDeliveryApp {
         const productsContainer = document.getElementById('products-container');
         
         const isAcquaCategory = this.currentCategory === 'acqua';
+        const isFarmaciCategory = this.currentCategory === 'FARMACI';
         
+        // Show order info only for acqua category
         if (orderInfoSection) {
             orderInfoSection.style.display = isAcquaCategory ? 'block' : 'none';
         }
+        
+        // Show location selectors for all categories EXCEPT Farmaci
         if (locationSelectorDesktop) {
-            locationSelectorDesktop.style.display = isAcquaCategory ? '' : 'none';
+            locationSelectorDesktop.style.display = isFarmaciCategory ? 'none' : '';
         }
         if (locationSelectorMobile) {
-            locationSelectorMobile.style.display = isAcquaCategory ? '' : 'none';
+            locationSelectorMobile.style.display = isFarmaciCategory ? 'none' : '';
         }
 
         // Show Pharma content when FARMACI category is active; hide products container in that case
         if (pharmaSection) {
-            pharmaSection.style.display = (this.currentCategory === 'FARMACI') ? 'block' : 'none';
+            pharmaSection.style.display = isFarmaciCategory ? 'block' : 'none';
         }
         if (productsContainer) {
-            productsContainer.style.display = (this.currentCategory === 'FARMACI') ? 'none' : '';
+            productsContainer.style.display = isFarmaciCategory ? 'none' : '';
         }
     }
 
