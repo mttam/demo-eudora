@@ -120,6 +120,13 @@ class WaterDeliveryApp {
         this.updateLocationUI();
         this.renderProducts();
         
+        // Update search results if search is active
+        const searchInput = document.getElementById('water-product-search');
+        if (searchInput && searchInput.value && searchInput.value.trim().length > 0) {
+            const results = this.performSearch(searchInput.value);
+            this.displaySearchResults(results, searchInput.value);
+        }
+        
         // Show notification
         const locationData = this.productsData.locations[location];
         this.showNotification(`Località cambiata a ${locationData.city}`);
@@ -554,18 +561,31 @@ class WaterDeliveryApp {
     performSearch(query) {
         const lowerQuery = query.toLowerCase();
         const results = [];
+        const productMap = new Map(); // Map to track products by ID and their available locations
 
         // Search in all locations for water products
         if (this.productsData?.locations) {
-            Object.values(this.productsData.locations).forEach(locationData => {
+            Object.entries(this.productsData.locations).forEach(([locationKey, locationData]) => {
                 if (locationData?.products) {
                     locationData.products.forEach(product => {
                         if (this.productMatches(product, lowerQuery)) {
-                            results.push({
-                                ...product,
-                                type: 'acqua',
-                                category: 'acqua'
-                            });
+                            const productId = product.id;
+                            
+                            if (!productMap.has(productId)) {
+                                // First time seeing this product
+                                productMap.set(productId, {
+                                    ...product,
+                                    type: 'acqua',
+                                    category: 'acqua',
+                                    availableLocations: [{ key: locationKey, city: locationData.city }]
+                                });
+                            } else {
+                                // Product already found, add location
+                                const existingProduct = productMap.get(productId);
+                                if (!existingProduct.availableLocations.some(loc => loc.key === locationKey)) {
+                                    existingProduct.availableLocations.push({ key: locationKey, city: locationData.city });
+                                }
+                            }
                         }
                     });
                 }
@@ -574,20 +594,34 @@ class WaterDeliveryApp {
 
         // Search in all locations for home products
         if (this.homeProductsData?.locations) {
-            Object.values(this.homeProductsData.locations).forEach(locationData => {
+            Object.entries(this.homeProductsData.locations).forEach(([locationKey, locationData]) => {
                 if (locationData?.products) {
                     locationData.products.forEach(product => {
                         if (this.productMatches(product, lowerQuery)) {
-                            results.push({
-                                ...product,
-                                type: 'home'
-                            });
+                            const productId = product.id;
+                            
+                            if (!productMap.has(productId)) {
+                                // First time seeing this product
+                                productMap.set(productId, {
+                                    ...product,
+                                    type: 'home',
+                                    availableLocations: [{ key: locationKey, city: locationData.city }]
+                                });
+                            } else {
+                                // Product already found, add location
+                                const existingProduct = productMap.get(productId);
+                                if (!existingProduct.availableLocations.some(loc => loc.key === locationKey)) {
+                                    existingProduct.availableLocations.push({ key: locationKey, city: locationData.city });
+                                }
+                            }
                         }
                     });
                 }
             });
         }
 
+        // Convert map to array
+        productMap.forEach(product => results.push(product));
         return results;
     }
 
@@ -732,6 +766,22 @@ class WaterDeliveryApp {
             // Get category name for display
             const categoryName = product.category || (product.type === 'acqua' ? 'Acqua' : 'Prodotto');
             
+            // Get location badge - if product is in multiple locations, filter by current location
+            let locationBadge = '';
+            if (product.availableLocations && product.availableLocations.length > 0) {
+                // Check if current location has this product
+                const currentLocationData = product.availableLocations.find(loc => loc.key === this.currentLocation);
+                const locationToShow = currentLocationData || product.availableLocations[0];
+                locationBadge = `
+                    <div class="absolute -top-3 right-4 z-10">
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold border-2 border-white shadow-md flex items-center">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            ${locationToShow.city}
+                        </span>
+                    </div>
+                `;
+            }
+            
             return `
                 <div class="relative">
                     <!-- Category Badge -->
@@ -740,6 +790,8 @@ class WaterDeliveryApp {
                             ${categoryName}
                         </span>
                     </div>
+                    <!-- Location Badge -->
+                    ${locationBadge}
                     <!-- Product Card -->
                     <div class="product-card search-result-product-card bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow pt-8">
                         <div class="text-center">
