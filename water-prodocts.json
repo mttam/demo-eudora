@@ -201,8 +201,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.59,
-          "price_text": "€ 3,59",
+          "price_eur": 3.09,
+          "price_text": "€ 3,09",
           "image": "public/img_water/sant_anna.png"
         },
         {
@@ -213,8 +213,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 2.49,
-          "price_text": "€ 2,49",
+          "price_eur": 1.99,
+          "price_text": "€ 1,99",
           "image": "public/img_water/sanbenedetto.png"
         },
         {
@@ -225,8 +225,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.39,
-          "price_text": "€ 3,39",
+          "price_eur": 2.89,
+          "price_text": "€ 2,89",
           "image": "public/img_water/lete.png"
         },
         {
@@ -237,8 +237,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 7.64,
-          "price_text": "€ 7,64",
+          "price_eur": 7.14,
+          "price_text": "€ 7,14",
           "image": "public/img_water/fontenoce_lattanti.png"
         },
         {
@@ -249,8 +249,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.00,
-          "price_text": "€ 3,00",
+          "price_eur": 2.50,
+          "price_text": "€ 2,50",
           "image": "public/img_water/fontenoce.png"
         },
         {
@@ -261,8 +261,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 2.69,
-          "price_text": "€ 2,69",
+          "price_eur": 2.19,
+          "price_text": "€ 2,19",
           "image": "public/img_water/fabrizia.png"
         },
         {
@@ -273,8 +273,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 4.40,
-          "price_text": "€ 4,40",
+          "price_eur": 3.90,
+          "price_text": "€ 3,90",
           "image": "public/img_water/rocchetta.png"
         },
         {
@@ -285,8 +285,8 @@
           "type": "effervescente",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 4.65,
-          "price_text": "€ 4,65",
+          "price_eur": 4.15,
+          "price_text": "€ 4,15",
           "image": "public/img_water/uliveto.png"
         },
         {
@@ -297,8 +297,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 2.60,
-          "price_text": "€ 2,60",
+          "price_eur": 2.10,
+          "price_text": "€ 2,10",
           "image": "public/img_water/Lilia.png"
         },
         {
@@ -309,8 +309,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.79,
-          "price_text": "€ 3,79",
+          "price_eur": 3.29,
+          "price_text": "€ 3,29",
           "image": "public/img_water/mangiatorella.png"
         },
         {
@@ -321,8 +321,8 @@
           "type": "gassata",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.44,
-          "price_text": "€ 3,44",
+          "price_eur": 2.94,
+          "price_text": "€ 2,94",
           "image": "public/img_water/calabria_frizzante.png"
         },
         {
@@ -333,8 +333,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.19,
-          "price_text": "€ 3,19",
+          "price_eur": 2.69,
+          "price_text": "€ 2,69",
           "image": "public/img_water/calabria_naturale.png"
         },
         {
@@ -345,8 +345,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 6.20,
-          "price_text": "€ 6,20",
+          "price_eur": 5.70,
+          "price_text": "€ 5,70",
           "image": "public/img_water/essenziale.png"
         },
         {
@@ -357,8 +357,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.19,
-          "price_text": "€ 3,19",
+          "price_eur": 2.99,
+          "price_text": "€ 2,99",
           "image": "public/img_water/levissima.png"
         },
         {
@@ -369,8 +369,8 @@
           "type": "frizzante",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.62,
-          "price_text": "€ 3,62",
+          "price_eur": 3.12,
+          "price_text": "€ 3,12",
           "image": "public/img_water/levissima_frizzante.png"
         },
         {
@@ -381,8 +381,8 @@
           "type": "effervescente",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.19,
-          "price_text": "€ 3,19",
+          "price_eur": 2.69,
+          "price_text": "€ 2,69",
           "image": "public/img_water/ferrarelle.png"
         },
         {
@@ -393,8 +393,8 @@
           "type": "frizzante",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.80,
-          "price_text": "€ 3,80",
+          "price_eur": 3.30,
+          "price_text": "€ 3,30",
           "image": "public/img_water/ferrarelle_maxima.png"
         },
         {
@@ -405,8 +405,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 3.79,
-          "price_text": "€ 3,79",
+          "price_eur": 3.29,
+          "price_text": "€ 3,29",
           "image": "public/img_water/vista_snella.png"
         },
         {
@@ -417,8 +417,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 2.49,
-          "price_text": "€ 2,49",
+          "price_eur": 1.99,
+          "price_text": "€ 1,99",
           "image": "public/img_water/leo.png"
         },
         {
@@ -429,8 +429,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 2.84,
-          "price_text": "€ 2,84",
+          "price_eur": 2.34,
+          "price_text": "€ 2,34",
           "image": "public/img_water/sorbello.png"
         },
         {
@@ -441,8 +441,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 8.24,
-          "price_text": "€ 8,24",
+          "price_eur": 7.74,
+          "price_text": "€ 7,74",
           "notes": "VETRO",
           "image": "public/img_water/fiuggi_vetro.png"
         },
@@ -454,8 +454,8 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 5.84,
-          "price_text": "€ 5,84",
+          "price_eur": 5.34,
+          "price_text": "€ 5,34",
           "notes": "PET",
           "image": "public/img_water/fiuggi.png"
         }
