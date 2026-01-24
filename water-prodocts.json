@@ -2,7 +2,7 @@
   "locations": {
     "cosenza": {
       "city": "Cosenza",
-      "delivery_fee": 0.50,
+      "delivery_fee": 1.00,
       "min_order_cases": 2,
       "products": [
         {
@@ -190,7 +190,7 @@
     },
     "rende": {
       "city": "Rende",
-      "delivery_fee": 0.50,
+      "delivery_fee": 1.00,
       "min_order_cases": 2,
       "products": [
         {
