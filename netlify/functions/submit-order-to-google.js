@@ -45,6 +45,11 @@ exports.handler = async (event, context) => {
         console.log('📤 Sending order data to Google Apps Script...');
         console.log('Order Data:', orderData);
 
+        // Genera il nome della sheet lato server basato sulla data (es: Orders_2026-01-29)
+        const today = new Date();
+        const dateString = today.toISOString().split('T')[0]; // formato: YYYY-MM-DD
+        const sheetName = `Orders_${dateString}`;
+
         // Prepare data for Google Apps Script
         const payload = {
             // Customer information
@@ -55,6 +60,7 @@ exports.handler = async (event, context) => {
             // Order details
             orderNumber: orderData.orderNumber || '',
             orderDate: orderData.createdAt || new Date().toISOString(),
+            sheetName: sheetName,
             
             // Delivery information
             deliveryAddress: orderData.deliveryAddress?.street || '',
