@@ -1290,6 +1290,51 @@ class WaterDeliveryApp {
         return { items, subtotal, shipping, total };
     }
 
+    async sendOrderToGoogleAppsScript(orderData) {
+        try {
+            console.log('📤 Sending order to Google Apps Script via Netlify function...');
+            console.log('Order data being sent:', orderData);
+            
+            const response = await fetch('/.netlify/functions/submit-order-to-google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            console.log('📨 Response received with status:', response.status);
+
+            if (!response.ok) {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { error: await response.text() };
+                }
+                console.error('❌ Error sending to Google Apps Script:', response.status, errorData);
+                return {
+                    success: false,
+                    error: errorData.error || `HTTP ${response.status}`
+                };
+            }
+
+            const result = await response.json();
+            console.log('✅ Order successfully sent to Google Apps Script:', result);
+            return {
+                success: true,
+                data: result
+            };
+        } catch (error) {
+            console.error('❌ Error in sendOrderToGoogleAppsScript:', error);
+            console.error('Error details:', error.message, error.stack);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
+    }
+
     sendCartToWhatsApp() {
         // Gather form fields
         const name = document.getElementById('cart-customer-name')?.value?.trim();
@@ -1360,6 +1405,49 @@ class WaterDeliveryApp {
         const url = `https://wa.me/${phone}?text=${finalMessage}`;
         window.open(url, '_blank');
         this.trackEvent('send_whatsapp_order', { items: items.length, total });
+
+        // 🔄 INVIA IN PARALLELO: Invia anche a Google Apps Script tramite Netlify
+        const orderNumber = `WD-${Date.now()}`; // Generate order number
+        const orderData = {
+            orderNumber: orderNumber,
+            customerName: `${name} ${surname}`,
+            customerPhone: document.getElementById('cart-customer-phone')?.value || 'N/A',
+            customerEmail: document.getElementById('cart-customer-email')?.value || 'N/A',
+            deliveryAddress: {
+                street: address,
+                city: cityName,
+                zipCode: document.getElementById('cart-customer-zipcode')?.value || '',
+                province: document.getElementById('cart-customer-province')?.value || ''
+            },
+            paymentMethod: {
+                type: payment === 'Contrassegno' ? 'cash' : 'other',
+                label: payment
+            },
+            items: items.map(i => ({
+                productId: i.id,
+                name: i.product.brand,
+                price: (i.product.price_eur || i.product.price || 0),
+                quantity: i.qty
+            })),
+            subtotal: subtotal,
+            deliveryFee: shipping,
+            total: total,
+            status: 'pending',
+            notes: `Fascia oraria: ${deliveryTime}`,
+            createdAt: new Date().toISOString()
+        };
+
+        this.sendOrderToGoogleAppsScript(orderData)
+            .then(result => {
+                if (result.success) {
+                    console.log('✅ Order data sent to Google Apps Script');
+                } else {
+                    console.warn('⚠️ Warning: Order data could not be sent to Google Apps Script:', result.error);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Background error sending to Google:', error);
+            });
     }
 
     handlePaymentMethodChange() {
