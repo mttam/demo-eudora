@@ -1,0 +1,81 @@
+{
+  "name": "Eudora Delivery - Consegna a Domicilio",
+  "short_name": "Eudora",
+  "description": "Acqua, detergenti e prodotti per la casa consegnati direttamente a domicilio",
+  "start_url": "https://eudora-delivery.netlify.app/",
+  "scope": "https://eudora-delivery.netlify.app/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a202c",
+  "background_color": "#ffffff",
+  "categories": ["shopping", "productivity"],
+  "screenshots": [
+    {
+      "src": "/public/img_home_products/screenshot-mobile.png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/public/img_home_products/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Ordina Acqua",
+      "short_name": "Acqua",
+      "description": "Ordina acqua minerale consegnata a domicilio",
+      "url": "/?category=acqua",
+      "icons": [
+        {
+          "src": "/icon-water-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Prodotti per la Casa",
+      "short_name": "Casa",
+      "description": "Detergenti e prodotti per la casa",
+      "url": "/?category=cura_casa",
+      "icons": [
+        {
+          "src": "/icon-home-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/?shared=true",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

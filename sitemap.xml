@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Home Page -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Acqua (Water) Category - Cosenza -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=acqua&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Acqua (Water) Category - Rende -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=acqua&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa (Home Care) - Cosenza -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa (Home Care) - Rende -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa Subcategories - CUCINA (Kitchen) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=CUCINA&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=CUCINA&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa Subcategories - LAVATRICE (Laundry) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=LAVATRICE&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=LAVATRICE&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa Subcategories - DETERGENTI (Cleaners) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=DETERGENTI&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=DETERGENTI&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Cura Casa Subcategories - CARTA E MONOUSO (Paper & Disposables) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=CARTA%20E%20MONOUSO&location=cosenza</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=cura_casa&subcategory=CARTA%20E%20MONOUSO&location=rende</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Farmaci (Pharmaceuticals) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/?category=FARMACI</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- FAQ Section (High SEO Value) -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/#faq</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <mobile:mobile/>
+    </url>
+    
+    <!-- Work With Us Section -->
+    <url>
+        <loc>https://eudora-delivery.netlify.app/#work-with-us</loc>
+        <lastmod>2026-02-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+        <mobile:mobile/>
+    </url>
+    
+</urlset>
