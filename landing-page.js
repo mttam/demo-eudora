@@ -15,6 +15,25 @@ class WaterDeliveryApp {
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
             'FARMACI': null
         };
+        // SEO metadata templates for different pages/sections
+        this.metadataTemplates = {
+            home: {
+                title: 'Consegna a Domicilio | Eudora Delivery',
+                description: 'Acqua, detergenti e prodotti per la casa consegnati direttamente a domicilio. Ordina online e ricevi tutto ciò che ti serve.'
+            },
+            acqua: {
+                title: 'Acqua Consegnata a Domicilio | Eudora Delivery',
+                description: 'Ampia selezione di acque minerali e naturali consegnate a domicilio. Scegli tra i migliori marchi italiani e esteri.'
+            },
+            cura_casa: {
+                title: 'Detergenti e Prodotti per la Casa | Consegna a Domicilio',
+                description: 'Detergenti, prodotti per la cucina e il bucato consegnati direttamente a casa tua. Scopri l\'ampia gamma di prodotti.'
+            },
+            FARMACI: {
+                title: 'Prodotti Farmaceutici | Consegna a Domicilio Eudora',
+                description: 'Integratori e prodotti farmaceutici di qualità consegnati a domicilio. Servizio veloce e affidabile.'
+            }
+        };
         this.init();
     }
 
@@ -109,6 +128,57 @@ class WaterDeliveryApp {
         }
     }
 
+    // ============================================
+    // SEO METADATA MANAGEMENT FUNCTIONS
+    // ============================================
+    
+    updateMetadata(title, description, canonicalPath = '/') {
+        // Update <title> tag
+        document.title = title;
+        
+        // Update meta description
+        const descriptionMeta = document.querySelector('meta[name="description"]');
+        if (descriptionMeta) {
+            descriptionMeta.setAttribute('content', description);
+        }
+        
+        // Update Open Graph tags
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', title);
+        
+        const ogDescription = document.querySelector('meta[property="og:description"]');
+        if (ogDescription) ogDescription.setAttribute('content', description);
+        
+        // Update canonical URL
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+            canonical = document.createElement('link');
+            canonical.rel = 'canonical';
+            document.head.appendChild(canonical);
+        }
+        const baseUrl = 'https://eudora-delivery.netlify.app';
+        canonical.href = baseUrl + canonicalPath;
+        
+        // Update Twitter Card
+        const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twitterTitle) twitterTitle.setAttribute('content', title);
+        
+        const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+        if (twitterDescription) twitterDescription.setAttribute('content', description);
+    }
+    
+    updateCategoryMetadata(category) {
+        const metadata = this.metadataTemplates[category] || this.metadataTemplates.home;
+        let canonicalPath = `/?category=${category}`;
+        
+        // Add location to canonical if not default
+        if (this.currentLocation !== 'cosenza') {
+            canonicalPath += `&location=${this.currentLocation}`;
+        }
+        
+        this.updateMetadata(metadata.title, metadata.description, canonicalPath);
+    }
+
     setLocation(location) {
         if (!this.productsData?.locations?.[location]) {
             console.error('Invalid location:', location);
@@ -119,6 +189,8 @@ class WaterDeliveryApp {
         this.saveLocation();
         this.updateLocationUI();
         this.renderProducts();
+        // Update canonical URL to reflect location change
+        this.updateCategoryMetadata(this.currentCategory);
         
         // Update search results if search is active
         const searchInput = document.getElementById('water-product-search');
@@ -206,6 +278,7 @@ class WaterDeliveryApp {
             this.currentCategory = category;
             this.currentSubcategory = null;
             this.updateCategoryUI();
+            this.updateCategoryMetadata(category); // Update SEO metadata
             this.showNotification('Categoria: Farmaci & Parafarmaci (usa la chat nella sezione per informazioni)');
             return;
         }
@@ -213,6 +286,7 @@ class WaterDeliveryApp {
         this.currentCategory = category;
         this.currentSubcategory = null; // Reset subcategory when changing main category
         this.updateCategoryUI();
+        this.updateCategoryMetadata(category); // Update SEO metadata
         
         // If this category has subcategories, show them and set the first as default
         if (this.categoryHierarchy[category] && this.categoryHierarchy[category].length > 0) {
