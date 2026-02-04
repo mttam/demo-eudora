@@ -179,6 +179,94 @@ class WaterDeliveryApp {
         this.updateMetadata(metadata.title, metadata.description, canonicalPath);
     }
 
+    // ============================================
+    // SCHEMA.ORG STRUCTURED DATA GENERATION
+    // ============================================
+    
+    generateProductSchema(product, category) {
+        /**
+         * Generate Product Schema.org markup for a single product
+         * @param {Object} product - Product data
+         * @param {string} category - Product category
+         */
+        return {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.name || product.brand,
+            "description": product.description || `${product.brand} - ${product.category || category}`,
+            "brand": {
+                "@type": "Brand",
+                "name": product.brand
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": product.price?.toString() || "0",
+                "priceCurrency": "EUR",
+                "availability": "https://schema.org/InStock",
+                "url": `https://eudora-delivery.netlify.app/?category=${category}&location=${this.currentLocation}`
+            },
+            "image": product.image || "https://eudora-delivery.netlify.app/default-product.png",
+            "category": category
+        };
+    }
+    
+    generateFAQPageSchema() {
+        /**
+         * Generate FAQPage Schema.org markup for FAQ section
+         */
+        if (!this.data?.faqs || this.data.faqs.length === 0) {
+            return null;
+        }
+
+        const faqItems = this.data.faqs.map(faq => ({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": faq.answer
+            }
+        }));
+
+        return {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": faqItems
+        };
+    }
+    
+    injectProductSchemaToDOM(product, category) {
+        /**
+         * Inject product schema as script tag into DOM for search engine indexing
+         */
+        const schema = this.generateProductSchema(product, category);
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(schema);
+        script.setAttribute('data-product-schema', product.name || product.brand);
+        document.head.appendChild(script);
+    }
+    
+    injectFAQSchemaToDOM() {
+        /**
+         * Inject FAQ schema into DOM
+         */
+        const schema = this.generateFAQPageSchema();
+        if (!schema) return;
+        
+        // Remove existing FAQ schema if present
+        const existingFAQSchema = document.querySelector('script[data-faq-schema]');
+        if (existingFAQSchema) {
+            existingFAQSchema.remove();
+        }
+        
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-faq-schema', 'true');
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+    }
+
+
     setLocation(location) {
         if (!this.productsData?.locations?.[location]) {
             console.error('Invalid location:', location);
@@ -1109,6 +1197,9 @@ class WaterDeliveryApp {
                 }
             });
         });
+        
+        // Inject FAQ Schema.org markup for SEO
+        this.injectFAQSchemaToDOM();
     }
 
     setupDeliveryZoneChecker() {

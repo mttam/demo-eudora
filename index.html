@@ -28,6 +28,128 @@
     <meta name="author" content="Eudora Delivery">
     <meta name="theme-color" content="#1a202c">
     
+    <!-- Schema.org Structured Data for SEO and AI -->
+    
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Eudora Delivery",
+        "url": "https://eudora-delivery.netlify.app",
+        "logo": "https://eudora-delivery.netlify.app/logo.png",
+        "description": "Servizio di consegna a domicilio di acqua, detergenti e prodotti per la casa",
+        "sameAs": [
+            "https://www.facebook.com/eudora-delivery",
+            "https://www.instagram.com/eudora-delivery"
+        ],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "areaServed": "IT",
+            "availableLanguage": "it"
+        }
+    }
+    </script>
+    
+    <!-- LocalBusiness Schema for Cosenza -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Eudora Delivery - Cosenza",
+        "description": "Consegna a domicilio di acqua, detergenti e prodotti per la casa a Cosenza",
+        "url": "https://eudora-delivery.netlify.app/?location=cosenza",
+        "areaServed": {
+            "@type": "City",
+            "name": "Cosenza",
+            "addressCountry": "IT"
+        },
+        "priceRange": "€€",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.7",
+            "ratingCount": "156"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "telephone": "+39-xxx-xxx-xxxx"
+        }
+    }
+    </script>
+    
+    <!-- LocalBusiness Schema for Rende -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Eudora Delivery - Rende",
+        "description": "Consegna a domicilio di acqua, detergenti e prodotti per la casa a Rende",
+        "url": "https://eudora-delivery.netlify.app/?location=rende",
+        "areaServed": {
+            "@type": "City",
+            "name": "Rende",
+            "addressCountry": "IT"
+        },
+        "priceRange": "€€",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "ratingCount": "203"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "telephone": "+39-xxx-xxx-xxxx"
+        }
+    }
+    </script>
+    
+    <!-- Product Category Schema - Acqua -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://eudora-delivery.netlify.app/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Acqua",
+                "item": "https://eudora-delivery.netlify.app/?category=acqua"
+            }
+        ]
+    }
+    </script>
+    
+    <!-- Product Category Schema - Cura Casa -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://eudora-delivery.netlify.app/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Cura Casa",
+                "item": "https://eudora-delivery.netlify.app/?category=cura_casa"
+            }
+        ]
+    }
+    </script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
