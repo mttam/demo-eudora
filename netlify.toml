@@ -1,0 +1,68 @@
+[build]
+command = "echo 'Build complete'"
+publish = "."
+functions = "netlify/functions"
+
+# Cache strategy
+[build.cache]
+  cache_modules = true
+
+# Environment variables for functions
+[env.production]
+  [env.production.context.production.environment]
+    NODE_ENV = "production"
+
+# Prerendering configuration for SEO
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+force = false
+
+# Enforce HTTPS
+[[redirects]]
+from = "http://eudora-delivery.netlify.app/*"
+to = "https://eudora-delivery.netlify.app/:splat"
+status = 301
+force = true
+
+# Redirect from Netlify subdomain to custom domain (adjust to your actual domain)
+[[redirects]]
+from = "https://eudora-delivery.netlify.app/*"
+to = "https://tuodominio.com/:splat"
+status = 301
+force = true
+
+# API routing for Netlify Functions
+[[redirects]]
+from = "/api/orders"
+to = "/.netlify/functions/submit-order-to-google"
+status = 200
+
+# Cache headers for static assets
+[[headers]]
+for = "/*.{js,css,svg,png,jpg,jpeg,gif,webp,woff2}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML cache control (shorter TTL for dynamic content)
+[[headers]]
+for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# JSON data files (products, etc.)
+[[headers]]
+for = "/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=1800"
+    Content-Type = "application/json; charset=utf-8"
+
+# Security headers
+[[headers]]
+for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"

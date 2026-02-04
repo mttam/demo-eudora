@@ -1,0 +1,18 @@
+# Enforce HTTPS on all requests
+http://demo-eudora.netlify.app/* https://demo-eudora.netlify.app/:splat 301!
+
+# Redirect from Netlify subdomain to custom domain
+# Uncomment and modify when you have a custom domain
+# https://demo-eudora.netlify.app/* https://your-custom-domain.com/:splat 301!
+
+# Serve index.html for all non-file routes (SPA routing)
+/*    /index.html   200
+
+# Cache busting for versioned assets
+/assets/* /assets/:splat 200
+
+# API proxy to Netlify Functions
+/api/orders /.netlify/functions/submit-order-to-google 200
+
+# Prevent directory listing
+/public/* /index.html 200
