@@ -1,4 +1,4 @@
-// landing-page-water.js - Water Delivery Landing Page Functionality
+// landing-page.js - Water Delivery Landing Page Functionality
 class WaterDeliveryApp {
     constructor() {
         this.data = null;
@@ -39,7 +39,7 @@ class WaterDeliveryApp {
 
     async loadData() {
         try {
-            const response = await fetch('./data-water.json');
+            const response = await fetch('./data.json');
             this.data = await response.json();
             
             // If data doesn't have the structure we need, add fallback sections
@@ -67,7 +67,7 @@ class WaterDeliveryApp {
 
     async loadProductsData() {
         try {
-            const response = await fetch('./water-prodocts.json');
+            const response = await fetch('./products.json');
             this.productsData = await response.json();
             console.log('Products data loaded:', this.productsData);
         } catch (error) {
