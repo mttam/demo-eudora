@@ -1506,7 +1506,44 @@ class WaterDeliveryApp {
         }
     }
 
+    displayCartErrors(errors) {
+        /**
+         * Display validation errors in the cart panel below the WhatsApp button
+         * @param {string[]} errors - Array of error messages
+         */
+        const errorContainer = document.getElementById('cart-errors');
+        const errorList = document.getElementById('cart-errors-list');
+        
+        if (!errorContainer || !errorList) return;
+        
+        // Create error items
+        errorList.innerHTML = errors.map(error => `<div>• ${error}</div>`).join('');
+        
+        // Show the error container
+        errorContainer.classList.remove('hidden');
+        
+        // Scroll to show errors
+        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    clearCartErrors() {
+        /**
+         * Clear all validation errors in the cart panel
+         */
+        const errorContainer = document.getElementById('cart-errors');
+        const errorList = document.getElementById('cart-errors-list');
+        
+        if (!errorContainer || !errorList) return;
+        
+        // Hide the error container and clear content
+        errorContainer.classList.add('hidden');
+        errorList.innerHTML = '';
+    }
+
     sendCartToWhatsApp() {
+        // Clear previous errors
+        this.clearCartErrors();
+
         // Gather form fields
         const name = document.getElementById('cart-customer-name')?.value?.trim();
         const surname = document.getElementById('cart-customer-surname')?.value?.trim();
@@ -1514,19 +1551,50 @@ class WaterDeliveryApp {
         const deliveryTime = document.getElementById('cart-delivery-time')?.value || '';
         const payment = document.getElementById('cart-payment-method')?.value || '';
 
+        // Collect validation errors
+        const errors = [];
+
         if (!name || !surname || !address) {
-            this.showNotification('Inserisci nome, cognome e indirizzo di consegna', 'error');
-            return;
+            if (!name) errors.push('Inserisci il nome');
+            if (!surname) errors.push('Inserisci il cognome');
+            if (!address) errors.push('Inserisci l\'indirizzo di consegna');
         }
 
         if (!deliveryTime) {
-            this.showNotification('Seleziona una fascia oraria di consegna', 'error');
-            return;
+            errors.push('Seleziona una fascia oraria di consegna');
         }
 
         const { items, subtotal, shipping, total } = this.computeCartTotals();
         if (!items || items.length === 0) {
-            this.showNotification('Il carrello è vuoto', 'warning');
+            errors.push('Il carrello è vuoto');
+        }
+
+        // Validate minimum water crates requirement
+        const locationData = this.productsData?.locations?.[this.currentLocation];
+        const minOrderCases = locationData?.min_order_cases || 2;
+        
+        // Count total water crates in cart
+        let totalWaterCrates = 0;
+        const waterProductsInCart = [];
+        
+        if (items && items.length > 0) {
+            items.forEach(item => {
+                const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
+                if (isWaterProduct) {
+                    totalWaterCrates += item.qty;
+                    waterProductsInCart.push(item);
+                }
+            });
+            
+            // If there are water products, check minimum requirement
+            if (waterProductsInCart.length > 0 && totalWaterCrates < minOrderCases) {
+                errors.push(`Ordine minimo: ${minOrderCases} casse d'acqua (hai ${totalWaterCrates} nel carrello)`);
+            }
+        }
+
+        // If there are errors, display them and return
+        if (errors.length > 0) {
+            this.displayCartErrors(errors);
             return;
         }
 
@@ -1538,7 +1606,6 @@ class WaterDeliveryApp {
             return `${i.qty} x ${productInfo} - ${WaterDeliveryApp.formatPrice(((i.product.price_eur||i.product.price||0) * i.qty))}`;
         }).join('\n');
 
-        const locationData = this.productsData?.locations?.[this.currentLocation];
         const cityName = locationData?.city || this.currentLocation;
 
         const messageLines = [];
