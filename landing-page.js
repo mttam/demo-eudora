@@ -286,10 +286,6 @@ class WaterDeliveryApp {
             const results = this.performSearch(searchInput.value);
             this.displaySearchResults(results, searchInput.value);
         }
-        
-        // Show notification
-        const locationData = this.productsData.locations[location];
-        this.showNotification(`Località cambiata a ${locationData.city}`);
     }
 
     updateLocationUI() {
@@ -367,7 +363,6 @@ class WaterDeliveryApp {
             this.currentSubcategory = null;
             this.updateCategoryUI();
             this.updateCategoryMetadata(category); // Update SEO metadata
-            this.showNotification('Categoria: Farmaci & Parafarmaci (usa la chat nella sezione per informazioni)');
             return;
         }
 
@@ -382,28 +377,12 @@ class WaterDeliveryApp {
         }
         
         this.renderProducts();
-        
-        // Show notification
-        const categoryNames = {
-            'acqua': 'Acqua',
-            'cura_casa': 'Cura Casa',
-            'FARMACI': 'Farmaci & Parafarmaci'
-        };
-        this.showNotification(`Categoria: ${categoryNames[category] || category}`);
     }
 
     setSubcategory(subcategory) {
         this.currentSubcategory = subcategory;
         this.updateCategoryUI();
         this.renderProducts();
-        
-        const subcategoryNames = {
-            'CUCINA': 'Cucina',
-            'LAVATRICE': 'Lavatrice',
-            'DETERGENTI': 'Detergenti',
-            'CARTA E MONOUSO': 'Carta & Monouso'
-        };
-        this.showNotification(`Filtro: ${subcategoryNames[subcategory] || subcategory}`);
     }
 
     updateCategoryUI() {
