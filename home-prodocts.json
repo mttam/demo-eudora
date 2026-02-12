@@ -3,7 +3,7 @@
     "rende": {
       "city": "Rende",
       "delivery_fee": 0.5,
-      "min_order_cases": 2,
+      "min_order_cases": 1,
       "products": [
         {
           "id": "ACE_Detersivo_igienizzante_classico",
