@@ -865,3 +865,124 @@ body {
         height: 1rem;
     }
 }
+
+/* Promo Carousel Styles */
+#promo-carousel-inner {
+    width: 100%;
+}
+
+.promo-item {
+    min-width: 100%;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.promo-item:active,
+.promo-item:hover {
+    transform: scale(0.98);
+}
+
+.promo-item-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    background: linear-gradient(135deg, #16a34a 0%, #34d399 100%);
+    display: block;
+}
+
+.promo-item-content {
+    display: none;
+}
+
+.promo-item-vendor {
+    font-size: 0.875rem;
+    color: var(--water-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.promo-item-description {
+    font-size: 1rem;
+    color: #374151;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.promo-item-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--water-gradient);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+    box-shadow: var(--shadow-water);
+}
+
+.promo-item-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-water-hover);
+}
+
+.promo-item-button:active {
+    transform: translateY(0);
+}
+
+/* Carousel Dots */
+.promo-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.promo-dot.active {
+    background-color: var(--water-primary);
+    transform: scale(1.2);
+}
+
+.promo-dot:hover {
+    background-color: #d1d5db;
+    transform: scale(1.1);
+}
+
+.promo-dot.active:hover {
+    background-color: var(--water-primary);
+}
+
+/* Mobile optimizations for carousel */
+@media (max-width: 640px) {
+    .promo-item-content {
+        padding: 1rem;
+    }
+
+    .promo-item-description {
+        font-size: 0.95rem;
+    }
+
+    .promo-item-image {
+        max-height: 300px;
+    }
+
+    .promo-item-button {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    #promo-carousel {
+        padding: 0.75rem 0;
+    }
+}

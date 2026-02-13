@@ -1,0 +1,21 @@
+{
+      "locations": {
+    "rende": {
+        "city": "Rende",
+        "delivery_fee": 0.5,
+        "min_order_cases": 1,
+        "products": [
+            {
+                "id": "promo-farmacia-1",
+                "vender": "Farmacia X",
+                "msg_description": "Vorrei avere informazioni su questa promozione: sconto del 20% su creme a marchio Jorio e profumi Verset",
+                "image": "public/img_promo/promo-farmacia-1.png"
+            },
+            {
+                "id": "promo-farmacia-2",
+                "vender": "Farmacia Y",
+                "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
+                "image": "public/img_promo/promo-farmacia-2.png"
+            }
+        ]
+}}}

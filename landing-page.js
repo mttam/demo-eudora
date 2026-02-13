@@ -4,12 +4,14 @@ class WaterDeliveryApp {
         this.data = null;
         this.productsData = null; // Water products data from water-prodocts.json
         this.homeProductsData = null; // Home products data from home-prodocts.json
+        this.promoData = null; // Promo data from promo.json
         this.currentLocation = 'cosenza'; // Default location
         this.currentCategory = 'acqua'; // Default category (acqua, cura_casa, FARMACI)
         this.currentSubcategory = null; // For hierarchical categories (CUCINA, LAVATRICE, DETERGENTI, BAGNO, CARTA E MONOUSO)
         this.cart = {}; // cart keyed by productId { id, product, qty }
         this.touchSliderActive = false;
         this._touchHandlers = null;
+        this.carouselCurrentIndex = 0; // Current carousel index
         this.categoryHierarchy = {
             'acqua': null,
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
@@ -41,6 +43,7 @@ class WaterDeliveryApp {
         await this.loadData();
         await this.loadProductsData();
         await this.loadHomeProductsData();
+        await this.loadPromoData();
         this.loadLocation(); // Load saved location preference
         this.loadCart();
         this.setupEventListeners();
@@ -48,6 +51,8 @@ class WaterDeliveryApp {
         this.setupCategorySwitcher();
         this.renderBenefits();
         this.renderWorkWithUs();
+        this.renderPromoCarousel();
+        this.setupPromoCarouselControls();
         this.renderProducts();
         this.renderCart();
         this.renderFAQ();
@@ -103,6 +108,17 @@ class WaterDeliveryApp {
         } catch (error) {
             console.error('Error loading home products data:', error);
             this.homeProductsData = { locations: {} };
+        }
+    }
+
+    async loadPromoData() {
+        try {
+            const response = await fetch('./promo.json');
+            this.promoData = await response.json();
+            console.log('Promo data loaded:', this.promoData);
+        } catch (error) {
+            console.error('Error loading promo data:', error);
+            this.promoData = { locations: {} };
         }
     }
 
@@ -277,6 +293,7 @@ class WaterDeliveryApp {
         this.saveLocation();
         this.updateLocationUI();
         this.renderProducts();
+        this.renderPromoCarousel(); // Update promo carousel for new location
         // Update canonical URL to reflect location change
         this.updateCategoryMetadata(this.currentCategory);
         
@@ -951,6 +968,148 @@ class WaterDeliveryApp {
         }).join('');
 
         searchResultsContainer.innerHTML = productsHTML;
+    }
+
+    // ============================================
+    // PROMO CAROUSEL METHODS
+    // ============================================
+
+    renderPromoCarousel() {
+        if (!this.promoData?.locations?.[this.currentLocation]) {
+            console.warn('No promo data for location:', this.currentLocation);
+            return;
+        }
+
+        const promos = this.promoData.locations[this.currentLocation]?.products || [];
+        if (promos.length === 0) {
+            document.getElementById('promo-carousel').style.display = 'none';
+            return;
+        }
+
+        const carouselInner = document.getElementById('promo-carousel-inner');
+        const promoDotsContainer = document.getElementById('promo-dots');
+        const promoDotsDesktopContainer = document.getElementById('promo-dots-desktop');
+
+        // Clear previous content
+        carouselInner.innerHTML = '';
+        promoDotsContainer.innerHTML = '';
+        promoDotsDesktopContainer.innerHTML = '';
+
+        // Create promo items
+        promos.forEach((promo, index) => {
+            const promoItem = document.createElement('div');
+            promoItem.className = 'promo-item';
+            promoItem.style.cursor = 'pointer';
+            const imagePath = promo.image || '';
+            const imageHTML = imagePath ? 
+                `<img src="${imagePath}" alt="${promo.vender}" class="promo-item-image" loading="lazy" style="cursor: pointer;" onerror="this.style.display='none';" />` :
+                '';
+            promoItem.innerHTML = imageHTML;
+
+            // Add click handler for the image
+            promoItem.addEventListener('click', () => {
+                this.sendPromoWhatsApp(promo);
+            });
+
+            carouselInner.appendChild(promoItem);
+
+            // Create dots
+            const dot = document.createElement('button');
+            dot.className = `promo-dot ${index === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => this.goToPromoSlide(index));
+
+            promoDotsContainer.appendChild(dot.cloneNode(true));
+            promoDotsDesktopContainer.appendChild(dot);
+        });
+
+        this.carouselCurrentIndex = 0;
+        this.updateCarouselPosition();
+    }
+
+    setupPromoCarouselControls() {
+        const prevBtn = document.getElementById('promo-prev');
+        const nextBtn = document.getElementById('promo-next');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.previousPromoSlide());
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextPromoSlide());
+        }
+
+        // Touch support for mobile
+        const carouselInner = document.getElementById('promo-carousel-inner');
+        if (carouselInner) {
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carouselInner.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            carouselInner.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                this.handlePromoSwipe(touchStartX, touchEndX);
+            }, false);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') this.previousPromoSlide();
+            if (e.key === 'ArrowRight') this.nextPromoSlide();
+        });
+    }
+
+    handlePromoSwipe(startX, endX) {
+        const swipeThreshold = 50; // minimum distance for a swipe
+        const diff = startX - endX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                this.nextPromoSlide(); // Swiped left, go to next
+            } else {
+                this.previousPromoSlide(); // Swiped right, go to previous
+            }
+        }
+    }
+
+    nextPromoSlide() {
+        const promos = this.promoData.locations[this.currentLocation]?.products || [];
+        this.carouselCurrentIndex = (this.carouselCurrentIndex + 1) % promos.length;
+        this.updateCarouselPosition();
+    }
+
+    previousPromoSlide() {
+        const promos = this.promoData.locations[this.currentLocation]?.products || [];
+        this.carouselCurrentIndex = (this.carouselCurrentIndex - 1 + promos.length) % promos.length;
+        this.updateCarouselPosition();
+    }
+
+    goToPromoSlide(index) {
+        this.carouselCurrentIndex = index;
+        this.updateCarouselPosition();
+    }
+
+    updateCarouselPosition() {
+        const carouselInner = document.getElementById('promo-carousel-inner');
+        const dots = document.querySelectorAll('.promo-dot');
+
+        if (carouselInner) {
+            carouselInner.style.transform = `translateX(-${this.carouselCurrentIndex * 100}%)`;
+        }
+
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.carouselCurrentIndex);
+        });
+    }
+
+    sendPromoWhatsApp(promo) {
+        const phone = '393500378569';
+        const message = `Ciao! ${promo.msg_description}`;
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
     }
 
     renderBenefits() {

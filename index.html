@@ -422,6 +422,43 @@
         </div>
     </section>
 
+    <!-- Promo Carousel Section -->
+    <section id="promo-carousel" class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">Promozioni Esclusive</h2>
+            
+            <!-- Carousel Container -->
+            <div class="relative max-w-6xl mx-auto">
+                <!-- Carousel Wrapper -->
+                <div class="overflow-hidden rounded-xl shadow-lg">
+                    <div id="promo-carousel-inner" class="flex transition-transform duration-500 ease-out">
+                        <!-- Promo items will be injected here -->
+                    </div>
+                </div>
+                
+                <!-- Previous Button -->
+                <button id="promo-prev" class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 md:-translate-x-6 bg-green-600 hover:bg-green-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition z-10 hidden md:flex" aria-label="Precedente">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <!-- Next Button -->
+                <button id="promo-next" class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 md:translate-x-6 bg-green-600 hover:bg-green-700 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition z-10 hidden md:flex" aria-label="Successivo">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <!-- Dots Navigation (Mobile) -->
+                <div id="promo-dots" class="flex justify-center gap-2 mt-6 md:hidden">
+                    <!-- Dots will be injected here -->
+                </div>
+                
+                <!-- Desktop Dots Navigation -->
+                <div id="promo-dots-desktop" class="hidden md:flex justify-center gap-2 mt-6">
+                    <!-- Dots will be injected here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
    
     
     <!-- Products Section -->
