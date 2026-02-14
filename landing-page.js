@@ -987,6 +987,7 @@ class WaterDeliveryApp {
         }
 
         const carouselInner = document.getElementById('promo-carousel-inner');
+        const carouselWrapper = carouselInner.parentElement;
         const promoDotsContainer = document.getElementById('promo-dots');
         const promoDotsDesktopContainer = document.getElementById('promo-dots-desktop');
 
@@ -995,16 +996,46 @@ class WaterDeliveryApp {
         promoDotsContainer.innerHTML = '';
         promoDotsDesktopContainer.innerHTML = '';
 
-        // Create promo items
+        // Create promo items with loading overlay
+        let imagesLoaded = 0;
+        const totalImages = promos.length;
+
         promos.forEach((promo, index) => {
             const promoItem = document.createElement('div');
             promoItem.className = 'promo-item';
             promoItem.style.cursor = 'pointer';
+            promoItem.style.position = 'relative';
+            
             const imagePath = promo.image || '';
-            const imageHTML = imagePath ? 
-                `<img src="${imagePath}" alt="${promo.vender}" class="promo-item-image" loading="lazy" style="cursor: pointer;" onerror="this.style.display='none';" />` :
-                '';
-            promoItem.innerHTML = imageHTML;
+            
+            // Create loading overlay
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'carousel-loading-overlay';
+            loadingOverlay.innerHTML = '<div class="carousel-loading-spinner"></div>';
+            
+            if (imagePath) {
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = promo.vender;
+                img.className = 'promo-item-image';
+                img.loading = 'lazy';
+                img.style.cursor = 'pointer';
+                
+                img.onload = () => {
+                    loadingOverlay.style.display = 'none';
+                    imagesLoaded++;
+                };
+                
+                img.onerror = () => {
+                    loadingOverlay.style.display = 'none';
+                    imagesLoaded++;
+                    img.style.display = 'none';
+                };
+                
+                promoItem.appendChild(img);
+            }
+            
+            promoItem.appendChild(loadingOverlay);
 
             // Add click handler for the image
             promoItem.addEventListener('click', () => {
@@ -1015,11 +1046,11 @@ class WaterDeliveryApp {
 
             // Create dots
             const dot = document.createElement('button');
-            dot.className = `promo-dot ${index === 0 ? 'active' : ''}`;
+            dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
             dot.addEventListener('click', () => this.goToPromoSlide(index));
 
             promoDotsContainer.appendChild(dot.cloneNode(true));
-            promoDotsDesktopContainer.appendChild(dot);
+            promoDotsDesktopContainer.appendChild(dot.cloneNode(true));
         });
 
         this.carouselCurrentIndex = 0;
@@ -1031,33 +1062,51 @@ class WaterDeliveryApp {
         const nextBtn = document.getElementById('promo-next');
 
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.previousPromoSlide());
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.previousPromoSlide();
+            });
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextPromoSlide());
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.nextPromoSlide();
+            });
         }
 
-        // Touch support for mobile
+        // Touch support for mobile with smooth gestures
         const carouselInner = document.getElementById('promo-carousel-inner');
         if (carouselInner) {
             let touchStartX = 0;
             let touchEndX = 0;
+            let isTransitioning = false;
 
             carouselInner.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
+                isTransitioning = false;
             }, false);
 
             carouselInner.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
-                this.handlePromoSwipe(touchStartX, touchEndX);
+                if (!isTransitioning) {
+                    this.handlePromoSwipe(touchStartX, touchEndX);
+                    isTransitioning = true;
+                    setTimeout(() => { isTransitioning = false; }, 500);
+                }
             }, false);
         }
 
-        // Keyboard navigation
+        // Keyboard navigation with smooth transitions
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') this.previousPromoSlide();
-            if (e.key === 'ArrowRight') this.nextPromoSlide();
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                this.previousPromoSlide();
+            }
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                this.nextPromoSlide();
+            }
         });
     }
 
@@ -1076,12 +1125,14 @@ class WaterDeliveryApp {
 
     nextPromoSlide() {
         const promos = this.promoData.locations[this.currentLocation]?.products || [];
+        if (promos.length <= 1) return;
         this.carouselCurrentIndex = (this.carouselCurrentIndex + 1) % promos.length;
         this.updateCarouselPosition();
     }
 
     previousPromoSlide() {
         const promos = this.promoData.locations[this.currentLocation]?.products || [];
+        if (promos.length <= 1) return;
         this.carouselCurrentIndex = (this.carouselCurrentIndex - 1 + promos.length) % promos.length;
         this.updateCarouselPosition();
     }
@@ -1093,14 +1144,33 @@ class WaterDeliveryApp {
 
     updateCarouselPosition() {
         const carouselInner = document.getElementById('promo-carousel-inner');
-        const dots = document.querySelectorAll('.promo-dot');
+        const mobileDots = document.querySelectorAll('#promo-dots .carousel-dot');
+        const desktopDots = document.querySelectorAll('#promo-dots-desktop .carousel-dot');
 
         if (carouselInner) {
+            // Apply smooth transform with easing
             carouselInner.style.transform = `translateX(-${this.carouselCurrentIndex * 100}%)`;
         }
 
-        // Update dots
-        dots.forEach((dot, index) => {
+        // Update all dots - both mobile and desktop
+        const allDots = [...mobileDots, ...desktopDots];
+        allDots.forEach((dot, index) => {
+            if (index % (allDots.length / Math.max(mobileDots.length, desktopDots.length)) === 0) {
+                const dotIndex = index >= desktopDots.length ? 
+                    index - desktopDots.length : 
+                    Math.floor(index / (desktopDots.length ? desktopDots.length / mobileDots.length : 1));
+                    
+                dot.classList.toggle('active', dotIndex === this.carouselCurrentIndex);
+            }
+        });
+
+        // Update mobile dots
+        mobileDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.carouselCurrentIndex);
+        });
+
+        // Update desktop dots
+        desktopDots.forEach((dot, index) => {
             dot.classList.toggle('active', index === this.carouselCurrentIndex);
         });
     }

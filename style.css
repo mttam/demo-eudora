@@ -866,80 +866,127 @@ body {
     }
 }
 
-/* Promo Carousel Styles */
+/* Promo Carousel Styles - Enhanced with Fil d'Amore design */
+
+/* Carousel Container */
+#promo-carousel {
+    position: relative;
+}
+
 #promo-carousel-inner {
     width: 100%;
+    display: flex;
+    transition: transform 0.5s ease-out;
 }
 
 .promo-item {
     min-width: 100%;
     flex-shrink: 0;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+    background: white;
 }
 
-.promo-item:active,
-.promo-item:hover {
-    transform: scale(0.98);
-}
-
+/* Carousel Item Image Styling */
 .promo-item-image {
     width: 100%;
-    height: auto;
-    max-height: 500px;
+    height: 100%;
     object-fit: contain;
-    background: linear-gradient(135deg, #16a34a 0%, #34d399 100%);
+    object-position: center;
     display: block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.promo-item:hover .promo-item-image {
+    transform: scale(1.05);
+    filter: brightness(0.95);
 }
 
 .promo-item-content {
     display: none;
 }
 
-.promo-item-vendor {
-    font-size: 0.875rem;
-    color: var(--water-primary);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
-}
-
-.promo-item-description {
-    font-size: 1rem;
-    color: #374151;
-    font-weight: 500;
-    margin-bottom: 1rem;
-}
-
-.promo-item-button {
-    display: inline-flex;
+/* Carousel Controls - Buttons */
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: var(--water-gradient);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
+    justify-content: center;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s, background 0.3s;
+    font-size: 20px;
+    color: var(--water-primary);
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#promo-carousel:hover .carousel-control {
+    opacity: 1;
+}
+
+.carousel-control:hover {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+/* Carousel Dots Navigation */
+.carousel-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
     transition: all 0.3s ease;
     border: none;
-    cursor: pointer;
-    width: 100%;
-    justify-content: center;
-    box-shadow: var(--shadow-water);
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-.promo-item-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-water-hover);
+.carousel-dot:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.1);
 }
 
-.promo-item-button:active {
-    transform: translateY(0);
+.carousel-dot.active {
+    background: var(--water-primary);
+    transform: scale(1.3);
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
 }
 
-/* Carousel Dots */
-.promo-dot {
+/* Alternative dots style for desktop */
+#promo-dots-desktop .promo-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -949,40 +996,101 @@ body {
     border: 2px solid transparent;
 }
 
-.promo-dot.active {
+#promo-dots-desktop .promo-dot.active {
     background-color: var(--water-primary);
     transform: scale(1.2);
 }
 
-.promo-dot:hover {
+#promo-dots-desktop .promo-dot:hover {
     background-color: #d1d5db;
     transform: scale(1.1);
 }
 
-.promo-dot.active:hover {
+#promo-dots-desktop .promo-dot.active:hover {
     background-color: var(--water-primary);
+}
+
+/* Loading Overlay */
+.carousel-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+}
+
+.carousel-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(22, 163, 74, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--water-primary);
+    animation: carousel-spin 1s linear infinite;
+}
+
+@keyframes carousel-spin {
+    to { transform: rotate(360deg); }
 }
 
 /* Mobile optimizations for carousel */
 @media (max-width: 640px) {
-    .promo-item-content {
-        padding: 1rem;
+    .promo-item {
+        height: 300px;
     }
 
-    .promo-item-description {
-        font-size: 0.95rem;
+    .carousel-control {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        opacity: 0.7;
     }
 
-    .promo-item-image {
-        max-height: 300px;
+    #promo-carousel:hover .carousel-control {
+        opacity: 0.9;
     }
 
-    .promo-item-button {
-        padding: 0.65rem 1.25rem;
-        font-size: 0.95rem;
+    .carousel-prev {
+        left: 5px;
+    }
+
+    .carousel-next {
+        right: 5px;
+    }
+
+    .carousel-dots {
+        bottom: 8px;
+        gap: 6px;
+    }
+
+    .carousel-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .carousel-dot.active {
+        transform: scale(1.2);
     }
 
     #promo-carousel {
         padding: 0.75rem 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .promo-item {
+        height: 250px;
+    }
+
+    .carousel-control {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
     }
 }
