@@ -16,6 +16,30 @@
                 "vender": "Farmacia Y",
                 "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
                 "image": "public/img_promo/promo-farmacia-2.png"
+            },
+            {
+                "id": "promo-test-1",
+                "vender": "Farmacia Y",
+                "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
+                "image": "public/img_promo/promo-test-1.png"
+            },
+            {
+                "id": "promo-test-2",
+                "vender": "Farmacia Y",
+                "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
+                "image": "public/img_promo/promo-test-2.png"
+            },
+            {
+                "id": "promo-test-3",
+                "vender": "Farmacia Y",
+                "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
+                "image": "public/img_promo/promo-test-3.png"
+            },
+            {
+                "id": "promo-test-4",
+                "vender": "Farmacia Y",
+                "msg_description": "Vorrei avere informazioni su questa promozione: acquisto di 3 prodotti della nuova linea Trouss Milano con il meno caro in omaggio",
+                "image": "public/img_promo/promo-test-4.png"
             }
         ]
 }}}
