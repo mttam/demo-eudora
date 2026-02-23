@@ -15,6 +15,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.82,
           "price_text": "€ 2,82",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sant_anna.png"
         },
         {
@@ -27,6 +30,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.40,
           "price_text": "€ 2,40",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sanbenedetto.png"
         },
         {
@@ -39,6 +45,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.34,
           "price_text": "€ 2,34",
+          "in_promo": true,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/lete.png"
         },
         {
@@ -51,6 +60,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.49,
           "price_text": "€ 2,49",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/fontenoce.png"
         },
         {
@@ -63,6 +75,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.60,
           "price_text": "€ 3,60",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/rocchetta.png"
         },
         {
@@ -75,6 +90,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.60,
           "price_text": "€ 3,60",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/uliveto.png"
         },
         {
@@ -87,6 +105,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 1.98,
           "price_text": "€ 1,98",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/Lilia.png"
         },
         {
@@ -99,6 +120,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.60,
           "price_text": "€ 3,60",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/mangiatorella.png"
         },
         {
@@ -111,6 +135,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.69,
           "price_text": "€ 2,69",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/calabria_naturale.png"
         },
         {
@@ -123,6 +150,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 5.40,
           "price_text": "€ 5,40",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/essenziale.png"
         },
         {
@@ -135,6 +165,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.12,
           "price_text": "€ 3,12",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/levissima.png"
         },
         {
@@ -147,6 +180,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.28,
           "price_text": "€ 2,28",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/ferrarelle.png"
         },
         {
@@ -159,6 +195,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.18,
           "price_text": "€ 3,18",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/vista_snella.png"
         },
         {
@@ -171,6 +210,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 1.86,
           "price_text": "€ 1,86",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sorgesana.png"
         },
         {
@@ -183,6 +225,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 7.74,
           "price_text": "€ 7,74",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "notes": "VETRO",
           "image": "public/img_water/fiuggi_vetro.png"
         }
@@ -203,6 +248,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.09,
           "price_text": "€ 3,09",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sant_anna.png"
         },
         {
@@ -213,8 +261,11 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 1.99,
-          "price_text": "€ 1,99",
+          "price_eur": 1.68,
+          "price_text": "€ 1,68",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sanbenedetto.png"
         },
         {
@@ -227,6 +278,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.89,
           "price_text": "€ 2,89",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/lete.png"
         },
         {
@@ -239,6 +293,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 7.14,
           "price_text": "€ 7,14",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/fontenoce_lattanti.png"
         },
         {
@@ -251,6 +308,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.50,
           "price_text": "€ 2,50",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/fontenoce.png"
         },
         {
@@ -263,6 +323,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.29,
           "price_text": "€ 2,29",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/fabrizia.png"
         },
         {
@@ -275,6 +338,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.90,
           "price_text": "€ 3,90",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/rocchetta.png"
         },
         {
@@ -287,6 +353,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 4.15,
           "price_text": "€ 4,15",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/uliveto.png"
         },
         {
@@ -299,6 +368,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.10,
           "price_text": "€ 2,10",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/Lilia.png"
         },
         {
@@ -311,6 +383,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.29,
           "price_text": "€ 3,29",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/mangiatorella.png"
         },
         {
@@ -323,6 +398,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.94,
           "price_text": "€ 2,94",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/calabria_frizzante.png"
         },
         {
@@ -335,6 +413,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.69,
           "price_text": "€ 2,69",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/calabria_naturale.png"
         },
         {
@@ -347,6 +428,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 5.70,
           "price_text": "€ 5,70",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/essenziale.png"
         },
         {
@@ -359,6 +443,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.12,
           "price_text": "€ 3,12",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/levissima.png"
         },
         {
@@ -371,6 +458,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.12,
           "price_text": "€ 3,12",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/levissima_frizzante.png"
         },
         {
@@ -383,6 +473,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.69,
           "price_text": "€ 2,69",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/ferrarelle.png"
         },
         {
@@ -395,6 +488,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.30,
           "price_text": "€ 3,30",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/ferrarelle_maxima.png"
         },
         {
@@ -407,6 +503,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 3.29,
           "price_text": "€ 3,29",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/vista_snella.png"
         },
         {
@@ -419,6 +518,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 1.99,
           "price_text": "€ 1,99",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/leo.png"
         },
         {
@@ -431,6 +533,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.34,
           "price_text": "€ 2,34",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "image": "public/img_water/sorbello.png"
         },
         {
@@ -443,6 +548,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 7.74,
           "price_text": "€ 7,74",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "notes": "VETRO",
           "image": "public/img_water/fiuggi_vetro.png"
         },
@@ -456,6 +564,9 @@
           "pack_description": "6 bottiglie",
           "price_eur": 5.34,
           "price_text": "€ 5,34",
+          "in_promo": false,
+          "promo_price_eur": 3.99,
+          "promo_price_text": "€ 3,99",
           "notes": "PET",
           "image": "public/img_water/fiuggi.png"
         }

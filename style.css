@@ -871,7 +871,7 @@ body {
 /* Carousel Container */
 #promo-carousel {
     position: relative;
-    display: none;
+    /*display: none;*/
 }
 
 #promo-carousel-inner {
@@ -898,7 +898,7 @@ body {
     object-position: center;
     display: block;
     transition: transform 0.3s ease, filter 0.3s ease;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
 }
 
