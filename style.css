@@ -871,6 +871,7 @@ body {
 /* Carousel Container */
 #promo-carousel {
     position: relative;
+    display: none;
 }
 
 #promo-carousel-inner {
