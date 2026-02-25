@@ -65,7 +65,7 @@ class WaterDeliveryApp {
         try {
             const response = await fetch('./data.json');
             this.data = await response.json();
-            
+
             // If data doesn't have the structure we need, add fallback sections
             if (!this.data.benefitsSection) {
                 this.data.benefitsSection = this.getFallbackData().benefitsSection;
@@ -147,24 +147,24 @@ class WaterDeliveryApp {
     // ============================================
     // SEO METADATA MANAGEMENT FUNCTIONS
     // ============================================
-    
+
     updateMetadata(title, description, canonicalPath = '/') {
         // Update <title> tag
         document.title = title;
-        
+
         // Update meta description
         const descriptionMeta = document.querySelector('meta[name="description"]');
         if (descriptionMeta) {
             descriptionMeta.setAttribute('content', description);
         }
-        
+
         // Update Open Graph tags
         const ogTitle = document.querySelector('meta[property="og:title"]');
         if (ogTitle) ogTitle.setAttribute('content', title);
-        
+
         const ogDescription = document.querySelector('meta[property="og:description"]');
         if (ogDescription) ogDescription.setAttribute('content', description);
-        
+
         // Update canonical URL
         let canonical = document.querySelector('link[rel="canonical"]');
         if (!canonical) {
@@ -174,31 +174,31 @@ class WaterDeliveryApp {
         }
         const baseUrl = 'https://eudora-delivery.netlify.app';
         canonical.href = baseUrl + canonicalPath;
-        
+
         // Update Twitter Card
         const twitterTitle = document.querySelector('meta[name="twitter:title"]');
         if (twitterTitle) twitterTitle.setAttribute('content', title);
-        
+
         const twitterDescription = document.querySelector('meta[name="twitter:description"]');
         if (twitterDescription) twitterDescription.setAttribute('content', description);
     }
-    
+
     updateCategoryMetadata(category) {
         const metadata = this.metadataTemplates[category] || this.metadataTemplates.home;
         let canonicalPath = `/?category=${category}`;
-        
+
         // Add location to canonical if not default
         if (this.currentLocation !== 'cosenza') {
             canonicalPath += `&location=${this.currentLocation}`;
         }
-        
+
         this.updateMetadata(metadata.title, metadata.description, canonicalPath);
     }
 
     // ============================================
     // SCHEMA.ORG STRUCTURED DATA GENERATION
     // ============================================
-    
+
     generateProductSchema(product, category) {
         /**
          * Generate Product Schema.org markup for a single product
@@ -225,7 +225,7 @@ class WaterDeliveryApp {
             "category": category
         };
     }
-    
+
     generateFAQPageSchema() {
         /**
          * Generate FAQPage Schema.org markup for FAQ section
@@ -249,7 +249,7 @@ class WaterDeliveryApp {
             "mainEntity": faqItems
         };
     }
-    
+
     injectProductSchemaToDOM(product, category) {
         /**
          * Inject product schema as script tag into DOM for search engine indexing
@@ -261,20 +261,20 @@ class WaterDeliveryApp {
         script.setAttribute('data-product-schema', product.name || product.brand);
         document.head.appendChild(script);
     }
-    
+
     injectFAQSchemaToDOM() {
         /**
          * Inject FAQ schema into DOM
          */
         const schema = this.generateFAQPageSchema();
         if (!schema) return;
-        
+
         // Remove existing FAQ schema if present
         const existingFAQSchema = document.querySelector('script[data-faq-schema]');
         if (existingFAQSchema) {
             existingFAQSchema.remove();
         }
-        
+
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.setAttribute('data-faq-schema', 'true');
@@ -288,7 +288,7 @@ class WaterDeliveryApp {
             console.error('Invalid location:', location);
             return;
         }
-        
+
         this.currentLocation = location;
         this.saveLocation();
         this.updateLocationUI();
@@ -296,7 +296,7 @@ class WaterDeliveryApp {
         this.renderPromoCarousel(); // Update promo carousel for new location
         // Update canonical URL to reflect location change
         this.updateCategoryMetadata(this.currentCategory);
-        
+
         // Update search results if search is active
         const searchInput = document.getElementById('water-product-search');
         if (searchInput && searchInput.value && searchInput.value.trim().length > 0) {
@@ -324,7 +324,7 @@ class WaterDeliveryApp {
             const cityDisplay = document.getElementById('current-location-display');
             const minOrderDisplay = document.getElementById('min-order-display');
             const deliveryFeeDisplay = document.getElementById('delivery-fee-display');
-            
+
             if (cityDisplay) cityDisplay.textContent = locationData.city;
             if (minOrderDisplay) minOrderDisplay.textContent = locationData.min_order_cases;
             if (deliveryFeeDisplay) deliveryFeeDisplay.textContent = locationData.delivery_fee.toFixed(2);
@@ -387,12 +387,12 @@ class WaterDeliveryApp {
         this.currentSubcategory = null; // Reset subcategory when changing main category
         this.updateCategoryUI();
         this.updateCategoryMetadata(category); // Update SEO metadata
-        
+
         // If this category has subcategories, show them and set the first as default
         if (this.categoryHierarchy[category] && this.categoryHierarchy[category].length > 0) {
             this.currentSubcategory = this.categoryHierarchy[category][0];
         }
-        
+
         this.renderProducts();
     }
 
@@ -443,15 +443,15 @@ class WaterDeliveryApp {
         const locationSelectorMobile = document.getElementById('location-selector-mobile');
         const pharmaSection = document.getElementById('pharma-content');
         const productsContainer = document.getElementById('products-container');
-        
+
         const isAcquaCategory = this.currentCategory === 'acqua';
         const isFarmaciCategory = this.currentCategory === 'FARMACI';
-        
+
         // Show order info only for acqua category
         if (orderInfoSection) {
             orderInfoSection.style.display = isAcquaCategory ? 'block' : 'none';
         }
-        
+
         // Show location selectors for all categories EXCEPT Farmaci
         if (locationSelectorDesktop) {
             locationSelectorDesktop.style.display = isFarmaciCategory ? 'none' : '';
@@ -551,7 +551,7 @@ class WaterDeliveryApp {
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
-        
+
         if (mobileMenuBtn && mobileMenu) {
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -660,7 +660,7 @@ class WaterDeliveryApp {
             // Real-time search as user types
             input.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
-                
+
                 if (query.length === 0) {
                     // Hide search results if input is empty
                     if (searchResultsCard) {
@@ -680,7 +680,7 @@ class WaterDeliveryApp {
                 // Perform search
                 const results = this.performSearch(query);
                 this.displaySearchResults(results, query);
-                
+
                 // On mobile, scroll to results
                 if (window.innerWidth < 768 && searchResultsCard && !searchResultsCard.classList.contains('hidden')) {
                     setTimeout(() => {
@@ -728,7 +728,7 @@ class WaterDeliveryApp {
                     locationData.products.forEach(product => {
                         if (this.productMatches(product, lowerQuery)) {
                             const productId = product.id;
-                            
+
                             if (!productMap.has(productId)) {
                                 // First time seeing this product
                                 productMap.set(productId, {
@@ -757,7 +757,7 @@ class WaterDeliveryApp {
                     locationData.products.forEach(product => {
                         if (this.productMatches(product, lowerQuery)) {
                             const productId = product.id;
-                            
+
                             if (!productMap.has(productId)) {
                                 // First time seeing this product
                                 productMap.set(productId, {
@@ -856,7 +856,7 @@ class WaterDeliveryApp {
 
             // For home products, set color scheme by category
             if (product.category && product.category !== 'acqua') {
-                switch(product.category) {
+                switch (product.category) {
                     case 'DETERGENTI':
                         colorScheme = {
                             bg: 'bg-purple-100',
@@ -912,7 +912,7 @@ class WaterDeliveryApp {
 
             // Build image path
             const imagePath = product.image || '';
-            const imageHTML = imagePath ? 
+            const imageHTML = imagePath ?
                 `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                  <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
                     <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
@@ -923,7 +923,7 @@ class WaterDeliveryApp {
 
             // Get category name for display
             const categoryName = product.category || (product.type === 'acqua' ? 'Acqua' : 'Prodotto');
-            
+
             // Get location badge - if product is in multiple locations, filter by current location
             let locationBadge = '';
             if (product.availableLocations && product.availableLocations.length > 0) {
@@ -939,7 +939,7 @@ class WaterDeliveryApp {
                     </div>
                 `;
             }
-            
+
             return `
                 <div class="relative">
                     <!-- Category Badge -->
@@ -974,20 +974,46 @@ class WaterDeliveryApp {
     // PROMO CAROUSEL METHODS
     // ============================================
 
+    // Update the renderPromoCarousel method in landing-page.js
+    // Update the renderPromoCarousel method in landing-page.js
+    // Update the renderPromoCarousel method in landing-page.js
+    // Update the renderPromoCarousel method in landing-page.js
     renderPromoCarousel() {
-        if (!this.promoData?.locations?.[this.currentLocation]) {
-            console.warn('No promo data for location:', this.currentLocation);
-            return;
-        }
-
-        const promos = this.promoData.locations[this.currentLocation]?.products || [];
-        if (promos.length === 0) {
+        if (!this.productsData?.locations?.[this.currentLocation] && !this.homeProductsData?.locations?.[this.currentLocation]) {
+            console.warn('No product data for location:', this.currentLocation);
             document.getElementById('promo-carousel').style.display = 'none';
             return;
         }
 
+        // Collect all promo products from both water and home products
+        const promoProducts = [];
+
+        // Get water promo products
+        if (this.productsData?.locations?.[this.currentLocation]?.products) {
+            this.productsData.locations[this.currentLocation].products.forEach(product => {
+                if (product.in_promo) {
+                    promoProducts.push({ ...product, type: 'water' });
+                }
+            });
+        }
+
+        // Get home promo products
+        if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
+            this.homeProductsData.locations[this.currentLocation].products.forEach(product => {
+                if (product.in_promo) {
+                    promoProducts.push({ ...product, type: 'home' });
+                }
+            });
+        }
+
+        if (promoProducts.length === 0) {
+            document.getElementById('promo-carousel').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('promo-carousel').style.display = 'block';
+
         const carouselInner = document.getElementById('promo-carousel-inner');
-        const carouselWrapper = carouselInner.parentElement;
         const promoDotsContainer = document.getElementById('promo-dots');
         const promoDotsDesktopContainer = document.getElementById('promo-dots-desktop');
 
@@ -996,55 +1022,117 @@ class WaterDeliveryApp {
         promoDotsContainer.innerHTML = '';
         promoDotsDesktopContainer.innerHTML = '';
 
-        // Create promo items with loading overlay
-        let imagesLoaded = 0;
-        const totalImages = promos.length;
+        // Set products per page based on viewport size
+        const productsPerPage = this.getPromoProductsPerPage();
 
-        promos.forEach((promo, index) => {
-            const promoItem = document.createElement('div');
-            promoItem.className = 'promo-item';
-            promoItem.style.cursor = 'pointer';
-            promoItem.style.position = 'relative';
-            
-            const imagePath = promo.image || '';
-            
-            // Create loading overlay
-            const loadingOverlay = document.createElement('div');
-            loadingOverlay.className = 'carousel-loading-overlay';
-            loadingOverlay.innerHTML = '<div class="carousel-loading-spinner"></div>';
-            
-            if (imagePath) {
+        // Create pages of products
+        const productPages = [];
+        for (let i = 0; i < promoProducts.length; i += productsPerPage) {
+            productPages.push(promoProducts.slice(i, i + productsPerPage));
+        }
+
+        // Create carousel items for each page
+        productPages.forEach((pageProducts, pageIndex) => {
+            // Create page container with correct width
+            const pageContainer = document.createElement('div');
+            pageContainer.className = 'flex';
+            pageContainer.style.width = `${100}%`; // Each page takes 100% of the carousel inner width
+
+            const isMobile = window.matchMedia('(max-width: 640px)').matches;
+            pageContainer.style.justifyContent = isMobile ? 'flex-start' : 'center';
+
+            // Add products to the page
+            pageProducts.forEach((product) => {
+                const locationName = this.currentLocation === 'cosenza' ? 'Cosenza' : 'Rende';
+
+                // Create carousel item
+                const promoItem = document.createElement('div');
+                promoItem.className = 'promo-item flex-shrink-0';
+                const slotCount = isMobile ? pageProducts.length : productsPerPage;
+                promoItem.style.width = `${100 / slotCount}%`; // Keep desktop cards at 1/3 width and center incomplete pages
+                promoItem.style.cursor = 'default';
+
+                // Create image container
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'promo-item-image-container';
+
+                // Create image element
                 const img = document.createElement('img');
-                img.src = imagePath;
-                img.alt = promo.vender;
+                img.src = product.image || 'public/img_promo/default-promo.png';
+                img.alt = product.brand;
                 img.className = 'promo-item-image';
                 img.loading = 'lazy';
-                img.style.cursor = 'pointer';
-                
-                img.onload = () => {
-                    loadingOverlay.style.display = 'none';
-                    imagesLoaded++;
-                };
-                
-                img.onerror = () => {
-                    loadingOverlay.style.display = 'none';
-                    imagesLoaded++;
-                    img.style.display = 'none';
-                };
-                
-                promoItem.appendChild(img);
-            }
-            
-            promoItem.appendChild(loadingOverlay);
 
-            // Add click handler for the image
-            promoItem.addEventListener('click', () => {
-                this.sendPromoWhatsApp(promo);
+                // Assemble image container
+                imageContainer.appendChild(img);
+
+                // Create content container
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'promo-item-content';
+
+                // Create product name
+                const productName = document.createElement('h3');
+                productName.className = 'text-xl font-bold text-gray-900';
+                productName.textContent = `${product.brand}`;
+
+                // Create product subtitle
+                const productSubtitle = document.createElement('p');
+                productSubtitle.className = 'text-gray-600 text-center';
+                productSubtitle.textContent = product.product_name;
+
+                // Create price display
+                const priceContainer = document.createElement('div');
+                priceContainer.className = 'price-container';
+
+                // Old price (strikethrough)
+                const oldPrice = document.createElement('span');
+                oldPrice.className = 'old-price text-gray-500 line-through';
+                oldPrice.textContent = WaterDeliveryApp.formatPrice(product.price_eur);
+
+                // New price (highlighted)
+                const newPrice = document.createElement('span');
+                newPrice.className = 'new-price text-lg font-bold text-green-600 ml-2';
+                newPrice.textContent = WaterDeliveryApp.formatPrice(product.promo_price_eur);
+
+                priceContainer.appendChild(oldPrice);
+                priceContainer.appendChild(newPrice);
+
+                // Location badge
+                const locationBadge = document.createElement('div');
+                locationBadge.className = 'location-badge';
+                locationBadge.textContent = `Promozione a ${locationName}`;
+
+                // Assemble content container
+                contentContainer.appendChild(productName);
+                contentContainer.appendChild(productSubtitle);
+                contentContainer.appendChild(priceContainer);
+                contentContainer.appendChild(locationBadge);
+
+                // Assemble promo item
+                promoItem.appendChild(imageContainer);
+                promoItem.appendChild(contentContainer);
+
+                // Make entire promo item clickable to add to cart
+                promoItem.style.cursor = 'pointer';
+                promoItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // Add product to cart (default qty 1)
+                    this.addToCart(product.id);
+                    // Brief visual feedback
+                    promoItem.classList.add('added-to-cart');
+                    setTimeout(() => promoItem.classList.remove('added-to-cart'), 900);
+                });
+
+                // Add to page container
+                pageContainer.appendChild(promoItem);
             });
 
-            carouselInner.appendChild(promoItem);
+            // Add page to carousel
+            carouselInner.appendChild(pageContainer);
+        });
 
-            // Create dots
+        // Create navigation dots (one for each page)
+        productPages.forEach((_, index) => {
             const dot = document.createElement('button');
             dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
             dot.addEventListener('click', () => this.goToPromoSlide(index));
@@ -1053,9 +1141,86 @@ class WaterDeliveryApp {
             promoDotsDesktopContainer.appendChild(dot.cloneNode(true));
         });
 
+        // Set initial carousel state
         this.carouselCurrentIndex = 0;
         this.updateCarouselPosition();
     }
+
+    // Update the carousel navigation methods
+    nextPromoSlide() {
+        const totalPages = Math.ceil(this.getTotalPromoProducts() / this.getPromoProductsPerPage());
+        if (totalPages <= 1) return; // No need to navigate if only one page
+
+        this.carouselCurrentIndex = (this.carouselCurrentIndex + 1) % totalPages;
+        this.updateCarouselPosition();
+    }
+
+    previousPromoSlide() {
+        const totalPages = Math.ceil(this.getTotalPromoProducts() / this.getPromoProductsPerPage());
+        if (totalPages <= 1) return; // No need to navigate if only one page
+
+        this.carouselCurrentIndex = (this.carouselCurrentIndex - 1 + totalPages) % totalPages;
+        this.updateCarouselPosition();
+    }
+
+    goToPromoSlide(index) {
+        this.carouselCurrentIndex = index;
+        this.updateCarouselPosition();
+    }
+
+    updateCarouselPosition() {
+        const carouselInner = document.getElementById('promo-carousel-inner');
+        const mobileDots = document.querySelectorAll('#promo-dots .carousel-dot');
+        const desktopDots = document.querySelectorAll('#promo-dots-desktop .carousel-dot');
+
+        if (carouselInner) {
+            // Calculate the percentage to translate (each page is 100%)
+            carouselInner.style.transform = `translateX(-${this.carouselCurrentIndex * 100}%)`;
+        }
+
+        // Update all dots - both mobile and desktop
+        const allDots = [...mobileDots, ...desktopDots];
+        allDots.forEach((dot, index) => {
+            if (index % (allDots.length / Math.max(mobileDots.length, desktopDots.length)) === 0) {
+                const dotIndex = index >= desktopDots.length ?
+                    index - desktopDots.length :
+                    Math.floor(index / (desktopDots.length ? desktopDots.length / mobileDots.length : 1));
+
+                dot.classList.toggle('active', dotIndex === this.carouselCurrentIndex);
+            }
+        });
+
+        // Update mobile dots
+        mobileDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.carouselCurrentIndex);
+        });
+
+        // Update desktop dots
+        desktopDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === this.carouselCurrentIndex);
+        });
+    }
+
+    // Helper method to get total promo products
+    getTotalPromoProducts() {
+        let count = 0;
+
+        if (this.productsData?.locations?.[this.currentLocation]?.products) {
+            count += this.productsData.locations[this.currentLocation].products.filter(p => p.in_promo).length;
+        }
+
+        if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
+            count += this.homeProductsData.locations[this.currentLocation].products.filter(p => p.in_promo).length;
+        }
+
+        return count;
+    }
+
+    // Helper method to set promo products per slide based on viewport
+    getPromoProductsPerPage() {
+        return window.matchMedia('(max-width: 640px)').matches ? 1 : 3;
+    }
+
 
     setupPromoCarouselControls() {
         const prevBtn = document.getElementById('promo-prev');
@@ -1123,57 +1288,6 @@ class WaterDeliveryApp {
         }
     }
 
-    nextPromoSlide() {
-        const promos = this.promoData.locations[this.currentLocation]?.products || [];
-        if (promos.length <= 1) return;
-        this.carouselCurrentIndex = (this.carouselCurrentIndex + 1) % promos.length;
-        this.updateCarouselPosition();
-    }
-
-    previousPromoSlide() {
-        const promos = this.promoData.locations[this.currentLocation]?.products || [];
-        if (promos.length <= 1) return;
-        this.carouselCurrentIndex = (this.carouselCurrentIndex - 1 + promos.length) % promos.length;
-        this.updateCarouselPosition();
-    }
-
-    goToPromoSlide(index) {
-        this.carouselCurrentIndex = index;
-        this.updateCarouselPosition();
-    }
-
-    updateCarouselPosition() {
-        const carouselInner = document.getElementById('promo-carousel-inner');
-        const mobileDots = document.querySelectorAll('#promo-dots .carousel-dot');
-        const desktopDots = document.querySelectorAll('#promo-dots-desktop .carousel-dot');
-
-        if (carouselInner) {
-            // Apply smooth transform with easing
-            carouselInner.style.transform = `translateX(-${this.carouselCurrentIndex * 100}%)`;
-        }
-
-        // Update all dots - both mobile and desktop
-        const allDots = [...mobileDots, ...desktopDots];
-        allDots.forEach((dot, index) => {
-            if (index % (allDots.length / Math.max(mobileDots.length, desktopDots.length)) === 0) {
-                const dotIndex = index >= desktopDots.length ? 
-                    index - desktopDots.length : 
-                    Math.floor(index / (desktopDots.length ? desktopDots.length / mobileDots.length : 1));
-                    
-                dot.classList.toggle('active', dotIndex === this.carouselCurrentIndex);
-            }
-        });
-
-        // Update mobile dots
-        mobileDots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.carouselCurrentIndex);
-        });
-
-        // Update desktop dots
-        desktopDots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.carouselCurrentIndex);
-        });
-    }
 
     sendPromoWhatsApp(promo) {
         const phone = '393500378569';
@@ -1229,7 +1343,7 @@ class WaterDeliveryApp {
         if (!container) return;
 
         let products = [];
-        
+
         // If category is "acqua", get water products
         if (this.currentCategory === 'acqua') {
             const locationData = this.productsData?.locations?.[this.currentLocation];
@@ -1238,7 +1352,7 @@ class WaterDeliveryApp {
             // Get home products for the current subcategory
             const locationData = this.homeProductsData?.locations?.[this.currentLocation];
             const allHomeProducts = locationData?.products || [];
-            
+
             if (this.currentSubcategory) {
                 products = allHomeProducts.filter(p => p.category === this.currentSubcategory);
             } else {
@@ -1251,9 +1365,9 @@ class WaterDeliveryApp {
             const allHomeProducts = locationData?.products || [];
             products = allHomeProducts.filter(p => p.category === this.currentCategory);
         }
-        
+
         if (products.length === 0) {
-            const emptyMessage = this.currentSubcategory 
+            const emptyMessage = this.currentSubcategory
                 ? `Nessun prodotto disponibile per questa categoria`
                 : 'Seleziona una categoria';
             container.innerHTML = `<p class="text-center text-gray-600">${emptyMessage}</p>`;
@@ -1283,7 +1397,7 @@ class WaterDeliveryApp {
 
             // For home products, set color scheme by category
             if (product.category) {
-                switch(product.category) {
+                switch (product.category) {
                     case 'DETERGENTI':
                         colorScheme = {
                             bg: 'bg-purple-100',
@@ -1339,7 +1453,7 @@ class WaterDeliveryApp {
 
             // Build image path - use 'image' field from JSON
             const imagePath = product.image || '';
-            const imageHTML = imagePath ? 
+            const imageHTML = imagePath ?
                 `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                  <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
                     <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
@@ -1395,7 +1509,7 @@ class WaterDeliveryApp {
             toggle.addEventListener('click', (e) => {
                 const target = document.getElementById(toggle.dataset.target);
                 const icon = toggle.querySelector('i');
-                
+
                 if (target.classList.contains('hidden')) {
                     target.classList.remove('hidden');
                     icon.style.transform = 'rotate(180deg)';
@@ -1405,7 +1519,7 @@ class WaterDeliveryApp {
                 }
             });
         });
-        
+
         // Inject FAQ Schema.org markup for SEO
         this.injectFAQSchemaToDOM();
     }
@@ -1436,19 +1550,19 @@ class WaterDeliveryApp {
 
     checkDeliveryZone(address) {
         const result = document.getElementById('delivery-result');
-        
+
         // Simulate checking delivery zones
         const addressLower = address.toLowerCase();
-        const availableZone = this.data.deliveryZones.find(zone => 
-            zone.city.toLowerCase() === addressLower || 
+        const availableZone = this.data.deliveryZones.find(zone =>
+            zone.city.toLowerCase() === addressLower ||
             zone.areas.some(area => addressLower.includes(area.toLowerCase()))
         );
 
         if (availableZone) {
-            const freeDelivery = availableZone.freeDeliveryMin ? 
+            const freeDelivery = availableZone.freeDeliveryMin ?
                 `Consegna gratuita per ordini superiori a €${availableZone.freeDeliveryMin.toFixed(2)}` :
                 'Consegna gratuita';
-            
+
             this.showDeliveryResult(
                 `✅ Consegniamo nella tua zona! ${freeDelivery}. Orari disponibili: ${availableZone.timeSlots.join(', ')}`,
                 'success'
@@ -1505,26 +1619,26 @@ class WaterDeliveryApp {
     addToCart(productId, qty = 1) {
         // Find product in current location - check both water and home products
         let product = null;
-        
+
         // Check water products
         const waterLocationData = this.productsData?.locations?.[this.currentLocation];
         product = waterLocationData?.products?.find(p => p.id === productId);
-        
+
         // If not found, check home products
         if (!product) {
             const homeLocationData = this.homeProductsData?.locations?.[this.currentLocation];
             product = homeLocationData?.products?.find(p => p.id === productId);
         }
-        
+
         if (!product) {
             this.showNotification('Prodotto non trovato', 'error');
             return;
         }
 
         if (!this.cart[productId]) {
-            this.cart[productId] = { 
-                id: productId, 
-                product: product, 
+            this.cart[productId] = {
+                id: productId,
+                product: product,
                 qty: 0,
                 location: this.currentLocation // Store location with cart item
             };
@@ -1579,7 +1693,7 @@ class WaterDeliveryApp {
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             const lineSubtotal = (price * item.qty) || 0;
             subtotal += lineSubtotal;
-            
+
             // Get delivery fee from the item's location
             const itemLocation = item.location || this.currentLocation;
             const locationData = this.productsData?.locations?.[itemLocation];
@@ -1588,13 +1702,13 @@ class WaterDeliveryApp {
             // For non-water products use a fixed fee of €0.50 per unit, otherwise use the location delivery fee (fallback €0.50)
             const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
             shipping += (item.qty * feePerItem);
-            
+
             // Determine if this is a home product (has category) or water product (has pack_description)
             const isHomeProduct = item.product.category && !item.product.pack_description;
-            const productDetails = isHomeProduct 
-                ? item.product.size_label 
+            const productDetails = isHomeProduct
+                ? item.product.size_label
                 : `${item.product.size_label} • ${item.product.pack_description}`;
-            
+
             return `
                 <div class="cart-item py-4 border-b border-gray-200">
                     <div class="flex items-start justify-between mb-3">
@@ -1620,7 +1734,7 @@ class WaterDeliveryApp {
             `;
         }).join('');
 
-    const total = subtotal + shipping;
+        const total = subtotal + shipping;
         if (subtotalEl) subtotalEl.textContent = WaterDeliveryApp.formatPrice(subtotal);
         if (shippingEl) shippingEl.textContent = WaterDeliveryApp.formatPrice(shipping);
         if (totalEl) totalEl.textContent = WaterDeliveryApp.formatPrice(total);
@@ -1650,11 +1764,11 @@ class WaterDeliveryApp {
         const items = Object.values(this.cart || {});
         let subtotal = 0;
         let shipping = 0;
-        
+
         items.forEach(item => {
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             subtotal += (price * item.qty) || 0;
-            
+
             // Get delivery fee from the item's location
             const itemLocation = item.location || this.currentLocation;
             const locationData = this.productsData?.locations?.[itemLocation];
@@ -1664,7 +1778,7 @@ class WaterDeliveryApp {
             const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
             shipping += (item.qty * feePerItem);
         });
-        
+
         const total = subtotal + shipping;
         return { items, subtotal, shipping, total };
     }
@@ -1673,7 +1787,7 @@ class WaterDeliveryApp {
         try {
             console.log('📤 Sending order to Google Apps Script via Netlify function...');
             console.log('Order data being sent:', orderData);
-            
+
             const response = await fetch('/.netlify/functions/submit-order-to-google', {
                 method: 'POST',
                 headers: {
@@ -1721,15 +1835,15 @@ class WaterDeliveryApp {
          */
         const errorContainer = document.getElementById('cart-errors');
         const errorList = document.getElementById('cart-errors-list');
-        
+
         if (!errorContainer || !errorList) return;
-        
+
         // Create error items
         errorList.innerHTML = errors.map(error => `<div>• ${error}</div>`).join('');
-        
+
         // Show the error container
         errorContainer.classList.remove('hidden');
-        
+
         // Scroll to show errors
         errorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -1740,9 +1854,9 @@ class WaterDeliveryApp {
          */
         const errorContainer = document.getElementById('cart-errors');
         const errorList = document.getElementById('cart-errors-list');
-        
+
         if (!errorContainer || !errorList) return;
-        
+
         // Hide the error container and clear content
         errorContainer.classList.add('hidden');
         errorList.innerHTML = '';
@@ -1780,11 +1894,11 @@ class WaterDeliveryApp {
         // Validate minimum water crates requirement
         const locationData = this.productsData?.locations?.[this.currentLocation];
         const minOrderCases = locationData?.min_order_cases || 2;
-        
+
         // Count total water crates in cart
         let totalWaterCrates = 0;
         const waterProductsInCart = [];
-        
+
         if (items && items.length > 0) {
             items.forEach(item => {
                 const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
@@ -1793,7 +1907,7 @@ class WaterDeliveryApp {
                     waterProductsInCart.push(item);
                 }
             });
-            
+
             // If there are water products, check minimum requirement
             if (waterProductsInCart.length > 0 && totalWaterCrates < minOrderCases) {
                 errors.push(`Ordine minimo: ${minOrderCases} casse d'acqua (hai ${totalWaterCrates} nel carrello)`);
@@ -1808,10 +1922,10 @@ class WaterDeliveryApp {
 
         const lines = items.map(i => {
             const isHomeProduct = i.product.category && !i.product.pack_description;
-            const productInfo = isHomeProduct 
+            const productInfo = isHomeProduct
                 ? `${i.product.brand} (${i.product.size_label})`
                 : `${i.product.brand} (${i.product.size_label})`;
-            return `${i.qty} x ${productInfo} - ${WaterDeliveryApp.formatPrice(((i.product.price_eur||i.product.price||0) * i.qty))}`;
+            return `${i.qty} x ${productInfo} - ${WaterDeliveryApp.formatPrice(((i.product.price_eur || i.product.price || 0) * i.qty))}`;
         }).join('\n');
 
         const cityName = locationData?.city || this.currentLocation;
@@ -1822,7 +1936,7 @@ class WaterDeliveryApp {
         messageLines.push(`Indirizzo: ${address}`);
         messageLines.push(`Fascia oraria: ${deliveryTime}`);
         messageLines.push(`Metodo di pagamento: ${payment}`);
-        
+
         // Add cash payment details if Contrassegno is selected
         if (payment === 'Contrassegno') {
             const cashOption = document.querySelector('input[name="cash-option"]:checked')?.value;
@@ -1837,7 +1951,7 @@ class WaterDeliveryApp {
                 }
             }
         }
-        
+
         messageLines.push('---');
         messageLines.push('Prodotti:');
         messageLines.push(lines);
@@ -1899,7 +2013,7 @@ class WaterDeliveryApp {
     handlePaymentMethodChange() {
         const paymentMethod = document.getElementById('cart-payment-method')?.value;
         const cashOptions = document.getElementById('cash-payment-options');
-        
+
         if (paymentMethod === 'Contrassegno') {
             cashOptions?.classList.remove('hidden');
         } else {
@@ -1910,7 +2024,7 @@ class WaterDeliveryApp {
 
     handleCashOptionChange(option) {
         const customAmountContainer = document.getElementById('custom-amount-container');
-        
+
         if (option === 'custom') {
             customAmountContainer?.classList.remove('hidden');
             this.updateChangeDisplay();
@@ -1925,7 +2039,7 @@ class WaterDeliveryApp {
         const changeAmount = document.getElementById('cart-change');
         const customerPaysAmount = parseFloat(document.getElementById('customer-pays-amount')?.value || 0);
         const { total } = this.computeCartTotals();
-        
+
         if (customerPaysAmount > 0 && customerPaysAmount >= total) {
             const change = customerPaysAmount - total;
             if (changeAmount) changeAmount.textContent = WaterDeliveryApp.formatPrice(change);
@@ -1953,10 +2067,10 @@ class WaterDeliveryApp {
         const panel = document.getElementById('cart-panel');
         const overlay = document.getElementById('cart-overlay');
         if (!panel) return;
-        
+
         const isOpen = !panel.classList.contains('translate-x-full');
         const willOpen = typeof forceOpen === 'boolean' ? forceOpen : !isOpen;
-        
+
         if (willOpen) {
             panel.classList.remove('translate-x-full');
             panel.classList.add('translate-x-0');
@@ -1979,41 +2093,41 @@ class WaterDeliveryApp {
     setupTouchSlider() {
         const panel = document.getElementById('cart-panel');
         if (!panel || this.touchSliderActive) return;
-        
+
         this.touchSliderActive = true;
         let startX = 0;
         let currentX = 0;
         let isDragging = false;
         let startTime = 0;
-        
+
         const handleTouchStart = (e) => {
             // Only start drag from the edge or drag indicator
             const touchX = e.touches[0].clientX;
             const panelRect = panel.getBoundingClientRect();
-            
+
             // Allow drag from left 50px of panel or from drag indicator
             if (touchX > panelRect.left + 50 && !e.target.closest('.cart-drag-indicator')) {
                 return;
             }
-            
+
             startX = touchX;
             currentX = startX;
             startTime = Date.now();
             isDragging = true;
             panel.classList.add('dragging');
         };
-        
+
         const handleTouchMove = (e) => {
             if (!isDragging) return;
-            
+
             currentX = e.touches[0].clientX;
             const diff = currentX - startX;
-            
+
             // Only allow dragging to the right (closing)
             if (diff > 0) {
                 e.preventDefault(); // Prevent scrolling while dragging
                 panel.style.transform = `translateX(${diff}px)`;
-                
+
                 // Add visual feedback based on drag distance
                 const opacity = Math.max(0.3, 1 - (diff / panel.offsetWidth));
                 const overlay = document.getElementById('cart-overlay');
@@ -2022,17 +2136,17 @@ class WaterDeliveryApp {
                 }
             }
         };
-        
+
         const handleTouchEnd = (e) => {
             if (!isDragging) return;
-            
+
             isDragging = false;
             panel.classList.remove('dragging');
-            
+
             const diff = currentX - startX;
             const timeElapsed = Date.now() - startTime;
             const velocity = Math.abs(diff) / timeElapsed;
-            
+
             // Close if dragged more than 30% or fast swipe (velocity > 0.5)
             if (diff > panel.offsetWidth * 0.3 || velocity > 0.5) {
                 this.toggleCart(false);
@@ -2045,29 +2159,29 @@ class WaterDeliveryApp {
                 }
             }
         };
-        
+
         this._touchHandlers = {
             start: handleTouchStart,
             move: handleTouchMove,
             end: handleTouchEnd
         };
-        
+
         panel.addEventListener('touchstart', this._touchHandlers.start, { passive: false });
         panel.addEventListener('touchmove', this._touchHandlers.move, { passive: false });
         panel.addEventListener('touchend', this._touchHandlers.end, { passive: true });
     }
-    
+
     removeTouchSlider() {
         const panel = document.getElementById('cart-panel');
         if (!panel || !this.touchSliderActive) return;
-        
+
         if (this._touchHandlers) {
             panel.removeEventListener('touchstart', this._touchHandlers.start);
             panel.removeEventListener('touchmove', this._touchHandlers.move);
             panel.removeEventListener('touchend', this._touchHandlers.end);
             this._touchHandlers = null;
         }
-        
+
         this.touchSliderActive = false;
         panel.style.transform = '';
         panel.style.transition = '';
@@ -2105,7 +2219,7 @@ class WaterDeliveryApp {
         // Hamburger menu animation
         const menuButton = document.getElementById('mobile-menu-button');
         if (menuButton) {
-            menuButton.addEventListener('click', function() {
+            menuButton.addEventListener('click', function () {
                 const spans = this.querySelectorAll('span');
                 spans.forEach(span => span.classList.toggle('rotate-45'));
             });
@@ -2116,9 +2230,9 @@ class WaterDeliveryApp {
         // Track Google Forms opens
         document.querySelectorAll('a[href*="docs.google.com/forms"]').forEach(link => {
             link.addEventListener('click', () => {
-                this.trackEvent('google_form_opened', { 
+                this.trackEvent('google_form_opened', {
                     form_type: this.getFormType(link.href),
-                    href: link.href 
+                    href: link.href
                 });
             });
         });
@@ -2138,12 +2252,12 @@ class WaterDeliveryApp {
         if (typeof gtag !== 'undefined') {
             gtag('event', eventName, eventData);
         }
-        
+
         // Facebook Pixel tracking (if available)
         if (typeof fbq !== 'undefined') {
             fbq('track', eventName, eventData);
         }
-        
+
         // Console log for development
         console.log('Event tracked:', eventName, eventData);
     }
@@ -2175,10 +2289,10 @@ function subscribeNewsletter() {
         alert('Inserisci un indirizzo email valido');
         return;
     }
-    
+
     const newsletterUrl = app.data.googleForms.newsletter + `&entry.email=${encodeURIComponent(email)}`;
     window.open(newsletterUrl, '_blank');
-    
+
     document.getElementById('newsletter-email').value = '';
     alert('Grazie! Ti abbiamo reindirizzato al modulo di iscrizione.');
 }
@@ -2196,7 +2310,7 @@ function openWhatsApp(message = '') {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new WaterDeliveryApp();
-    
+
     // Show scroll to top button after scrolling
     window.addEventListener('scroll', () => {
         const scrollBtn = document.getElementById('scroll-to-top');
@@ -2223,10 +2337,10 @@ window.orderProduct = (categoryId) => {
 window.scrollToTop = WaterDeliveryApp.scrollToTop;
 window.openOrderForm = (productId = '') => {
     let formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfKuCU98wOGXeUBkKjir0MkYulfVgjJhEaHZ1KseLhUEUjMrQ/viewform';
-    
+
     if (productId) {
         formUrl += `?entry.product=${encodeURIComponent(productId)}`;
     }
-    
+
     window.open(formUrl, '_blank');
 };

@@ -511,7 +511,7 @@
           "category": "CARTA E MONOUSO",
           "price_eur": 3.23,
           "price_text": "€ 3,23",
-          "in_promo": true,
+          "in_promo": false,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/vit_bobina_mister_500_rende.png"

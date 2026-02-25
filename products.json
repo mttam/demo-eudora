@@ -45,7 +45,7 @@
           "pack_description": "6 bottiglie",
           "price_eur": 2.34,
           "price_text": "€ 2,34",
-          "in_promo": true,
+          "in_promo": false,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_water/lete.png"
@@ -261,11 +261,11 @@
           "type": "naturale",
           "pack_count": 6,
           "pack_description": "6 bottiglie",
-          "price_eur": 1.68,
-          "price_text": "€ 1,68",
-          "in_promo": false,
-          "promo_price_eur": 3.99,
-          "promo_price_text": "€ 3,99",
+          "price_eur": 1.99,
+          "price_text": "€ 1,99",
+          "in_promo": true,
+          "promo_price_eur": 1.68,
+          "promo_price_text": "€ 1,68",
           "image": "public/img_water/sanbenedetto.png"
         },
         {
