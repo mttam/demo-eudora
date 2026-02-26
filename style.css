@@ -897,7 +897,7 @@ body {
     align-items: center;
     overflow: hidden;
     position: relative;
-    background: var(--water-light); /* Light green background */
+    background: #ffffff;
 }
 
 /* Centralized Image */

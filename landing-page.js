@@ -1043,8 +1043,6 @@ class WaterDeliveryApp {
 
             // Add products to the page
             pageProducts.forEach((product) => {
-                const locationName = this.currentLocation === 'cosenza' ? 'Cosenza' : 'Rende';
-
                 // Create carousel item
                 const promoItem = document.createElement('div');
                 promoItem.className = 'promo-item flex-shrink-0';
@@ -1097,16 +1095,10 @@ class WaterDeliveryApp {
                 priceContainer.appendChild(oldPrice);
                 priceContainer.appendChild(newPrice);
 
-                // Location badge
-                const locationBadge = document.createElement('div');
-                locationBadge.className = 'location-badge';
-                locationBadge.textContent = `Promozione a ${locationName}`;
-
                 // Assemble content container
                 contentContainer.appendChild(productName);
                 contentContainer.appendChild(productSubtitle);
                 contentContainer.appendChild(priceContainer);
-                contentContainer.appendChild(locationBadge);
 
                 // Assemble promo item
                 promoItem.appendChild(imageContainer);
