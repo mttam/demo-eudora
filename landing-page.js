@@ -1497,7 +1497,7 @@ class WaterDeliveryApp {
         if (products.length === 0) {
             container.innerHTML = `
                 <div class="col-span-full text-center bg-gray-50 border border-gray-200 rounded-xl p-8">
-                    <p class="text-gray-700 text-lg font-medium mb-5">Sezione in allestimento per maggiori info contaci in chat</p>
+                    <p class="text-gray-700 text-lg font-medium mb-5">Sezione in allestimento per maggiori info contattaci in chat</p>
                     <a href="${this.getEmptySectionWhatsAppUrl()}"
                        target="_blank"
                        rel="noopener noreferrer"
