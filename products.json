@@ -264,7 +264,7 @@
           "price_eur": 3.09,
           "price_text": "€ 3,09",
           "in_promo": false,
-          "promo_date": null,
+          "promo_date": "2026-03-28",
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_water/sant_anna.png"
@@ -280,7 +280,7 @@
           "price_eur": 1.99,
           "price_text": "€ 1,99",
           "in_promo": true,
-          "promo_date": null,
+          "promo_date": "2026-03-28",
           "promo_price_eur": 1.68,
           "promo_price_text": "€ 1,68",
           "image": "public/img_water/sanbenedetto.png"

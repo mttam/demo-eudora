@@ -144,6 +144,35 @@ class WaterDeliveryApp {
         }
     }
 
+    isPromoDateExpired(promoDate) {
+        if (!promoDate) return false;
+
+        const expiresAt = new Date(`${promoDate}T23:59:59`);
+        if (Number.isNaN(expiresAt.getTime())) {
+            console.warn('Invalid promo_date format:', promoDate);
+            return false;
+        }
+
+        return Date.now() > expiresAt.getTime();
+    }
+
+    shouldHideProductByPromoDate(product) {
+        return Boolean(product?.in_promo) && this.isPromoDateExpired(product?.promo_date);
+    }
+
+    formatPromoDateItalian(promoDate) {
+        if (!promoDate) return '';
+
+        const date = new Date(`${promoDate}T00:00:00`);
+        if (Number.isNaN(date.getTime())) return '';
+
+        return new Intl.DateTimeFormat('it-IT', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+    }
+
     // ============================================
     // SEO METADATA MANAGEMENT FUNCTIONS
     // ============================================
@@ -726,7 +755,7 @@ class WaterDeliveryApp {
             Object.entries(this.productsData.locations).forEach(([locationKey, locationData]) => {
                 if (locationData?.products) {
                     locationData.products.forEach(product => {
-                        if (this.productMatches(product, lowerQuery)) {
+                        if (this.productMatches(product, lowerQuery) && !this.shouldHideProductByPromoDate(product)) {
                             const productId = product.id;
 
                             if (!productMap.has(productId)) {
@@ -755,7 +784,7 @@ class WaterDeliveryApp {
             Object.entries(this.homeProductsData.locations).forEach(([locationKey, locationData]) => {
                 if (locationData?.products) {
                     locationData.products.forEach(product => {
-                        if (this.productMatches(product, lowerQuery)) {
+                        if (this.productMatches(product, lowerQuery) && !this.shouldHideProductByPromoDate(product)) {
                             const productId = product.id;
 
                             if (!productMap.has(productId)) {
@@ -991,7 +1020,7 @@ class WaterDeliveryApp {
         // Get water promo products
         if (this.productsData?.locations?.[this.currentLocation]?.products) {
             this.productsData.locations[this.currentLocation].products.forEach(product => {
-                if (product.in_promo) {
+                if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
                     promoProducts.push({ ...product, type: 'water' });
                 }
             });
@@ -1000,7 +1029,7 @@ class WaterDeliveryApp {
         // Get home promo products
         if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
             this.homeProductsData.locations[this.currentLocation].products.forEach(product => {
-                if (product.in_promo) {
+                if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
                     promoProducts.push({ ...product, type: 'home' });
                 }
             });
@@ -1078,6 +1107,14 @@ class WaterDeliveryApp {
                 productSubtitle.className = 'text-gray-600 text-center';
                 productSubtitle.textContent = product.product_name;
 
+                // Promo date (Italian format)
+                const promoDateText = this.formatPromoDateItalian(product.promo_date);
+                const promoDateLabel = document.createElement('p');
+                promoDateLabel.className = 'text-red-600 text-center font-semibold text-sm mt-1';
+                promoDateLabel.textContent = promoDateText
+                    ? `Promo valida fino al ${promoDateText}`
+                    : 'Promo in corso';
+
                 // Create price display
                 const priceContainer = document.createElement('div');
                 priceContainer.className = 'price-container';
@@ -1098,6 +1135,7 @@ class WaterDeliveryApp {
                 // Assemble content container
                 contentContainer.appendChild(productName);
                 contentContainer.appendChild(productSubtitle);
+                contentContainer.appendChild(promoDateLabel);
                 contentContainer.appendChild(priceContainer);
 
                 // Assemble promo item
@@ -1198,11 +1236,11 @@ class WaterDeliveryApp {
         let count = 0;
 
         if (this.productsData?.locations?.[this.currentLocation]?.products) {
-            count += this.productsData.locations[this.currentLocation].products.filter(p => p.in_promo).length;
+            count += this.productsData.locations[this.currentLocation].products.filter(p => p.in_promo && !this.shouldHideProductByPromoDate(p)).length;
         }
 
         if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
-            count += this.homeProductsData.locations[this.currentLocation].products.filter(p => p.in_promo).length;
+            count += this.homeProductsData.locations[this.currentLocation].products.filter(p => p.in_promo && !this.shouldHideProductByPromoDate(p)).length;
         }
 
         return count;
@@ -1330,6 +1368,27 @@ class WaterDeliveryApp {
         container.innerHTML = cardsHTML;
     }
 
+    getCurrentSectionName() {
+        const categoryNames = {
+            acqua: 'Acqua',
+            cura_casa: 'Cura Casa',
+            FARMACI: 'Farmaci e Parafarmaci'
+        };
+
+        if (this.currentCategory === 'cura_casa' && this.currentSubcategory) {
+            return this.currentSubcategory;
+        }
+
+        return categoryNames[this.currentCategory] || this.currentCategory;
+    }
+
+    getEmptySectionWhatsAppUrl() {
+        const phone = '393500378569';
+        const sectionName = this.getCurrentSectionName();
+        const message = `Vorrei avere maggiori informazioni sui prodotti della categoria ${sectionName}`;
+        return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    }
+
     renderProducts() {
         const container = document.getElementById('products-container');
         if (!container) return;
@@ -1358,11 +1417,22 @@ class WaterDeliveryApp {
             products = allHomeProducts.filter(p => p.category === this.currentCategory);
         }
 
+        products = products.filter(product => !this.shouldHideProductByPromoDate(product));
+
         if (products.length === 0) {
-            const emptyMessage = this.currentSubcategory
-                ? `Nessun prodotto disponibile per questa categoria`
-                : 'Seleziona una categoria';
-            container.innerHTML = `<p class="text-center text-gray-600">${emptyMessage}</p>`;
+            container.innerHTML = `
+                <div class="col-span-full text-center bg-gray-50 border border-gray-200 rounded-xl p-8">
+                    <p class="text-gray-700 text-lg font-medium mb-5">Sezione in allestimento per maggiori info contaci in chat</p>
+                    <a href="${this.getEmptySectionWhatsAppUrl()}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       data-action="whatsapp"
+                       class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-lg shadow transition-colors duration-300">
+                        <i class="fab fa-whatsapp mr-2"></i>
+                        Contattaci su WhatsApp
+                    </a>
+                </div>
+            `;
             return;
         }
 
@@ -1624,6 +1694,11 @@ class WaterDeliveryApp {
 
         if (!product) {
             this.showNotification('Prodotto non trovato', 'error');
+            return;
+        }
+
+        if (this.shouldHideProductByPromoDate(product)) {
+            this.showNotification('Prodotto promozionale non disponibile', 'warning');
             return;
         }
 

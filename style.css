@@ -902,8 +902,8 @@ body {
 
 /* Centralized Image */
 .promo-item-image {
-    width: 50%; /* 70% of the container width */
-    height: auto; /* Maintain aspect ratio */
+    width: 8rem;
+    height: 8rem;
     object-fit: contain; /* Ensure the entire image is visible */
     object-position: center center; /* Center the image */
     transition: transform 0.4s ease, filter 0.4s ease;
@@ -918,8 +918,8 @@ body {
     padding: 10px 15px; /* Reduced padding for multiple items */
     background: #ffffff;
     backdrop-filter: none;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    border-top: none;
+    box-shadow: none;
 }
 
 /* Content Layout */
@@ -1004,6 +1004,11 @@ body {
     
     .promo-item-image-container {
         height: 55%; /* Slightly smaller on mobile */
+    }
+
+    .promo-item-image {
+        width: 7rem;
+        height: 7rem;
     }
     
     .promo-item-content {
