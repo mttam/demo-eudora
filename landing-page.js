@@ -4,9 +4,10 @@ class WaterDeliveryApp {
         this.data = null;
         this.productsData = null; // Water products data from water-prodocts.json
         this.homeProductsData = null; // Home products data from home-prodocts.json
+        this.drinksProductsData = null; // Drinks products data from drinks_prodocts.json
         this.promoData = null; // Promo data from promo.json
         this.currentLocation = 'cosenza'; // Default location
-        this.currentCategory = 'acqua'; // Default category (acqua, cura_casa, FARMACI)
+        this.currentCategory = 'acqua'; // Default category (acqua, cura_casa, bevande, FARMACI)
         this.currentSubcategory = null; // For hierarchical categories (CUCINA, LAVATRICE, DETERGENTI, BAGNO, CARTA E MONOUSO)
         this.cart = {}; // cart keyed by productId { id, product, qty }
         this.touchSliderActive = false;
@@ -15,6 +16,7 @@ class WaterDeliveryApp {
         this.categoryHierarchy = {
             'acqua': null,
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
+            'bevande': ['BEVANDE GASSATE', 'BIRRE'],
             'FARMACI': null
         };
         // SEO metadata templates for different pages/sections
@@ -31,6 +33,10 @@ class WaterDeliveryApp {
                 title: 'Detergenti e Prodotti per la Casa | Consegna a Domicilio',
                 description: 'Detergenti, prodotti per la cucina e il bucato consegnati direttamente a casa tua. Scopri l\'ampia gamma di prodotti.'
             },
+            bevande: {
+                title: 'Bevande e Birre | Consegna a Domicilio',
+                description: 'Bevande gassate e birre in confezione, consegnate direttamente a domicilio con Eudora Delivery.'
+            },
             FARMACI: {
                 title: 'Prodotti Farmaceutici | Consegna a Domicilio Eudora',
                 description: 'Integratori e prodotti farmaceutici di qualità consegnati a domicilio. Servizio veloce e affidabile.'
@@ -43,6 +49,7 @@ class WaterDeliveryApp {
         await this.loadData();
         await this.loadProductsData();
         await this.loadHomeProductsData();
+        await this.loadDrinksProductsData();
         await this.loadPromoData();
         this.loadLocation(); // Load saved location preference
         this.loadCart();
@@ -108,6 +115,17 @@ class WaterDeliveryApp {
         } catch (error) {
             console.error('Error loading home products data:', error);
             this.homeProductsData = { locations: {} };
+        }
+    }
+
+    async loadDrinksProductsData() {
+        try {
+            const response = await fetch('./drinks_prodocts.json');
+            this.drinksProductsData = await response.json();
+            console.log('Drinks products data loaded:', this.drinksProductsData);
+        } catch (error) {
+            console.error('Error loading drinks products data:', error);
+            this.drinksProductsData = { locations: {} };
         }
     }
 
@@ -456,14 +474,14 @@ class WaterDeliveryApp {
             }
         });
 
-        // Show/hide subcategories container based on whether category has subs
+        // Show/hide subcategories container based on selected category
         const subcategoriesContainer = document.getElementById('subcategories-container');
+        const subcategoriesContainerBevande = document.getElementById('subcategories-container-bevande');
         if (subcategoriesContainer) {
-            if (this.categoryHierarchy[this.currentCategory] && this.categoryHierarchy[this.currentCategory].length > 0) {
-                subcategoriesContainer.style.display = '';
-            } else {
-                subcategoriesContainer.style.display = 'none';
-            }
+            subcategoriesContainer.style.display = this.currentCategory === 'cura_casa' ? '' : 'none';
+        }
+        if (subcategoriesContainerBevande) {
+            subcategoriesContainerBevande.style.display = this.currentCategory === 'bevande' ? '' : 'none';
         }
 
         // Show/hide order info and location selectors based on category
@@ -807,6 +825,32 @@ class WaterDeliveryApp {
             });
         }
 
+        // Search in all locations for drinks products
+        if (this.drinksProductsData?.locations) {
+            Object.entries(this.drinksProductsData.locations).forEach(([locationKey, locationData]) => {
+                if (locationData?.products) {
+                    locationData.products.forEach(product => {
+                        if (this.productMatches(product, lowerQuery) && !this.shouldHideProductByPromoDate(product)) {
+                            const productId = product.id;
+
+                            if (!productMap.has(productId)) {
+                                productMap.set(productId, {
+                                    ...product,
+                                    type: 'drinks',
+                                    availableLocations: [{ key: locationKey, city: locationData.city }]
+                                });
+                            } else {
+                                const existingProduct = productMap.get(productId);
+                                if (!existingProduct.availableLocations.some(loc => loc.key === locationKey)) {
+                                    existingProduct.availableLocations.push({ key: locationKey, city: locationData.city });
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         // Convert map to array
         productMap.forEach(product => results.push(product));
         return results;
@@ -869,7 +913,8 @@ class WaterDeliveryApp {
                 text: 'text-blue-600',
                 button: 'bg-blue-600',
                 buttonHover: 'hover:bg-blue-700',
-                icon: 'fas fa-tint'
+                icon: 'fas fa-tint',
+                iconSvg: ''
             };
 
             // For water products
@@ -879,7 +924,8 @@ class WaterDeliveryApp {
                     text: 'text-green-600',
                     button: 'bg-green-600',
                     buttonHover: 'hover:bg-green-700',
-                    icon: 'fas fa-wine-bottle'
+                    icon: 'fas fa-wine-bottle',
+                    iconSvg: ''
                 };
             }
 
@@ -892,7 +938,8 @@ class WaterDeliveryApp {
                             text: 'text-purple-600',
                             button: 'bg-purple-600',
                             buttonHover: 'hover:bg-purple-700',
-                            icon: 'fas fa-spray-can'
+                            icon: 'fas fa-spray-can',
+                            iconSvg: ''
                         };
                         break;
                     case 'LAVATRICE':
@@ -901,7 +948,8 @@ class WaterDeliveryApp {
                             text: 'text-indigo-600',
                             button: 'bg-indigo-600',
                             buttonHover: 'hover:bg-indigo-700',
-                            icon: 'fas fa-jug-detergent'
+                            icon: 'fas fa-jug-detergent',
+                            iconSvg: ''
                         };
                         break;
                     case 'CUCINA':
@@ -910,7 +958,8 @@ class WaterDeliveryApp {
                             text: 'text-orange-600',
                             button: 'bg-orange-600',
                             buttonHover: 'hover:bg-orange-700',
-                            icon: 'fas fa-utensils'
+                            icon: 'fas fa-utensils',
+                            iconSvg: ''
                         };
                         break;
                     case 'CARTA E MONOUSO':
@@ -919,7 +968,28 @@ class WaterDeliveryApp {
                             text: 'text-teal-600',
                             button: 'bg-teal-600',
                             buttonHover: 'hover:bg-teal-700',
-                            icon: 'fas fa-toilet-paper'
+                            icon: 'fas fa-toilet-paper',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'BEVANDE GASSATE':
+                        colorScheme = {
+                            bg: 'bg-cyan-100',
+                            text: 'text-cyan-600',
+                            button: 'bg-cyan-600',
+                            buttonHover: 'hover:bg-cyan-700',
+                            icon: 'fas fa-glass-water',
+                            iconSvg: '<svg class="w-8 h-8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M8.21922 0H12V2H9.78078L9.28078 4H14V6H2V4H7.21922L8.21922 0Z"></path><path d="M3.25 8L4 16H12L12.75 8H3.25Z"></path></svg>'
+                        };
+                        break;
+                    case 'BIRRE':
+                        colorScheme = {
+                            bg: 'bg-amber-100',
+                            text: 'text-amber-700',
+                            button: 'bg-amber-600',
+                            buttonHover: 'hover:bg-amber-700',
+                            icon: 'fas fa-beer-mug-empty',
+                            iconSvg: ''
                         };
                         break;
                 }
@@ -941,13 +1011,14 @@ class WaterDeliveryApp {
 
             // Build image path
             const imagePath = product.image || '';
+                const fallbackIconHTML = colorScheme.iconSvg || `<i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>`;
             const imageHTML = imagePath ?
                 `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                  <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
-                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                          <span class="${colorScheme.text}">${fallbackIconHTML}</span>
                  </div>` :
                 `<div class="${colorScheme.bg} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                          <span class="${colorScheme.text}">${fallbackIconHTML}</span>
                  </div>`;
 
             // Get category name for display
@@ -1003,37 +1074,40 @@ class WaterDeliveryApp {
     // PROMO CAROUSEL METHODS
     // ============================================
 
-    // Update the renderPromoCarousel method in landing-page.js
-    // Update the renderPromoCarousel method in landing-page.js
-    // Update the renderPromoCarousel method in landing-page.js
-    // Update the renderPromoCarousel method in landing-page.js
+    collectPromoProducts() {
+        const promoProductsMap = new Map();
+
+        const addPromoProducts = (locations, type) => {
+            if (!locations) return;
+
+            Object.entries(locations).forEach(([locationKey, locationData]) => {
+                if (!locationData?.products) return;
+
+                locationData.products.forEach(product => {
+                    if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
+                        const promoKey = `${type}-${product.id}`;
+                        if (!promoProductsMap.has(promoKey)) {
+                            promoProductsMap.set(promoKey, {
+                                ...product,
+                                type,
+                                sourceLocation: locationKey
+                            });
+                        }
+                    }
+                });
+            });
+        };
+
+        addPromoProducts(this.productsData?.locations, 'water');
+        addPromoProducts(this.homeProductsData?.locations, 'home');
+        addPromoProducts(this.drinksProductsData?.locations, 'drinks');
+
+        return Array.from(promoProductsMap.values());
+    }
+
     renderPromoCarousel() {
-        if (!this.productsData?.locations?.[this.currentLocation] && !this.homeProductsData?.locations?.[this.currentLocation]) {
-            console.warn('No product data for location:', this.currentLocation);
-            document.getElementById('promo-carousel').style.display = 'none';
-            return;
-        }
-
-        // Collect all promo products from both water and home products
-        const promoProducts = [];
-
-        // Get water promo products
-        if (this.productsData?.locations?.[this.currentLocation]?.products) {
-            this.productsData.locations[this.currentLocation].products.forEach(product => {
-                if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
-                    promoProducts.push({ ...product, type: 'water' });
-                }
-            });
-        }
-
-        // Get home promo products
-        if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
-            this.homeProductsData.locations[this.currentLocation].products.forEach(product => {
-                if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
-                    promoProducts.push({ ...product, type: 'home' });
-                }
-            });
-        }
+        // Promo is global: do not limit by current location
+        const promoProducts = this.collectPromoProducts();
 
         if (promoProducts.length === 0) {
             document.getElementById('promo-carousel').style.display = 'none';
@@ -1233,17 +1307,7 @@ class WaterDeliveryApp {
 
     // Helper method to get total promo products
     getTotalPromoProducts() {
-        let count = 0;
-
-        if (this.productsData?.locations?.[this.currentLocation]?.products) {
-            count += this.productsData.locations[this.currentLocation].products.filter(p => p.in_promo && !this.shouldHideProductByPromoDate(p)).length;
-        }
-
-        if (this.homeProductsData?.locations?.[this.currentLocation]?.products) {
-            count += this.homeProductsData.locations[this.currentLocation].products.filter(p => p.in_promo && !this.shouldHideProductByPromoDate(p)).length;
-        }
-
-        return count;
+        return this.collectPromoProducts().length;
     }
 
     // Helper method to set promo products per slide based on viewport
@@ -1372,10 +1436,11 @@ class WaterDeliveryApp {
         const categoryNames = {
             acqua: 'Acqua',
             cura_casa: 'Cura Casa',
+            bevande: 'Bevande',
             FARMACI: 'Farmaci e Parafarmaci'
         };
 
-        if (this.currentCategory === 'cura_casa' && this.currentSubcategory) {
+        if ((this.currentCategory === 'cura_casa' || this.currentCategory === 'bevande') && this.currentSubcategory) {
             return this.currentSubcategory;
         }
 
@@ -1408,6 +1473,16 @@ class WaterDeliveryApp {
                 products = allHomeProducts.filter(p => p.category === this.currentSubcategory);
             } else {
                 // If no subcategory selected, show nothing
+                products = [];
+            }
+        } else if (this.currentCategory === 'bevande') {
+            // Get drinks products for the current subcategory
+            const locationData = this.drinksProductsData?.locations?.[this.currentLocation];
+            const allDrinksProducts = locationData?.products || [];
+
+            if (this.currentSubcategory) {
+                products = allDrinksProducts.filter(p => p.category === this.currentSubcategory);
+            } else {
                 products = [];
             }
         } else {
@@ -1443,7 +1518,8 @@ class WaterDeliveryApp {
                 text: 'text-blue-600',
                 button: 'bg-blue-600',
                 buttonHover: 'hover:bg-blue-700',
-                icon: 'fas fa-tint'
+                icon: 'fas fa-tint',
+                iconSvg: ''
             };
 
             // For water products
@@ -1453,7 +1529,8 @@ class WaterDeliveryApp {
                     text: 'text-green-600',
                     button: 'bg-green-600',
                     buttonHover: 'hover:bg-green-700',
-                    icon: 'fas fa-wine-bottle'
+                    icon: 'fas fa-wine-bottle',
+                    iconSvg: ''
                 };
             }
 
@@ -1466,7 +1543,8 @@ class WaterDeliveryApp {
                             text: 'text-purple-600',
                             button: 'bg-purple-600',
                             buttonHover: 'hover:bg-purple-700',
-                            icon: 'fas fa-spray-can'
+                            icon: 'fas fa-spray-can',
+                            iconSvg: ''
                         };
                         break;
                     case 'LAVATRICE':
@@ -1475,7 +1553,8 @@ class WaterDeliveryApp {
                             text: 'text-indigo-600',
                             button: 'bg-indigo-600',
                             buttonHover: 'hover:bg-indigo-700',
-                            icon: 'fas fa-jug-detergent'
+                            icon: 'fas fa-jug-detergent',
+                            iconSvg: ''
                         };
                         break;
                     case 'CUCINA':
@@ -1484,7 +1563,8 @@ class WaterDeliveryApp {
                             text: 'text-orange-600',
                             button: 'bg-orange-600',
                             buttonHover: 'hover:bg-orange-700',
-                            icon: 'fas fa-utensils'
+                            icon: 'fas fa-utensils',
+                            iconSvg: ''
                         };
                         break;
                     case 'CARTA E MONOUSO':
@@ -1493,7 +1573,28 @@ class WaterDeliveryApp {
                             text: 'text-teal-600',
                             button: 'bg-teal-600',
                             buttonHover: 'hover:bg-teal-700',
-                            icon: 'fas fa-toilet-paper'
+                            icon: 'fas fa-toilet-paper',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'BEVANDE GASSATE':
+                        colorScheme = {
+                            bg: 'bg-cyan-100',
+                            text: 'text-cyan-600',
+                            button: 'bg-cyan-600',
+                            buttonHover: 'hover:bg-cyan-700',
+                            icon: 'fas fa-glass-water',
+                            iconSvg: '<svg class="w-8 h-8" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M8.21922 0H12V2H9.78078L9.28078 4H14V6H2V4H7.21922L8.21922 0Z"></path><path d="M3.25 8L4 16H12L12.75 8H3.25Z"></path></svg>'
+                        };
+                        break;
+                    case 'BIRRE':
+                        colorScheme = {
+                            bg: 'bg-amber-100',
+                            text: 'text-amber-700',
+                            button: 'bg-amber-600',
+                            buttonHover: 'hover:bg-amber-700',
+                            icon: 'fas fa-beer-mug-empty',
+                            iconSvg: ''
                         };
                         break;
                 }
@@ -1515,13 +1616,14 @@ class WaterDeliveryApp {
 
             // Build image path - use 'image' field from JSON
             const imagePath = product.image || '';
+                const fallbackIconHTML = colorScheme.iconSvg || `<i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>`;
             const imageHTML = imagePath ?
                 `<img src="${imagePath}" alt="${product.brand}" class="w-32 h-32 object-contain mx-auto mb-4" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                  <div class="${colorScheme.bg} w-20 h-20 rounded-full items-center justify-center mx-auto mb-6" style="display: none;">
-                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                          <span class="${colorScheme.text}">${fallbackIconHTML}</span>
                  </div>` :
                 `<div class="${colorScheme.bg} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="${colorScheme.icon} ${colorScheme.text} text-3xl"></i>
+                          <span class="${colorScheme.text}">${fallbackIconHTML}</span>
                  </div>`;
 
             return `
@@ -1679,8 +1781,9 @@ class WaterDeliveryApp {
     }
 
     addToCart(productId, qty = 1) {
-        // Find product in current location - check both water and home products
+        // Find product in current location first
         let product = null;
+        let productLocation = this.currentLocation;
 
         // Check water products
         const waterLocationData = this.productsData?.locations?.[this.currentLocation];
@@ -1690,6 +1793,38 @@ class WaterDeliveryApp {
         if (!product) {
             const homeLocationData = this.homeProductsData?.locations?.[this.currentLocation];
             product = homeLocationData?.products?.find(p => p.id === productId);
+        }
+
+        // If not found, check drinks products
+        if (!product) {
+            const drinksLocationData = this.drinksProductsData?.locations?.[this.currentLocation];
+            product = drinksLocationData?.products?.find(p => p.id === productId);
+        }
+
+        // Fallback: search across all locations (needed for global promo carousel)
+        if (!product) {
+            const findInLocations = (locations) => {
+                if (!locations) return null;
+
+                for (const [locationKey, locationData] of Object.entries(locations)) {
+                    const found = locationData?.products?.find(p => p.id === productId);
+                    if (found) {
+                        return { product: found, location: locationKey };
+                    }
+                }
+
+                return null;
+            };
+
+            const foundWater = findInLocations(this.productsData?.locations);
+            const foundHome = foundWater ? null : findInLocations(this.homeProductsData?.locations);
+            const foundDrinks = (!foundWater && !foundHome) ? findInLocations(this.drinksProductsData?.locations) : null;
+            const foundAny = foundWater || foundHome || foundDrinks;
+
+            if (foundAny) {
+                product = foundAny.product;
+                productLocation = foundAny.location;
+            }
         }
 
         if (!product) {
@@ -1707,7 +1842,7 @@ class WaterDeliveryApp {
                 id: productId,
                 product: product,
                 qty: 0,
-                location: this.currentLocation // Store location with cart item
+                location: productLocation // Store product source location with cart item
             };
         }
         this.cart[productId].qty += qty;
