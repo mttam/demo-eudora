@@ -14,6 +14,7 @@
           "price_eur": 4.19,
           "price_text": "€ 4,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/ace_detersivo_igenizzante_classico.png"
@@ -27,6 +28,7 @@
           "price_eur": 4.19,
           "price_text": "€ 4,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/ace_detersivo_talco_e_muschio_rende.png"
@@ -40,6 +42,7 @@
           "price_eur": 4.19,
           "price_text": "€ 4,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/ace_detersivo_igenizzante_colorati.png"
@@ -53,6 +56,7 @@
           "price_eur": 3.11,
           "price_text": "€ 3,11",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/felce_azzurra_ammorbidente_classico.png"
@@ -66,6 +70,7 @@
           "price_eur": 3.11,
           "price_text": "€ 3,11",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "pack_description": "N/D",
@@ -80,6 +85,7 @@
           "price_eur": 3.71,
           "price_text": "€ 3,71",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/general_colorati_delicati.png"
@@ -93,6 +99,7 @@
           "price_eur": 3.71,
           "price_text": "€ 3,71",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/general_universale_5_in_1.png"
@@ -106,6 +113,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_bouquet_florito.png"
@@ -119,6 +127,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_fresco_benessere.png"
@@ -132,6 +141,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_lavatrice_igienizzante_bicarbonato_gelsomino_e_patchouli.png"
@@ -145,6 +155,7 @@
           "price_eur": 1.67,
           "price_text": "€ 1,67",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "pack_description": "N/D",
@@ -159,6 +170,7 @@
           "price_eur": 2.75,
           "price_text": "€ 2,75",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "pack_description": "N/D",
@@ -173,6 +185,7 @@
           "price_eur": 2.15,
           "price_text": "€ 2,15",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/ace_pavimenti_igenizzante.png"
@@ -186,6 +199,7 @@
           "price_eur": 2.63,
           "price_text": "€ 2,63",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/cif_infinte_clean_all_in_one.png"
@@ -199,6 +213,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/cif_vetri_brillanti_olio_essenziali_arancia.png"
@@ -212,6 +227,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/cif_vetri_brillanti_olio_essenziali_bergamotto.png"
@@ -225,6 +241,7 @@
           "price_eur": 2.87,
           "price_text": "€ 2,87",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/cif_vetri_spray_attivo_multiuso_con_candeggina.png"
@@ -238,6 +255,7 @@
           "price_eur": 1.91,
           "price_text": "€ 1,91",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/ters_ammoniaca_profumata_multiuso.png"
@@ -251,6 +269,7 @@
           "price_eur": 1.19,
           "price_text": "€ 1,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/floyd_acido_muriatico.png"
@@ -264,6 +283,7 @@
           "price_eur": 2.75,
           "price_text": "€ 2,75",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/mastro_lindo_extra_potente.png"
@@ -277,6 +297,7 @@
           "price_eur": 3.47,
           "price_text": "€ 3,47",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/viakal_classico.png"
@@ -290,6 +311,7 @@
           "price_eur": 3.47,
           "price_text": "€ 3,47",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/viakal_fresco_profumo.png"
@@ -303,6 +325,7 @@
           "price_eur": 1.19,
           "price_text": "€ 1,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_piatti_igienizzante_anti_odore_agrumi.png"
@@ -316,6 +339,7 @@
           "price_eur": 1.19,
           "price_text": "€ 1,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_piatti_igienizzante_bicarbonato.png"
@@ -329,6 +353,7 @@
           "price_eur": 1.19,
           "price_text": "€ 1,19",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_piatti_igienizzante_sgrassante_limone.png"
@@ -342,6 +367,7 @@
           "price_eur": 2.15,
           "price_text": "€ 2,15",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/svelto_sapone_piatti_aceto.png"
@@ -355,6 +381,7 @@
           "price_eur": 2.15,
           "price_text": "€ 2,15",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/svelto_sapone_piatti_limone.png"
@@ -368,6 +395,7 @@
           "price_eur": 2.03,
           "price_text": "€ 2,03",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/nelsen_piatti_aceto_lavanda.png"
@@ -381,6 +409,7 @@
           "price_eur": 2.03,
           "price_text": "€ 2,03",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/nelsen_piatti_carboni_attivi.png"
@@ -394,6 +423,7 @@
           "price_eur": 2.03,
           "price_text": "€ 2,03",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/nelsen_piatti_limone.png"
@@ -407,6 +437,7 @@
           "price_eur": 4.19,
           "price_text": "€ 4,19",
           "in_promo": false,  
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/finish_brillasciuga_lavastoviglia.png"
@@ -420,6 +451,7 @@
           "price_eur": 5.51,
           "price_text": "€ 5,51",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/finisch_power_3_1.png"
@@ -433,6 +465,7 @@
           "price_eur": 2.15,
           "price_text": "€ 2,15",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/finish_cristalli_di_sale.png"
@@ -446,6 +479,7 @@
           "price_eur": 4.43,
           "price_text": "€ 4,43",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/guanti_nitrile_nero_rende.png"
@@ -459,6 +493,7 @@
           "price_eur": 1.07,
           "price_text": "€ 1,07",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "pack_description": "N/D",
@@ -473,6 +508,7 @@
           "price_eur": 2.99,
           "price_text": "€ 2,99",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/nicky_maxi_carta_igenica.png"
@@ -486,6 +522,7 @@
           "price_eur": 2.15,
           "price_text": "€ 2,15",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/regina_tovaglioli_pic_nic_rende.png"
@@ -499,6 +536,7 @@
           "price_eur": 2.63,
           "price_text": "€ 2,63",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/scala_carta_igenica.png"
@@ -512,6 +550,7 @@
           "price_eur": 3.23,
           "price_text": "€ 3,23",
           "in_promo": false,
+          "promo_date": null,
           "promo_price_eur": 3.99,
           "promo_price_text": "€ 3,99",
           "image": "public/img_home_products/vit_bobina_mister_500_rende.png"
