@@ -14,7 +14,7 @@ class WaterDeliveryApp {
         this._touchHandlers = null;
         this.carouselCurrentIndex = 0; // Current carousel index
         this.categoryHierarchy = {
-            'acqua': null,
+            'acqua': ['ACQUA LISCIA', 'ACQUA FRIZZANTE'],
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
             'bevande': ['BEVANDE GASSATE', 'BIRRE'],
             'FARMACI': null
@@ -477,11 +477,15 @@ class WaterDeliveryApp {
         // Show/hide subcategories container based on selected category
         const subcategoriesContainer = document.getElementById('subcategories-container');
         const subcategoriesContainerBevande = document.getElementById('subcategories-container-bevande');
+        const subcategoriesContainerAcqua = document.getElementById('subcategories-container-acqua');
         if (subcategoriesContainer) {
             subcategoriesContainer.style.display = this.currentCategory === 'cura_casa' ? '' : 'none';
         }
         if (subcategoriesContainerBevande) {
             subcategoriesContainerBevande.style.display = this.currentCategory === 'bevande' ? '' : 'none';
+        }
+        if (subcategoriesContainerAcqua) {
+            subcategoriesContainerAcqua.style.display = this.currentCategory === 'acqua' ? '' : 'none';
         }
 
         // Show/hide order info and location selectors based on category
@@ -1463,7 +1467,20 @@ class WaterDeliveryApp {
         // If category is "acqua", get water products
         if (this.currentCategory === 'acqua') {
             const locationData = this.productsData?.locations?.[this.currentLocation];
-            products = locationData?.products || [];
+            const allWaterProducts = locationData?.products || [];
+
+            if (this.currentSubcategory) {
+                products = allWaterProducts.filter(p => {
+                    if (this.currentSubcategory === 'ACQUA LISCIA') {
+                        return p.type === 'naturale';
+                    } else if (this.currentSubcategory === 'ACQUA FRIZZANTE') {
+                        return p.type === 'effervescente' || p.type === 'gassata' || p.type === 'frizzante';
+                    }
+                    return true;
+                });
+            } else {
+                products = allWaterProducts;
+            }
         } else if (this.currentCategory === 'cura_casa') {
             // Get home products for the current subcategory
             const locationData = this.homeProductsData?.locations?.[this.currentLocation];
