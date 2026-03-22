@@ -1913,14 +1913,12 @@ class WaterDeliveryApp {
             const lineSubtotal = (price * item.qty) || 0;
             subtotal += lineSubtotal;
 
-            // Get delivery fee from the item's location
-            const itemLocation = item.location || this.currentLocation;
-            const locationData = this.productsData?.locations?.[itemLocation];
-            // Determine whether this is a water product (water items have pack_description or explicit type/category)
-            const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-            // For non-water products use a fixed fee of €0.50 per unit, otherwise use the location delivery fee (fallback €0.50)
-            const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
-            shipping += (item.qty * feePerItem);
+            // [DISABILITATO] Vecchio metodo: calcolo spedizione dinamico per prodotto
+            // const itemLocation = item.location || this.currentLocation;
+            // const locationData = this.productsData?.locations?.[itemLocation];
+            // const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
+            // const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+            // shipping += (item.qty * feePerItem);
 
             // Determine if this is a home product (has category) or water product (has pack_description)
             const isHomeProduct = item.product.category && !item.product.pack_description;
@@ -1952,6 +1950,9 @@ class WaterDeliveryApp {
                 </div>
             `;
         }).join('');
+
+        // Spedizione fissa €5
+        shipping = 5;
 
         const total = subtotal + shipping;
         if (subtotalEl) subtotalEl.textContent = WaterDeliveryApp.formatPrice(subtotal);
@@ -1988,15 +1989,16 @@ class WaterDeliveryApp {
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             subtotal += (price * item.qty) || 0;
 
-            // Get delivery fee from the item's location
-            const itemLocation = item.location || this.currentLocation;
-            const locationData = this.productsData?.locations?.[itemLocation];
-            // Determine whether this is a water product (water items have pack_description or explicit type/category)
-            const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-            // For non-water products use a fixed fee of €0.50 per unit, otherwise use the location delivery fee (fallback €0.50)
-            const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
-            shipping += (item.qty * feePerItem);
+            // [DISABILITATO] Vecchio metodo: calcolo spedizione dinamico per prodotto
+            // const itemLocation = item.location || this.currentLocation;
+            // const locationData = this.productsData?.locations?.[itemLocation];
+            // const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
+            // const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+            // shipping += (item.qty * feePerItem);
         });
+
+        // Spedizione fissa €5
+        shipping = 5;
 
         const total = subtotal + shipping;
         return { items, subtotal, shipping, total };
