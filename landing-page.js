@@ -5,6 +5,7 @@ class WaterDeliveryApp {
         this.productsData = null; // Water products data from water-prodocts.json
         this.homeProductsData = null; // Home products data from home-prodocts.json
         this.drinksProductsData = null; // Drinks products data from drinks_prodocts.json
+        this.cinqueContinentiProductsData = null; // 5 Continenti products data from 5continenti_products.json
         this.promoData = null; // Promo data from promo.json
         this.currentLocation = 'cosenza'; // Default location
         this.currentCategory = 'acqua'; // Default category (acqua, cura_casa, bevande, FARMACI)
@@ -17,7 +18,8 @@ class WaterDeliveryApp {
             'acqua': ['ACQUA LISCIA', 'ACQUA FRIZZANTE'],
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
             'bevande': ['BEVANDE GASSATE', 'BIRRE'],
-            'FARMACI': null
+            'FARMACI': null,
+            'cinque_continenti': ['Snacks Dolci e Salati', 'Riso, Pasta e Noodles', 'Condimenti e Salse', 'Bevande, Birre e Alcolici', 'Alimentari in scatola', 'Dispensa', 'Legumi, Farina e Cereali', 'Prodotti per Sushi', 'Infusi e Yerba Mate', 'Cosmetici e Utensili per Cucina']
         };
         // SEO metadata templates for different pages/sections
         this.metadataTemplates = {
@@ -40,6 +42,10 @@ class WaterDeliveryApp {
             FARMACI: {
                 title: 'Prodotti Farmaceutici | Consegna a Domicilio Eudora',
                 description: 'Integratori e prodotti farmaceutici di qualità consegnati a domicilio. Servizio veloce e affidabile.'
+            },
+            cinque_continenti: {
+                title: '5 Continenti Market | Prodotti Etnici a Domicilio',
+                description: 'Prodotti alimentari da tutto il mondo consegnati a domicilio. Scopri snacks, noodles, condimenti, infusi e molto altro dal mercato multietnico 5 Continenti.'
             }
         };
         this.init();
@@ -50,6 +56,7 @@ class WaterDeliveryApp {
         await this.loadProductsData();
         await this.loadHomeProductsData();
         await this.loadDrinksProductsData();
+        await this.loadCinqueContinentiProductsData();
         await this.loadPromoData();
         this.loadLocation(); // Load saved location preference
         this.loadCart();
@@ -126,6 +133,17 @@ class WaterDeliveryApp {
         } catch (error) {
             console.error('Error loading drinks products data:', error);
             this.drinksProductsData = { locations: {} };
+        }
+    }
+
+    async loadCinqueContinentiProductsData() {
+        try {
+            const response = await fetch('./5continenti_products.json');
+            this.cinqueContinentiProductsData = await response.json();
+            console.log('5 Continenti products data loaded:', this.cinqueContinentiProductsData);
+        } catch (error) {
+            console.error('Error loading 5 Continenti products data:', error);
+            this.cinqueContinentiProductsData = { locations: {} };
         }
     }
 
@@ -478,6 +496,7 @@ class WaterDeliveryApp {
         const subcategoriesContainer = document.getElementById('subcategories-container');
         const subcategoriesContainerBevande = document.getElementById('subcategories-container-bevande');
         const subcategoriesContainerAcqua = document.getElementById('subcategories-container-acqua');
+        const subcategoriesContainerCinqueContinenti = document.getElementById('subcategories-container-cinque-continenti');
         if (subcategoriesContainer) {
             subcategoriesContainer.style.display = this.currentCategory === 'cura_casa' ? '' : 'none';
         }
@@ -486,6 +505,9 @@ class WaterDeliveryApp {
         }
         if (subcategoriesContainerAcqua) {
             subcategoriesContainerAcqua.style.display = this.currentCategory === 'acqua' ? '' : 'none';
+        }
+        if (subcategoriesContainerCinqueContinenti) {
+            subcategoriesContainerCinqueContinenti.style.display = this.currentCategory === 'cinque_continenti' ? '' : 'none';
         }
 
         // Show/hide order info and location selectors based on category
@@ -855,6 +877,32 @@ class WaterDeliveryApp {
             });
         }
 
+        // Search in all locations for 5 Continenti products
+        if (this.cinqueContinentiProductsData?.locations) {
+            Object.entries(this.cinqueContinentiProductsData.locations).forEach(([locationKey, locationData]) => {
+                if (locationData?.products) {
+                    locationData.products.forEach(product => {
+                        if (this.productMatches(product, lowerQuery) && !this.shouldHideProductByPromoDate(product)) {
+                            const productId = product.id;
+
+                            if (!productMap.has(productId)) {
+                                productMap.set(productId, {
+                                    ...product,
+                                    type: 'cinque_continenti',
+                                    availableLocations: [{ key: locationKey, city: locationData.city }]
+                                });
+                            } else {
+                                const existingProduct = productMap.get(productId);
+                                if (!existingProduct.availableLocations.some(loc => loc.key === locationKey)) {
+                                    existingProduct.availableLocations.push({ key: locationKey, city: locationData.city });
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         // Convert map to array
         productMap.forEach(product => results.push(product));
         return results;
@@ -862,7 +910,7 @@ class WaterDeliveryApp {
 
     productMatches(product, query) {
         const brand = (product.brand || '').toLowerCase();
-        const productName = (product.product_name || '').toLowerCase();
+        const productName = (product.product_name || product.name || '').toLowerCase();
         const category = (product.category || '').toLowerCase();
         const sizeLabel = (product.size_label || '').toLowerCase();
         const packDescription = (product.pack_description || '').toLowerCase();
@@ -1502,6 +1550,16 @@ class WaterDeliveryApp {
             } else {
                 products = [];
             }
+        } else if (this.currentCategory === 'cinque_continenti') {
+            // Get 5 Continenti products for the current subcategory
+            const locationData = this.cinqueContinentiProductsData?.locations?.[this.currentLocation];
+            const allCinqueContinentiProducts = locationData?.products || [];
+
+            if (this.currentSubcategory) {
+                products = allCinqueContinentiProducts.filter(p => p.category === this.currentSubcategory);
+            } else {
+                products = [];
+            }
         } else {
             // For other categories (shouldn't happen with new hierarchy)
             const locationData = this.homeProductsData?.locations?.[this.currentLocation];
@@ -1614,6 +1672,106 @@ class WaterDeliveryApp {
                             iconSvg: ''
                         };
                         break;
+                    case 'Snacks Dolci e Salati':
+                        colorScheme = {
+                            bg: 'bg-orange-100',
+                            text: 'text-orange-600',
+                            button: 'bg-orange-600',
+                            buttonHover: 'hover:bg-orange-700',
+                            icon: 'fas fa-cookie-bite',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Riso, Pasta e Noodles':
+                        colorScheme = {
+                            bg: 'bg-yellow-100',
+                            text: 'text-yellow-700',
+                            button: 'bg-yellow-600',
+                            buttonHover: 'hover:bg-yellow-700',
+                            icon: 'fas fa-bowl-rice',
+                            iconSvg: '<svg class="w-8 h-8" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M509.853,181.5h-40.344C444.967,86.337,358.837,15.954,256,15.943C153.163,15.954,67.033,86.337,42.491,181.5H2.147c0,0-29.264,141.736,128.295,236.63c9.97,6.908,20.588,12.89,31.656,18.107l-5.432,59.82h198.668l-5.433-59.82c11.069-5.217,21.687-11.199,31.657-18.107C539.117,323.236,509.853,181.5,509.853,181.5z M256,181.5H88.32c8.72-26.536,23.476-50.325,42.812-69.683C163.155,79.816,207.163,60.103,256,60.092c48.837,0.011,92.845,19.724,124.868,51.725c19.336,19.358,34.092,43.146,42.812,69.683H256z"></path></svg>'
+                        };
+                        break;
+                    case 'Condimenti e Salse':
+                        colorScheme = {
+                            bg: 'bg-red-100',
+                            text: 'text-red-600',
+                            button: 'bg-red-600',
+                            buttonHover: 'hover:bg-red-700',
+                            icon: 'fas fa-pepper-hot',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Bevande, Birre e Alcolici':
+                        colorScheme = {
+                            bg: 'bg-amber-100',
+                            text: 'text-amber-700',
+                            button: 'bg-amber-600',
+                            buttonHover: 'hover:bg-amber-700',
+                            icon: 'fas fa-beer-mug-empty',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Alimentari in scatola':
+                        colorScheme = {
+                            bg: 'bg-rose-100',
+                            text: 'text-rose-600',
+                            button: 'bg-rose-600',
+                            buttonHover: 'hover:bg-rose-700',
+                            icon: 'fas fa-box',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Dispensa':
+                        colorScheme = {
+                            bg: 'bg-stone-100',
+                            text: 'text-stone-600',
+                            button: 'bg-stone-600',
+                            buttonHover: 'hover:bg-stone-700',
+                            icon: 'fas fa-jar',
+                            iconSvg: '<svg class="w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true"><path d="M22,1H2A1,1,0,0,0,1,2V22a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V2A1,1,0,0,0,22,1ZM19,9.667h2v4.666H19Zm2-2H19V3h2Zm-4,7.666V17H11V3h6ZM3,3H9V17H3ZM3,19H17v2H3Zm18,2H19V16.333h2ZM8,9v2a1,1,0,0,1-2,0V9A1,1,0,0,1,8,9Zm4,2V9a1,1,0,0,1,2,0v2a1,1,0,0,1-2,0Z"></path></svg>'
+                        };
+                        break;
+                    case 'Legumi, Farina e Cereali':
+                        colorScheme = {
+                            bg: 'bg-lime-100',
+                            text: 'text-lime-700',
+                            button: 'bg-lime-600',
+                            buttonHover: 'hover:bg-lime-700',
+                            icon: 'fas fa-seedling',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Prodotti per Sushi':
+                        colorScheme = {
+                            bg: 'bg-pink-100',
+                            text: 'text-pink-600',
+                            button: 'bg-pink-600',
+                            buttonHover: 'hover:bg-pink-700',
+                            icon: 'fas fa-fish',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Infusi e Yerba Mate':
+                        colorScheme = {
+                            bg: 'bg-teal-100',
+                            text: 'text-teal-600',
+                            button: 'bg-teal-600',
+                            buttonHover: 'hover:bg-teal-700',
+                            icon: 'fas fa-mug-hot',
+                            iconSvg: ''
+                        };
+                        break;
+                    case 'Cosmetici e Utensili per Cucina':
+                        colorScheme = {
+                            bg: 'bg-violet-100',
+                            text: 'text-violet-600',
+                            button: 'bg-violet-600',
+                            buttonHover: 'hover:bg-violet-700',
+                            icon: 'fas fa-utensils',
+                            iconSvg: ''
+                        };
+                        break;
                 }
             }
 
@@ -1625,10 +1783,10 @@ class WaterDeliveryApp {
                 description = `<p class="text-gray-600 mb-1 font-semibold">${product.size_label} - ${typeLabel}</p>
                               <p class="text-sm text-gray-500 mb-4">${product.pack_description}</p>`;
             } else {
-                // Home product
-                const productName = product.product_name || '';
+                // Home / 5 Continenti product
+                const productName = product.product_name || product.name || '';
                 description = `<p class="text-gray-600 mb-1 font-medium">${productName}</p>
-                              <p class="text-sm text-gray-500 mb-4">${product.category}</p>`;
+                              <p class="text-sm text-gray-500 mb-4">${product.pack_description || product.category}</p>`;
             }
 
             // Build image path - use 'image' field from JSON
@@ -1818,6 +1976,12 @@ class WaterDeliveryApp {
             product = drinksLocationData?.products?.find(p => p.id === productId);
         }
 
+        // If not found, check 5 Continenti products
+        if (!product) {
+            const cinqueContinentiLocationData = this.cinqueContinentiProductsData?.locations?.[this.currentLocation];
+            product = cinqueContinentiLocationData?.products?.find(p => p.id === productId);
+        }
+
         // Fallback: search across all locations (needed for global promo carousel)
         if (!product) {
             const findInLocations = (locations) => {
@@ -1836,7 +2000,8 @@ class WaterDeliveryApp {
             const foundWater = findInLocations(this.productsData?.locations);
             const foundHome = foundWater ? null : findInLocations(this.homeProductsData?.locations);
             const foundDrinks = (!foundWater && !foundHome) ? findInLocations(this.drinksProductsData?.locations) : null;
-            const foundAny = foundWater || foundHome || foundDrinks;
+            const foundCinqueContinenti = (!foundWater && !foundHome && !foundDrinks) ? findInLocations(this.cinqueContinentiProductsData?.locations) : null;
+            const foundAny = foundWater || foundHome || foundDrinks || foundCinqueContinenti;
 
             if (foundAny) {
                 product = foundAny.product;
