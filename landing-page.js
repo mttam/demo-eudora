@@ -2072,18 +2072,29 @@ class WaterDeliveryApp {
 
         let subtotal = 0;
         let shipping = 0;
+        let cinqueContinentiFeeAdded = false;
         container.innerHTML = items.map(item => {
             // determine numeric price from data
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             const lineSubtotal = (price * item.qty) || 0;
             subtotal += lineSubtotal;
 
-            // [DISABILITATO] Vecchio metodo: calcolo spedizione dinamico per prodotto
-            // const itemLocation = item.location || this.currentLocation;
-            // const locationData = this.productsData?.locations?.[itemLocation];
-            // const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-            // const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
-            // shipping += (item.qty * feePerItem);
+            // Calcolo spedizione dinamico per prodotto
+            const itemLocation = item.location || this.currentLocation;
+            const isCinqueContinenti = Boolean(item.product.category && item.product.pack_description);
+            if (isCinqueContinenti) {
+                if (!cinqueContinentiFeeAdded) {
+                    const cinqueLocationData = this.cinqueContinentiProductsData?.locations?.[itemLocation];
+                    const fee = cinqueLocationData?.delivery_fee ?? 1.00;
+                    shipping += fee;
+                    cinqueContinentiFeeAdded = true;
+                }
+            } else {
+                const locationData = this.productsData?.locations?.[itemLocation];
+                const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
+                const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+                shipping += (item.qty * feePerItem);
+            }
 
             // Determine if this is a home product (has category) or water product (has pack_description)
             const isHomeProduct = item.product.category && !item.product.pack_description;
@@ -2116,9 +2127,6 @@ class WaterDeliveryApp {
             `;
         }).join('');
 
-        // Spedizione fissa €5
-        shipping = 5;
-
         const total = subtotal + shipping;
         if (subtotalEl) subtotalEl.textContent = WaterDeliveryApp.formatPrice(subtotal);
         if (shippingEl) shippingEl.textContent = WaterDeliveryApp.formatPrice(shipping);
@@ -2150,20 +2158,28 @@ class WaterDeliveryApp {
         let subtotal = 0;
         let shipping = 0;
 
+        let cinqueContinentiFeeAdded = false;
         items.forEach(item => {
             const price = (item.product.price_eur !== undefined) ? Number(item.product.price_eur) : (item.product.price || 0);
             subtotal += (price * item.qty) || 0;
 
-            // [DISABILITATO] Vecchio metodo: calcolo spedizione dinamico per prodotto
-            // const itemLocation = item.location || this.currentLocation;
-            // const locationData = this.productsData?.locations?.[itemLocation];
-            // const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-            // const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
-            // shipping += (item.qty * feePerItem);
+            // Calcolo spedizione dinamico per prodotto
+            const itemLocation = item.location || this.currentLocation;
+            const isCinqueContinenti = Boolean(item.product.category && item.product.pack_description);
+            if (isCinqueContinenti) {
+                if (!cinqueContinentiFeeAdded) {
+                    const cinqueLocationData = this.cinqueContinentiProductsData?.locations?.[itemLocation];
+                    const fee = cinqueLocationData?.delivery_fee ?? 1.00;
+                    shipping += fee;
+                    cinqueContinentiFeeAdded = true;
+                }
+            } else {
+                const locationData = this.productsData?.locations?.[itemLocation];
+                const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
+                const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+                shipping += (item.qty * feePerItem);
+            }
         });
-
-        // Spedizione fissa €5
-        shipping = 5;
 
         const total = subtotal + shipping;
         return { items, subtotal, shipping, total };
