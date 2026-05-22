@@ -19,7 +19,7 @@ class WaterDeliveryApp {
             'cura_casa': ['CUCINA', 'LAVATRICE', 'DETERGENTI', 'CARTA E MONOUSO'],
             'bevande': ['BEVANDE GASSATE', 'BIRRE'],
             'FARMACI': null,
-            'cinque_continenti': ['Snacks Dolci e Salati', 'Riso, Pasta e Noodles', 'Condimenti e Salse', 'Bevande, Birre e Alcolici', 'Alimentari in scatola', 'Dispensa', 'Legumi, Farina e Cereali', 'Prodotti per Sushi', 'Infusi e Yerba Mate', 'Cosmetici e Utensili per Cucina']
+            'cinque_continenti': ['Alimentari', 'Snacks Dolci e Salati', 'Riso, Pasta e Noodles', 'Condimenti e Salse', 'Bevande, Birre e Alcolici', 'Dispensa', 'Legumi, Farina e Cereali', 'Prodotti per Sushi', 'Infusi e Yerba Mate', 'Cosmetici e Utensili per Cucina']
         };
         // SEO metadata templates for different pages/sections
         this.metadataTemplates = {
@@ -465,6 +465,18 @@ class WaterDeliveryApp {
         this.currentSubcategory = subcategory;
         this.updateCategoryUI();
         this.renderProducts();
+    }
+
+    normalizeCinqueContinentiCategory(category) {
+        const normalized = (category || '').trim();
+        const aliases = {
+            'Alimentari in scatola': ['Alimentari', 'Alimentary', 'Prodotti 5 Continenti'],
+            'Alimentari': ['Alimentari in scatola', 'Alimentary', 'Prodotti 5 Continenti'],
+            'Riso, Pasta e Noodles': ['Pasta, Riso e Noodles'],
+            'Pasta, Riso e Noodles': ['Riso, Pasta e Noodles']
+        };
+
+        return [normalized, ...(aliases[normalized] || [])];
     }
 
     updateCategoryUI() {
@@ -1556,7 +1568,8 @@ class WaterDeliveryApp {
             const allCinqueContinentiProducts = locationData?.products || [];
 
             if (this.currentSubcategory) {
-                products = allCinqueContinentiProducts.filter(p => p.category === this.currentSubcategory);
+                const categoryVariants = this.normalizeCinqueContinentiCategory(this.currentSubcategory);
+                products = allCinqueContinentiProducts.filter(p => categoryVariants.includes((p.category || '').trim()));
             } else {
                 products = [];
             }
@@ -1713,6 +1726,7 @@ class WaterDeliveryApp {
                         };
                         break;
                     case 'Alimentari in scatola':
+                    case 'Alimentari':
                         colorScheme = {
                             bg: 'bg-rose-100',
                             text: 'text-rose-600',
