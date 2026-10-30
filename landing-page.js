@@ -1535,6 +1535,8 @@ class WaterDeliveryApp {
                         return p.type === 'naturale';
                     } else if (this.currentSubcategory === 'ACQUA FRIZZANTE') {
                         return p.type === 'effervescente' || p.type === 'gassata' || p.type === 'frizzante';
+                    } else if (this.currentSubcategory === 'BOTTIGLIE 0,5L') {
+                        return p.volume_ml === 500;
                     }
                     return true;
                 });
