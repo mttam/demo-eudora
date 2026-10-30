@@ -2106,7 +2106,7 @@ class WaterDeliveryApp {
             } else {
                 const locationData = this.productsData?.locations?.[itemLocation];
                 const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-                const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+                const feePerItem = isWaterProduct ? (item.product.delivery_fee ?? locationData?.delivery_fee ?? 0.5) : 0.5;
                 shipping += (item.qty * feePerItem);
             }
 
@@ -2190,7 +2190,7 @@ class WaterDeliveryApp {
             } else {
                 const locationData = this.productsData?.locations?.[itemLocation];
                 const isWaterProduct = Boolean(item.product.pack_description) || item.product.type === 'acqua' || (item.product.category === 'acqua');
-                const feePerItem = isWaterProduct ? (locationData?.delivery_fee || 0.5) : 0.5;
+                const feePerItem = isWaterProduct ? (item.product.delivery_fee ?? locationData?.delivery_fee ?? 0.5) : 0.5;
                 shipping += (item.qty * feePerItem);
             }
         });
