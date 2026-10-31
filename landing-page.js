@@ -1142,23 +1142,20 @@ class WaterDeliveryApp {
         const promoProductsMap = new Map();
 
         const addPromoProducts = (locations, type) => {
-            if (!locations) return;
+            const locationData = locations?.[this.currentLocation];
+            if (!locationData?.products) return;
 
-            Object.entries(locations).forEach(([locationKey, locationData]) => {
-                if (!locationData?.products) return;
-
-                locationData.products.forEach(product => {
-                    if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
-                        const promoKey = `${type}-${product.id}`;
-                        if (!promoProductsMap.has(promoKey)) {
-                            promoProductsMap.set(promoKey, {
-                                ...product,
-                                type,
-                                sourceLocation: locationKey
-                            });
-                        }
+            locationData.products.forEach(product => {
+                if (product.in_promo && !this.shouldHideProductByPromoDate(product)) {
+                    const promoKey = `${type}-${product.id}`;
+                    if (!promoProductsMap.has(promoKey)) {
+                        promoProductsMap.set(promoKey, {
+                            ...product,
+                            type,
+                            sourceLocation: this.currentLocation
+                        });
                     }
-                });
+                }
             });
         };
 
@@ -1170,7 +1167,6 @@ class WaterDeliveryApp {
     }
 
     renderPromoCarousel() {
-        // Promo is global: do not limit by current location
         const promoProducts = this.collectPromoProducts();
 
         if (promoProducts.length === 0) {
@@ -1260,7 +1256,9 @@ class WaterDeliveryApp {
                 // Old price (strikethrough)
                 const oldPrice = document.createElement('span');
                 oldPrice.className = 'old-price text-gray-500 line-through';
-                oldPrice.textContent = WaterDeliveryApp.formatPrice(product.price_eur);
+                oldPrice.textContent = WaterDeliveryApp.formatPrice(
+                    product.promo_original_price_eur ?? product.price_eur
+                );
 
                 // New price (highlighted)
                 const newPrice = document.createElement('span');

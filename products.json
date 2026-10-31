@@ -102,22 +102,6 @@
           "image": "public/img_water/uliveto.png"
         },
         {
-          "id": "lilia_1500ml_naturale_cosenza",
-          "brand": "LILIA",
-          "volume_ml": 1500,
-          "size_label": "1,5L",
-          "type": "naturale",
-          "pack_count": 6,
-          "pack_description": "6 bottiglie",
-          "price_eur": 1.98,
-          "price_text": "€ 1,98",
-          "in_promo": false,
-          "promo_date": null,
-          "promo_price_eur": 3.99,
-          "promo_price_text": "€ 3,99",
-          "image": "public/img_water/Lilia.png"
-        },
-        {
           "id": "mangiatorella_1500ml_naturale_cosenza",
           "brand": "MANGIATORELLA",
           "volume_ml": 1500,
@@ -350,22 +334,6 @@
           "image": "public/img_water/uliveto.png"
         },
         {
-          "id": "lilia_2000ml_naturale_rende",
-          "brand": "LILIA",
-          "volume_ml": 2000,
-          "size_label": "2L",
-          "type": "naturale",
-          "pack_count": 6,
-          "pack_description": "6 bottiglie",
-          "price_eur": 1.79,
-          "price_text": "€ 1,79",
-          "in_promo": false,
-          "promo_date": null,
-          "promo_price_eur": 3.99,
-          "promo_price_text": "€ 3,99",
-          "image": "public/img_water/Lilia.png"
-        },
-        {
           "id": "mangiatorella_1500ml_naturale_rende",
           "brand": "MANGIATORELLA",
           "volume_ml": 1500,
@@ -519,10 +487,11 @@
           "pack_description": "6 bottiglie",
           "price_eur": 1.89,
           "price_text": "€ 1,89",
-          "in_promo": false,
+          "in_promo": true,
           "promo_date": null,
-          "promo_price_eur": 3.99,
-          "promo_price_text": "€ 3,99",
+          "promo_original_price_eur": 2.30,
+          "promo_price_eur": 1.89,
+          "promo_price_text": "€ 1,89",
           "image": "public/img_water/leo.png"
         },
         {
