@@ -1257,22 +1257,12 @@ class WaterDeliveryApp {
                     featurePrice.className = 'promo-feature-price';
                     featurePrice.textContent = WaterDeliveryApp.formatPrice(product.promo_price_eur);
 
-                    const featureUnit = document.createElement('p');
-                    featureUnit.className = 'promo-feature-unit';
-                    featureUnit.textContent = 'a confezione';
-
-                    const featureDelivery = document.createElement('p');
-                    featureDelivery.className = 'promo-feature-delivery';
-                    featureDelivery.textContent = 'La portiamo noi, fino al tuo piano.';
-
                     featureCopy.append(
                         featureHeadline,
                         featureProductName,
                         featurePack,
                         featureOldPrice,
-                        featurePrice,
-                        featureUnit,
-                        featureDelivery
+                        featurePrice
                     );
 
                     const featureImage = document.createElement('img');

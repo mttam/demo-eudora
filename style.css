@@ -1336,9 +1336,7 @@ body {
 .promo-feature-product-name,
 .promo-feature-pack,
 .promo-feature-old-price,
-.promo-feature-price,
-.promo-feature-unit,
-.promo-feature-delivery {
+.promo-feature-price {
     margin: 0;
 }
 
@@ -1369,28 +1367,12 @@ body {
 
 .promo-feature-price {
     margin-top: 0.05rem;
-    color: #159b42;
+    color: #dc2626;
     font-size: clamp(3rem, 7.4vw, 6.4rem);
     font-weight: 900;
     letter-spacing: -0.07em;
     line-height: 0.95;
     white-space: nowrap;
-}
-
-.promo-feature-unit {
-    margin-top: 0.1rem;
-    color: #62676f;
-    font-size: clamp(0.95rem, 1.7vw, 1.35rem);
-    font-weight: 700;
-}
-
-.promo-feature-delivery {
-    margin-top: clamp(0.65rem, 1.6vw, 1.2rem);
-    padding-top: 0.55rem;
-    border-top: 1px solid rgba(17, 24, 39, 0.18);
-    color: #202936;
-    font-size: clamp(0.75rem, 1.4vw, 1.05rem);
-    font-weight: 650;
 }
 
 .promo-feature-image {
@@ -1437,17 +1419,6 @@ body {
 
     .promo-feature-price {
         font-size: clamp(2.35rem, 11vw, 3.5rem);
-    }
-
-    .promo-feature-unit {
-        font-size: 0.82rem;
-    }
-
-    .promo-feature-delivery {
-        margin-top: 0.65rem;
-        padding-top: 0.45rem;
-        font-size: 0.72rem;
-        line-height: 1.2;
     }
 
     .promo-feature-image {
