@@ -1233,10 +1233,6 @@ class WaterDeliveryApp {
                     const featureCopy = document.createElement('div');
                     featureCopy.className = 'promo-feature-copy';
 
-                    const featureBadge = document.createElement('span');
-                    featureBadge.className = 'promo-feature-badge';
-                    featureBadge.textContent = 'Promo esclusiva';
-
                     const featureHeadline = document.createElement('h3');
                     featureHeadline.className = 'promo-feature-headline';
                     featureHeadline.textContent = 'La scorta giusta.\nIl prezzo speciale.';
@@ -1270,7 +1266,6 @@ class WaterDeliveryApp {
                     featureDelivery.textContent = 'La portiamo noi, fino al tuo piano.';
 
                     featureCopy.append(
-                        featureBadge,
                         featureHeadline,
                         featureProductName,
                         featurePack,
