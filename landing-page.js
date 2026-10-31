@@ -1188,10 +1188,25 @@ class WaterDeliveryApp {
         // Set products per page based on viewport size
         const productsPerPage = this.getPromoProductsPerPage();
 
-        // Create pages of products
+        // Give featured promotions a full-width slide so their layout remains readable.
         const productPages = [];
-        for (let i = 0; i < promoProducts.length; i += productsPerPage) {
-            productPages.push(promoProducts.slice(i, i + productsPerPage));
+        for (let i = 0; i < promoProducts.length;) {
+            if (promoProducts[i].promo_layout === 'feature') {
+                productPages.push([promoProducts[i]]);
+                i += 1;
+                continue;
+            }
+
+            const pageProducts = [];
+            while (
+                i < promoProducts.length &&
+                pageProducts.length < productsPerPage &&
+                promoProducts[i].promo_layout !== 'feature'
+            ) {
+                pageProducts.push(promoProducts[i]);
+                i += 1;
+            }
+            productPages.push(pageProducts);
         }
 
         // Create carousel items for each page
@@ -1208,75 +1223,131 @@ class WaterDeliveryApp {
             pageProducts.forEach((product) => {
                 // Create carousel item
                 const promoItem = document.createElement('div');
-                promoItem.className = 'promo-item flex-shrink-0';
+                const hasFeatureLayout = product.promo_layout === 'feature';
+                promoItem.className = `promo-item flex-shrink-0${hasFeatureLayout ? ' promo-item--feature' : ''}`;
                 const slotCount = isMobile ? pageProducts.length : productsPerPage;
-                promoItem.style.width = `${100 / slotCount}%`; // Keep desktop cards at 1/3 width and center incomplete pages
+                promoItem.style.width = hasFeatureLayout ? '100%' : `${100 / slotCount}%`;
                 promoItem.style.cursor = 'default';
 
-                // Create image container
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'promo-item-image-container';
+                if (hasFeatureLayout) {
+                    const featureCopy = document.createElement('div');
+                    featureCopy.className = 'promo-feature-copy';
 
-                // Create image element
-                const img = document.createElement('img');
-                img.src = product.image || 'public/img_promo/default-promo.png';
-                img.alt = product.brand;
-                img.className = 'promo-item-image';
-                img.loading = 'lazy';
+                    const featureBadge = document.createElement('span');
+                    featureBadge.className = 'promo-feature-badge';
+                    featureBadge.textContent = 'Promo esclusiva';
 
-                // Assemble image container
-                imageContainer.appendChild(img);
+                    const featureHeadline = document.createElement('h3');
+                    featureHeadline.className = 'promo-feature-headline';
+                    featureHeadline.textContent = 'La scorta giusta.\nIl prezzo speciale.';
 
-                // Create content container
-                const contentContainer = document.createElement('div');
-                contentContainer.className = 'promo-item-content';
+                    const featureProductName = document.createElement('p');
+                    featureProductName.className = 'promo-feature-product-name';
+                    featureProductName.textContent = `Acqua ${product.brand}`;
 
-                // Create product name
-                const productName = document.createElement('h3');
-                productName.className = 'text-xl font-bold text-gray-900';
-                productName.textContent = `${product.brand}`;
+                    const volumeLiters = product.volume_ml / 1000;
+                    const volumeText = `${volumeLiters} ${volumeLiters === 1 ? 'litro' : 'litri'}`;
+                    const featurePack = document.createElement('p');
+                    featurePack.className = 'promo-feature-pack';
+                    featurePack.textContent = `${product.pack_count} bottiglie da ${volumeText}`;
 
-                // Create product subtitle
-                const productSubtitle = document.createElement('p');
-                productSubtitle.className = 'text-gray-600 text-center';
-                productSubtitle.textContent = product.product_name;
+                    const featureOldPrice = document.createElement('p');
+                    featureOldPrice.className = 'promo-feature-old-price';
+                    featureOldPrice.textContent = WaterDeliveryApp.formatPrice(
+                        product.promo_original_price_eur ?? product.price_eur
+                    );
 
-                // Promo date (Italian format)
-                const promoDateText = this.formatPromoDateItalian(product.promo_date);
-                const promoDateLabel = document.createElement('p');
-                promoDateLabel.className = 'text-red-600 text-center font-semibold text-sm mt-1';
-                promoDateLabel.textContent = promoDateText
-                    ? `Promo valida fino al ${promoDateText}`
-                    : 'Promo in corso';
+                    const featurePrice = document.createElement('p');
+                    featurePrice.className = 'promo-feature-price';
+                    featurePrice.textContent = WaterDeliveryApp.formatPrice(product.promo_price_eur);
 
-                // Create price display
-                const priceContainer = document.createElement('div');
-                priceContainer.className = 'price-container';
+                    const featureUnit = document.createElement('p');
+                    featureUnit.className = 'promo-feature-unit';
+                    featureUnit.textContent = 'a confezione';
 
-                // Old price (strikethrough)
-                const oldPrice = document.createElement('span');
-                oldPrice.className = 'old-price text-gray-500 line-through';
-                oldPrice.textContent = WaterDeliveryApp.formatPrice(
-                    product.promo_original_price_eur ?? product.price_eur
-                );
+                    const featureDelivery = document.createElement('p');
+                    featureDelivery.className = 'promo-feature-delivery';
+                    featureDelivery.textContent = 'La portiamo noi, fino al tuo piano.';
 
-                // New price (highlighted)
-                const newPrice = document.createElement('span');
-                newPrice.className = 'new-price text-lg font-bold text-green-600 ml-2';
-                newPrice.textContent = WaterDeliveryApp.formatPrice(product.promo_price_eur);
+                    featureCopy.append(
+                        featureBadge,
+                        featureHeadline,
+                        featureProductName,
+                        featurePack,
+                        featureOldPrice,
+                        featurePrice,
+                        featureUnit,
+                        featureDelivery
+                    );
 
-                priceContainer.appendChild(oldPrice);
-                priceContainer.appendChild(newPrice);
+                    const featureImage = document.createElement('img');
+                    featureImage.className = 'promo-feature-image';
+                    featureImage.src = product.image || 'public/img_promo/default-promo.png';
+                    featureImage.alt = `${product.pack_count} bottiglie ${product.brand} da ${volumeText}`;
+                    featureImage.loading = 'lazy';
 
-                // Assemble content container
-                contentContainer.appendChild(productName);
-                contentContainer.appendChild(productSubtitle);
-                contentContainer.appendChild(promoDateLabel);
-                contentContainer.appendChild(priceContainer);
+                    promoItem.append(featureCopy, featureImage);
+                } else {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'promo-item-image-container';
 
-                // Assemble promo item
-                promoItem.appendChild(imageContainer);
-                promoItem.appendChild(contentContainer);
+                    const img = document.createElement('img');
+                    img.src = product.image || 'public/img_promo/default-promo.png';
+                    img.alt = product.brand;
+                    img.className = 'promo-item-image';
+                    img.loading = 'lazy';
+
+                    imageContainer.appendChild(img);
+                    promoItem.appendChild(imageContainer);
+
+                    // Create content container
+                    const contentContainer = document.createElement('div');
+                    contentContainer.className = 'promo-item-content';
+
+                    // Create product name
+                    const productName = document.createElement('h3');
+                    productName.className = 'text-xl font-bold text-gray-900';
+                    productName.textContent = `${product.brand}`;
+
+                    // Create product subtitle
+                    const productSubtitle = document.createElement('p');
+                    productSubtitle.className = 'text-gray-600 text-center';
+                    productSubtitle.textContent = product.product_name;
+
+                    // Promo date (Italian format)
+                    const promoDateText = this.formatPromoDateItalian(product.promo_date);
+                    const promoDateLabel = document.createElement('p');
+                    promoDateLabel.className = 'text-red-600 text-center font-semibold text-sm mt-1';
+                    promoDateLabel.textContent = promoDateText
+                        ? `Promo valida fino al ${promoDateText}`
+                        : 'Promo in corso';
+
+                    // Create price display
+                    const priceContainer = document.createElement('div');
+                    priceContainer.className = 'price-container';
+
+                    // Old price (strikethrough)
+                    const oldPrice = document.createElement('span');
+                    oldPrice.className = 'old-price text-gray-500 line-through';
+                    oldPrice.textContent = WaterDeliveryApp.formatPrice(
+                        product.promo_original_price_eur ?? product.price_eur
+                    );
+
+                    // New price (highlighted)
+                    const newPrice = document.createElement('span');
+                    newPrice.className = 'new-price text-lg font-bold text-green-600 ml-2';
+                    newPrice.textContent = WaterDeliveryApp.formatPrice(product.promo_price_eur);
+
+                    priceContainer.appendChild(oldPrice);
+                    priceContainer.appendChild(newPrice);
+
+                    // Assemble content container
+                    contentContainer.appendChild(productName);
+                    contentContainer.appendChild(productSubtitle);
+                    contentContainer.appendChild(promoDateLabel);
+                    contentContainer.appendChild(priceContainer);
+                    promoItem.appendChild(contentContainer);
+                }
 
                 // Make entire promo item clickable to add to cart
                 promoItem.style.cursor = 'pointer';

@@ -492,7 +492,8 @@
           "promo_original_price_eur": 2.30,
           "promo_price_eur": 1.89,
           "promo_price_text": "€ 1,89",
-          "image": "public/img_water/leo.png"
+          "image": "public/img_water/leo.png",
+          "promo_layout": "feature"
         },
         {
           "id": "sorbello_1500ml_naturale_rende",
