@@ -1591,6 +1591,14 @@ class WaterDeliveryApp {
                         return p.type === 'effervescente' || p.type === 'gassata' || p.type === 'frizzante';
                     } else if (this.currentSubcategory === 'BOTTIGLIE 0,5L') {
                         return p.volume_ml === 500;
+                    } else if (this.currentSubcategory === 'BOTTIGLIE 0,75L') {
+                        return p.volume_ml === 750;
+                    } else if (this.currentSubcategory === 'BOTTIGLIE 1L') {
+                        return p.volume_ml === 1000;
+                    } else if (this.currentSubcategory === 'BOTTIGLIE 1,5L') {
+                        return p.volume_ml === 1500;
+                    } else if (this.currentSubcategory === 'BOTTIGLIE 2L') {
+                        return p.volume_ml === 2000;
                     }
                     return true;
                 });
@@ -2369,6 +2377,7 @@ class WaterDeliveryApp {
 
         // Count total water crates in cart
         let totalWaterCrates = 0;
+        let halfLiterWaterCrates = 0;
         const waterProductsInCart = [];
 
         if (items && items.length > 0) {
@@ -2377,12 +2386,18 @@ class WaterDeliveryApp {
                 if (isWaterProduct) {
                     totalWaterCrates += item.qty;
                     waterProductsInCart.push(item);
+                    if (item.product.volume_ml === 500) {
+                        halfLiterWaterCrates += item.qty;
+                    }
                 }
             });
 
             // If there are water products, check minimum requirement
             if (waterProductsInCart.length > 0 && totalWaterCrates < minOrderCases) {
                 errors.push(`Ordine minimo: ${minOrderCases} casse d'acqua (hai ${totalWaterCrates} nel carrello)`);
+            }
+            if (halfLiterWaterCrates > 0 && halfLiterWaterCrates < 4) {
+                errors.push(`Ordine minimo per l'acqua da 0,5L: 4 casse (hai ${halfLiterWaterCrates} nel carrello)`);
             }
         }
 

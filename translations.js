@@ -76,7 +76,7 @@ const EUDORA_TRANSLATIONS = {
         faq2_q: "Quali zone coprite per la consegna?",
         faq2_a: "Attualmente il servizio è attivo nei comuni di Cosenza e Rende.",
         faq3_q: "Quanto costa la consegna?",
-        faq3_a: "Le spese di spedizione variano in base ai prodotti ordinati. Per l'acqua: €1,00 a cassa con ordine minimo di 2 casse. Per gli altri prodotti: le spese sono calcolate in base al peso e al volume.",
+        faq3_a: "Le spese di spedizione variano in base ai prodotti ordinati. Per l'acqua: €1,00 a cassa; l'ordine minimo è di 4 casse per il formato 0,5L e 2 casse per gli altri formati. Per gli altri prodotti: le spese sono calcolate in base al peso e al volume.",
         faq5_q: "Quali metodi di pagamento accettate?",
         faq5_a: "Accettiamo pagamento alla consegna in contanti o con carta di credito tramite POS. Puoi selezionare il metodo preferito durante il checkout.",
 
@@ -181,7 +181,7 @@ const EUDORA_TRANSLATIONS = {
         faq2_q: "Which areas do you deliver to?",
         faq2_a: "The service is currently active in the municipalities of Cosenza and Rende.",
         faq3_q: "How much does delivery cost?",
-        faq3_a: "Shipping costs vary based on products ordered. For water: €1.00 per crate with a minimum order of 2 crates. For other products: costs are calculated based on weight and volume.",
+        faq3_a: "Shipping costs vary based on products ordered. For water: €1.00 per crate; the minimum order is 4 crates for the 0.5L size and 2 crates for other sizes. For other products: costs are calculated based on weight and volume.",
         faq5_q: "What payment methods do you accept?",
         faq5_a: "We accept payment on delivery in cash or by credit card via POS. You can select your preferred method during checkout.",
 
@@ -286,7 +286,7 @@ const EUDORA_TRANSLATIONS = {
         faq2_q: "Quelles zones couvrez-vous pour la livraison ?",
         faq2_a: "Le service est actuellement actif dans les communes de Cosenza et Rende.",
         faq3_q: "Combien coûte la livraison ?",
-        faq3_a: "Les frais d'expédition varient selon les produits commandés. Pour l'eau : 1,00 € par caisse avec une commande minimum de 2 caisses. Pour les autres produits : les frais sont calculés en fonction du poids et du volume.",
+        faq3_a: "Les frais d'expédition varient selon les produits commandés. Pour l'eau : 1,00 € par caisse ; la commande minimum est de 4 caisses au format 0,5L et de 2 caisses pour les autres formats. Pour les autres produits : les frais sont calculés en fonction du poids et du volume.",
         faq5_q: "Quels modes de paiement acceptez-vous ?",
         faq5_a: "Nous acceptons le paiement à la livraison en espèces ou par carte de crédit via TPE. Vous pouvez sélectionner votre méthode préférée lors du paiement.",
 
@@ -391,7 +391,7 @@ const EUDORA_TRANSLATIONS = {
         faq2_q: "¿Qué zonas cubrís para la entrega?",
         faq2_a: "Actualmente el servicio está activo en los municipios de Cosenza y Rende.",
         faq3_q: "¿Cuánto cuesta la entrega?",
-        faq3_a: "Los gastos de envío varían según los productos pedidos. Para el agua: €1,00 por caja con pedido mínimo de 2 cajas. Para otros productos: los gastos se calculan según el peso y el volumen.",
+        faq3_a: "Los gastos de envío varían según los productos pedidos. Para el agua: €1,00 por caja; el pedido mínimo es de 4 cajas para el formato de 0,5L y de 2 cajas para los demás formatos. Para otros productos: los gastos se calculan según el peso y el volumen.",
         faq5_q: "¿Qué métodos de pago aceptáis?",
         faq5_a: "Aceptamos pago a la entrega en efectivo o con tarjeta de crédito mediante TPV. Puedes seleccionar el método preferido durante el proceso de pago.",
 
